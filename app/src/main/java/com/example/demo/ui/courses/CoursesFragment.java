@@ -1,19 +1,15 @@
 package com.example.demo.ui.courses;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -22,13 +18,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.demo.R;
 import com.example.demo.activity.CourseChatActivity;
-import com.example.demo.activity.SettingsActivity;
-
-import org.w3c.dom.Text;
 
 import java.lang.ref.WeakReference;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CoursesFragment extends Fragment {
 
@@ -49,7 +40,7 @@ public class CoursesFragment extends Fragment {
             if (fragment != null) {
                 switch (msg.what) {
                     case 100:
-                        fragment.getCoursesViewModel().getCourses().getValue().add(new CourseInfo("移动互联网", "移动互联网2020"));
+                        fragment.getCoursesViewModel().getCourses().getValue().add(new CourseProfile("移动互联网", "移动互联网2020"));
                         fragment.getCourseAdapter().notifyDataSetChanged();
                         fragment.getSwipeRefreshLayout().setRefreshing(false);
                         break;
@@ -107,11 +98,6 @@ public class CoursesFragment extends Fragment {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
                         Message msg = new Message();
                         msg.what = 100;
                         msg.obj = "";
@@ -122,5 +108,4 @@ public class CoursesFragment extends Fragment {
         });
         return root;
     }
-
 }

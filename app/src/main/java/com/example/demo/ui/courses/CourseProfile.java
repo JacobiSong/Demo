@@ -1,9 +1,9 @@
 package com.example.demo.ui.courses;
 
-public class CourseInfo {
+public class CourseProfile {
     private final String className;
     private final String classMessage;
-    public CourseInfo(String className, String classMessage) {
+    public CourseProfile(String className, String classMessage) {
         this.className = className;
         this.classMessage = classMessage;
     }

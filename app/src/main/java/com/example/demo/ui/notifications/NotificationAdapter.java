@@ -1,4 +1,4 @@
-package com.example.demo.ui.courses;
+package com.example.demo.ui.notifications;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,15 +8,16 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.demo.R;
+import com.example.demo.ui.courses.CourseProfile;
 
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class CourseAdapter extends BaseAdapter {
+public class NotificationAdapter extends BaseAdapter {
     private Context context;
-    private List<CourseProfile> data;
-    public CourseAdapter(Context context, List<CourseProfile> data) {
+    private List<NotificationProfile> data;
+    public NotificationAdapter(Context context, List<NotificationProfile> data) {
         this.context = context;
         this.data = data;
     }
@@ -38,13 +39,14 @@ public class CourseAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.course_item, null);
-        final CircleImageView circleImageView = view.findViewById(R.id.course_icon);
-        final TextView courseName = view.findViewById(R.id.course_name);
-        final TextView courseMessage = view.findViewById(R.id.course_message);
-        circleImageView.setImageResource(R.drawable.school_60);
-        courseName.setText(data.get(position).getClassName());
-        courseMessage.setText(data.get(position).getClassMessage());
+        View view = inflater.inflate(R.layout.notification_item, null);
+
+        final TextView notificationCourse = view.findViewById(R.id.notification_course);
+        final TextView notificationMessage = view.findViewById(R.id.notification_message);
+        final TextView notificationTime = view.findViewById(R.id.notification_time);
+        notificationCourse.setText(data.get(position).getCourse());
+        notificationMessage.setText(data.get(position).getMessage());
+        notificationTime.setText(data.get(position).getTime());
         return view;
     }
 }
