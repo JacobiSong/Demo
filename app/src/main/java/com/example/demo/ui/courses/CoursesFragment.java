@@ -5,21 +5,28 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.demo.R;
+import com.example.demo.activity.CourseAddActivity;
 import com.example.demo.activity.CourseChatActivity;
 
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Method;
 
 public class CoursesFragment extends Fragment {
 
@@ -27,6 +34,7 @@ public class CoursesFragment extends Fragment {
     private CourseAdapter courseAdapter;
     private MyHandler mHandler;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private Toolbar toolbar;
 
     private static class MyHandler extends Handler {
         private final WeakReference<CoursesFragment> mFragment;
@@ -106,6 +114,41 @@ public class CoursesFragment extends Fragment {
                 }).start();
             }
         });
+        setHasOptionsMenu(true);
         return root;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.courses_menu, menu);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
+        if (menu != null) {
+            if (menu.getClass() == MenuBuilder.class) {
+                try {
+                    Method m = menu.getClass().getDeclaredMethod("setOptionalIconsVisible", Boolean.TYPE);
+                    m.setAccessible(true);
+                    m.invoke(menu, true);
+                } catch (Exception e) {
+                }
+            }
+        }
+        super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.course_add:
+                Intent intent = new Intent(getActivity(), CourseAddActivity.class);
+                startActivity(intent);
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

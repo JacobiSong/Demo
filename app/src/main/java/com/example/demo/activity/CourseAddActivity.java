@@ -8,17 +8,17 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.example.demo.R;
-import com.example.demo.ui.notifications.notification.NotificationFragment;
+import com.example.demo.ui.courses.add.CourseAddFragment;
 
-public class NotificationActivity extends AppCompatActivity {
+public class CourseAddActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.notification_activity);
+        setContentView(R.layout.course_add_activity);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.notification_container, NotificationFragment.newInstance())
+                    .replace(R.id.container, CourseAddFragment.newInstance())
                     .commitNow();
         }
         ActionBar actionBar = getSupportActionBar();

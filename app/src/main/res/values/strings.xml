@@ -35,4 +35,6 @@
     <string name="title_activity_settings">设置中心</string>
     <string name="title_activity_user_profile">个人资料</string>
     <string name="title_activity_notifications">通知</string>
+
+    <string name="course_add">添加课程</string>
 </resources>

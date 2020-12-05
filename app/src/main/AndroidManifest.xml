@@ -9,8 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Demo">
-        <activity android:name=".activity.NotificationActivity"
-            android:label="@string/title_activity_notifications"></activity>
+        <activity android:name=".activity.CourseAddActivity"
+            android:label="@string/course_add"></activity>
+        <activity
+            android:name=".activity.NotificationActivity"
+            android:label="@string/title_activity_notifications" />
         <activity
             android:name=".activity.UserProfileActivity"
             android:label="@string/title_activity_user_profile" />

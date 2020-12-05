@@ -4,8 +4,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.demo.ui.courses.CourseProfile;
-
 import java.util.ArrayList;
 import java.util.List;
 
