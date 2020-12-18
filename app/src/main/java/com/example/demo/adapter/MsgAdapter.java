@@ -3,6 +3,7 @@ package com.example.demo.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -26,20 +27,26 @@ public class MsgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     class LeftViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView leftMsg;
+        private final ImageView imageView;
+        private final TextView leftName;
 
         public LeftViewHolder(@NonNull View view) {
             super(view);
-            this.leftMsg = view.findViewById(R.id.leftMsg);
+            this.imageView = view.findViewById(R.id.imageLeft);
+            this.leftMsg = view.findViewById(R.id.textLeftMsg);
+            this.leftName = view.findViewById(R.id.textLeftName);
         }
     }
 
     class RightViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView rightMsg;
+        private final ImageView rightImage;
 
         public RightViewHolder(@NonNull View view) {
             super(view);
-            this.rightMsg = view.findViewById(R.id.rightMsg);
+            this.rightMsg = view.findViewById(R.id.textRightMsg);
+            this.rightImage = view.findViewById(R.id.imageRight);
         }
     }
 
@@ -54,11 +61,11 @@ public class MsgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == Msg.TYPE_RECEIVED) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_msg_left, parent, false);
+                    .inflate(R.layout.item_msg_left_b, parent, false);
             return new LeftViewHolder(view);
         } else {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_msg_right, parent, false);
+                    .inflate(R.layout.item_msg_right_b, parent, false);
             return new RightViewHolder(view);
         }
     }
@@ -68,6 +75,7 @@ public class MsgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         Msg msg = msgList.get(position);
         if (holder.getClass().equals(LeftViewHolder.class)) {
             ((LeftViewHolder) holder).leftMsg.setText(msg.getContent());
+            ((LeftViewHolder) holder).leftName.setText(msg.getName());
         } else if (holder.getClass().equals(RightViewHolder.class)) {
             ((RightViewHolder) holder).rightMsg.setText(msg.getContent());
         } else {

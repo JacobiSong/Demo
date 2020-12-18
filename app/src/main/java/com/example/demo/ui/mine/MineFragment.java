@@ -2,7 +2,6 @@ package com.example.demo.ui.mine;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -13,7 +12,6 @@ import androidx.fragment.app.Fragment;
 
 import com.example.demo.R;
 import com.example.demo.activity.SettingsActivity;
-import com.example.demo.activity.UserProfileActivity;
 
 public class MineFragment extends Fragment {
 
@@ -22,20 +20,28 @@ public class MineFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_mine, container, false);
-        MineHeader mineHeader = root.findViewById(R.id.mine_header);
-        mineHeader.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), UserProfileActivity.class);
-                startActivity(intent);
-            }
-        });
         MineItemView mineItemView = root.findViewById(R.id.mine_settings);
-        mineItemView.setOnClickListener(new View.OnClickListener(){
+        mineItemView.setOnTouchListener(new View.OnTouchListener(){
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), SettingsActivity.class);
-                startActivity(intent);
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN: {
+                        mineItemView.TouchDown();
+                        break;
+                    }
+                    case MotionEvent.ACTION_MOVE: {
+                        break;
+                    }
+                    case MotionEvent.ACTION_UP: {
+                        mineItemView.TouchUp();
+                        Intent intent = new Intent(getActivity(), SettingsActivity.class);
+                        startActivity(intent);
+                        break;
+                    }
+                    default:
+                        break;
+                }
+                return true;
             }
         });
         return root;

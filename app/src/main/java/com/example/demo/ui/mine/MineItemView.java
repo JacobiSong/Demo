@@ -28,32 +28,18 @@ public class MineItemView extends RelativeLayout {
         textView = findViewById(R.id.mine_text);
         textView.setText(typedArray.getString(R.styleable.MineItemView_mine_text));
         imageView.setBackgroundResource(typedArray.getResourceId(R.styleable.MineItemView_mine_icon, R.drawable.settings_24));
-        relativeLayout = findViewById(R.id.mine_item_root);
+        relativeLayout = findViewById(R.id.mine_root);
         line = findViewById(R.id.mine_line);
         if (typedArray.getBoolean(R.styleable.MineItemView_mine_line, false)) {
             line.setBackgroundColor(getResources().getColor(R.color.light_gray));
         }
         typedArray.recycle();
-        setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN: {
-                        relativeLayout.setBackgroundColor(getResources().getColor(R.color.gray));
-                        break;
-                    }
-                    case MotionEvent.ACTION_MOVE: {
-                        break;
-                    }
-                    case MotionEvent.ACTION_UP: {
-                        relativeLayout.setBackgroundColor(getResources().getColor(R.color.white));
-                        break;
-                    }
-                    default:
-                        break;
-                }
-                return false;
-            }
-        });
+    }
+
+    public void TouchDown() {
+        relativeLayout.setBackgroundColor(getResources().getColor(R.color.gray));
+    }
+    public void TouchUp() {
+        relativeLayout.setBackgroundColor(getResources().getColor(R.color.white));
     }
 }

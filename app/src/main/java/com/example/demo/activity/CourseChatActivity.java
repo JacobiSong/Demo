@@ -68,10 +68,11 @@ public class CourseChatActivity extends AppCompatActivity {
     private void initMsg() {
         this.msgList.add(new Msg(
                 "你好",
-                Msg.TYPE_RECEIVED
+                Msg.TYPE_RECEIVED,
+                "张三"
         ));
         this.msgList.add(new Msg(
-                "你好",
+                "你好lskdf我佩服你我鞥覅沃尔夫我鞥覅级危房为覅围殴覅沃恩发我而烦恼为谔谔谔谔谔谔呃呃呃呃呃呃呃呃呃呃呃呃呃呃呃呃呃呃呃",
                 Msg.TYPE_SEND
         ));
     }

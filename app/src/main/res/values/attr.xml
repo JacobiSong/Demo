@@ -5,9 +5,4 @@
         <attr name="mine_text" format="string" />
         <attr name="mine_line" format="boolean" />
     </declare-styleable>
-    <declare-styleable name="UserProfileItem">
-        <attr name="user_profile_text" format="string" />
-        <attr name="user_profile_arrow" format="boolean" />
-        <attr name="user_profile_line" format="boolean" />
-    </declare-styleable>
 </resources>
