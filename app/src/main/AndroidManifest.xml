@@ -13,9 +13,9 @@
         <service
             android:name=".service.CoreService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
         <service
-            android:name=".DbIntentService"
+            android:name=".service.DbIntentService"
             android:exported="false" />
 
         <activity
