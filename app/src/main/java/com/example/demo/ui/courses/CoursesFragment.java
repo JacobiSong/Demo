@@ -1,34 +1,32 @@
 package com.example.demo.ui.courses;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.demo.R;
+import com.example.demo.activity.CourseAddActivity;
 import com.example.demo.activity.CourseChatActivity;
-import com.example.demo.activity.SettingsActivity;
-
-import org.w3c.dom.Text;
 
 import java.lang.ref.WeakReference;
-
-import de.hdodenhof.circleimageview.CircleImageView;
+import java.lang.reflect.Method;
 
 public class CoursesFragment extends Fragment {
 
@@ -36,6 +34,7 @@ public class CoursesFragment extends Fragment {
     private CourseAdapter courseAdapter;
     private MyHandler mHandler;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private Toolbar toolbar;
 
     private static class MyHandler extends Handler {
         private final WeakReference<CoursesFragment> mFragment;
@@ -49,7 +48,7 @@ public class CoursesFragment extends Fragment {
             if (fragment != null) {
                 switch (msg.what) {
                     case 100:
-                        fragment.getCoursesViewModel().getCourses().getValue().add(new CourseInfo("移动互联网", "移动互联网2020"));
+                        fragment.getCoursesViewModel().getCourses().getValue().add(new CourseProfile("移动互联网", "移动互联网2020"));
                         fragment.getCourseAdapter().notifyDataSetChanged();
                         fragment.getSwipeRefreshLayout().setRefreshing(false);
                         break;
@@ -107,11 +106,6 @@ public class CoursesFragment extends Fragment {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
                         Message msg = new Message();
                         msg.what = 100;
                         msg.obj = "";
@@ -120,7 +114,41 @@ public class CoursesFragment extends Fragment {
                 }).start();
             }
         });
+        setHasOptionsMenu(true);
         return root;
     }
 
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.courses_menu, menu);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
+        if (menu != null) {
+            if (menu.getClass() == MenuBuilder.class) {
+                try {
+                    Method m = menu.getClass().getDeclaredMethod("setOptionalIconsVisible", Boolean.TYPE);
+                    m.setAccessible(true);
+                    m.invoke(menu, true);
+                } catch (Exception e) {
+                }
+            }
+        }
+        super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.course_add:
+                Intent intent = new Intent(getActivity(), CourseAddActivity.class);
+                startActivity(intent);
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

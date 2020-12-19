@@ -10,14 +10,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.demo.R;
 import com.example.demo.adapter.CourseFileAdapter;
-import com.example.demo.entity.CourseFile;
+import com.example.demo.entity.File;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CourseFileActivity extends AppCompatActivity {
 
-    private final List<CourseFile> fileList = new ArrayList<>();
+    private final List<File> fileList = new ArrayList<>();
     private CourseFileAdapter adapter;
     private RecyclerView fileRecyclerView;
 
@@ -43,12 +43,12 @@ public class CourseFileActivity extends AppCompatActivity {
     }
 
     private void initFile() {
-        this.fileList.add(new CourseFile(
+        this.fileList.add(new File(
                 "作业1.pdf",
                 "张老师",
                 78.6
         ));
-        this.fileList.add(new CourseFile(
+        this.fileList.add(new File(
                 "单元测评2.docx",
                 "张老师",
                 107.3

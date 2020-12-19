@@ -15,8 +15,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CourseAdapter extends BaseAdapter {
     private Context context;
-    private List<CourseInfo> data;
-    public CourseAdapter(Context context, List<CourseInfo> data) {
+    private List<CourseProfile> data;
+    public CourseAdapter(Context context, List<CourseProfile> data) {
         this.context = context;
         this.data = data;
     }

@@ -8,11 +8,11 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.demo.R;
-import com.example.demo.entity.CourseInfo;
+import com.example.demo.entity.Course;
 
 public class CourseInformationActivity extends AppCompatActivity {
 
-    private CourseInfo courseInfo;
+    private Course course;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,11 +21,11 @@ public class CourseInformationActivity extends AppCompatActivity {
 
         initInfo();
         //设置显示内容
-        ((TextView) findViewById(R.id.textCourseName)).setText(this.courseInfo.getCourseName());
-        ((TextView) findViewById(R.id.textTeacherName)).setText(this.courseInfo.getTeacherName());
-        ((TextView) findViewById(R.id.textClassRoom)).setText(this.courseInfo.getClassroom());
-        ((TextView) findViewById(R.id.textCourseTime)).setText(this.courseInfo.getCourseTime());
-        ((TextView) findViewById(R.id.textCourseRemark)).setText(this.courseInfo.getRemark());
+        ((TextView) findViewById(R.id.textCourseName)).setText(this.course.getCourseName());
+        ((TextView) findViewById(R.id.textTeacherName)).setText(this.course.getTeacherName());
+        ((TextView) findViewById(R.id.textClassRoom)).setText(this.course.getClassroom());
+        ((TextView) findViewById(R.id.textCourseTime)).setText(this.course.getCourseTime());
+        ((TextView) findViewById(R.id.textCourseRemark)).setText(this.course.getRemark());
 
         //隐藏系统自带的标题栏
         ActionBar actionbar = getSupportActionBar();
@@ -39,7 +39,7 @@ public class CourseInformationActivity extends AppCompatActivity {
     }
 
     private void initInfo() {
-        this.courseInfo = new CourseInfo(
+        this.course = new Course(
                 "数据结构",
                 "XXXXXX",
                 "[2-15周]周一12节、周三12节",

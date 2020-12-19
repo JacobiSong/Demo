@@ -10,17 +10,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.demo.R;
-import com.example.demo.entity.Msg;
+import com.example.demo.entity.Message;
 
 import java.util.List;
 
 public class MsgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<Msg> msgList; //所有消息
+    private List<Message> messageList; //所有消息
 
-    public MsgAdapter(List<Msg> msgList) {
+    public MsgAdapter(List<Message> messageList) {
         super();
-        this.msgList = msgList;
+        this.messageList = messageList;
     }
 
     //两个Holder风别用于缓存item_msg_left.xml和item_msg_right.xml布局中的控件
@@ -52,14 +52,14 @@ public class MsgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        Msg msg = this.msgList.get(position);
-        return msg.getType();
+        Message message = this.messageList.get(position);
+        return message.getType();
     }
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (viewType == Msg.TYPE_RECEIVED) {
+        if (viewType == Message.TYPE_RECEIVED) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.item_msg_left_b, parent, false);
             return new LeftViewHolder(view);
@@ -72,12 +72,12 @@ public class MsgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        Msg msg = msgList.get(position);
+        Message message = messageList.get(position);
         if (holder.getClass().equals(LeftViewHolder.class)) {
-            ((LeftViewHolder) holder).leftMsg.setText(msg.getContent());
+            ((LeftViewHolder) holder).leftMsg.setText(message.getContent());
             ((LeftViewHolder) holder).leftName.setText(msg.getName());
         } else if (holder.getClass().equals(RightViewHolder.class)) {
-            ((RightViewHolder) holder).rightMsg.setText(msg.getContent());
+            ((RightViewHolder) holder).rightMsg.setText(message.getContent());
         } else {
             assert false;
         }
@@ -85,6 +85,6 @@ public class MsgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return this.msgList.size();
+        return this.messageList.size();
     }
 }

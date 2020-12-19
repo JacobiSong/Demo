@@ -9,14 +9,14 @@ import java.util.List;
 
 public class CoursesViewModel extends ViewModel {
 
-    private MutableLiveData<List<CourseInfo>> courses;
+    private MutableLiveData<List<CourseProfile>> courses;
 
     public CoursesViewModel() {
         courses = new MutableLiveData<>();
         courses.setValue(new ArrayList<>());
     }
 
-    public LiveData<List<CourseInfo>> getCourses() {
+    public LiveData<List<CourseProfile>> getCourses() {
         return courses;
     }
 }

@@ -9,15 +9,15 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.demo.R;
-import com.example.demo.entity.CourseFile;
+import com.example.demo.entity.File;
 
 import java.util.List;
 
 public class CourseFileAdapter extends RecyclerView.Adapter<CourseFileAdapter.FileViewHolder> {
 
-    private final List<CourseFile> fileList;
+    private final List<File> fileList;
 
-    public CourseFileAdapter(List<CourseFile> fileList) {
+    public CourseFileAdapter(List<File> fileList) {
         super();
         this.fileList = fileList;
     }
@@ -46,7 +46,7 @@ public class CourseFileAdapter extends RecyclerView.Adapter<CourseFileAdapter.Fi
 
     @Override
     public void onBindViewHolder(@NonNull FileViewHolder holder, int position) {
-        CourseFile file = this.fileList.get(position);
+        File file = this.fileList.get(position);
         holder.fileNameTextView.setText(file.getFilename());
         holder.authorTextView.setText(file.getAuthor());
         String fileSize = String.valueOf(file.getSize()) + "KB";

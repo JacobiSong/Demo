@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.demo.R;
 import com.example.demo.adapter.CourseNoticeAdapter;
-import com.example.demo.entity.CourseNotice;
+import com.example.demo.entity.Notification;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -21,7 +21,7 @@ import java.util.List;
 
 public class CourseNoticeActivity extends AppCompatActivity {
 
-    private final List<CourseNotice> noticeList = new ArrayList<>();
+    private final List<Notification> noticeList = new ArrayList<>();
     private CourseNoticeAdapter adapter;
     private RecyclerView noticeRecyclerView;
 
@@ -51,11 +51,11 @@ public class CourseNoticeActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void initNotice() {
-        this.noticeList.add(new CourseNotice(
+        this.noticeList.add(new Notification(
                 "下午3:45上课",
                 "刘老师"
         ));
-        this.noticeList.add(new CourseNotice(
+        this.noticeList.add(new Notification(
                 "请在周六晚上十二点之前提交作业",
                 "李老师"
         ));

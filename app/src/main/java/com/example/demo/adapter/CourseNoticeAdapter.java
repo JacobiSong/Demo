@@ -11,15 +11,15 @@ import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.demo.R;
-import com.example.demo.entity.CourseNotice;
+import com.example.demo.entity.Notification;
 
 import java.util.List;
 
 public class CourseNoticeAdapter extends RecyclerView.Adapter<CourseNoticeAdapter.NoticeHolder> {
 
-    private final List<CourseNotice> noticeList;
+    private final List<Notification> noticeList;
 
-    public CourseNoticeAdapter(List<CourseNotice> noticeList) {
+    public CourseNoticeAdapter(List<Notification> noticeList) {
         super();
         this.noticeList = noticeList;
     }
@@ -49,7 +49,7 @@ public class CourseNoticeAdapter extends RecyclerView.Adapter<CourseNoticeAdapte
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onBindViewHolder(@NonNull NoticeHolder holder, int position) {
-        CourseNotice notice = this.noticeList.get(position);
+        Notification notice = this.noticeList.get(position);
         holder.contentTextView.setText(notice.getContent());
         holder.authorTextView.setText(notice.getAuthor());
         holder.dateTextView.setText(notice.getDateTime());

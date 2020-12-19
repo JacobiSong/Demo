@@ -32,5 +32,9 @@
     <string name="button_text_confirm">确定</string>
     <string name="button_text_get_verification_code">获取验证码</string>
     <string name="hint_verification_code">验证码</string>
-    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="title_activity_settings">设置中心</string>
+    <string name="title_activity_user_profile">个人资料</string>
+    <string name="title_activity_notifications">通知</string>
+
+    <string name="course_add">添加课程</string>
 </resources>
