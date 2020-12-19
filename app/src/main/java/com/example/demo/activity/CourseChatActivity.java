@@ -15,6 +15,7 @@ import com.example.demo.R;
 import com.example.demo.adapter.MsgAdapter;
 import com.example.demo.entity.Message;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,8 @@ public class CourseChatActivity extends AppCompatActivity {
     private final List<Message> messageList = new ArrayList<>();
     private MsgAdapter adapter = null;
     private RecyclerView msgRecyclerView;
+
+    private static int initIndex = 10000003; // 临时用于messageID自增，连上数据库后可删除该变量
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,7 +49,13 @@ public class CourseChatActivity extends AppCompatActivity {
         TextView textView = findViewById(R.id.msgTextView);
         String content = textView.getText().toString(); // 获取消息
         if (!"".equals(content)) { // 消息不为空时发送
-            Message sendMessage = new Message(content, Message.TYPE_SEND);
+            Message sendMessage = new Message(
+                    initIndex++,
+                    "1100000000",
+                    "123456",
+                    "你好",
+                    LocalDateTime.now()
+            );
             this.messageList.add(sendMessage);
             adapter.notifyItemInserted(this.messageList.size() - 1); // 刷新
             msgRecyclerView.scrollToPosition(this.messageList.size() - 1); // 将ListView定位到最后一行
@@ -67,12 +76,18 @@ public class CourseChatActivity extends AppCompatActivity {
 
     private void initMsg() {
         this.messageList.add(new Message(
+                10000001,
+                "1188888888",
+                "123456",
                 "你好",
-                Message.TYPE_RECEIVED
+                LocalDateTime.now()
         ));
         this.messageList.add(new Message(
+                10000002,
+                "1100000000",
+                "123456",
                 "你好",
-                Message.TYPE_SEND
+                LocalDateTime.now()
         ));
     }
 }

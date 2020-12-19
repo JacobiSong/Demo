@@ -11,6 +11,7 @@ import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.demo.R;
+import com.example.demo.TimeFormat;
 import com.example.demo.entity.Notification;
 
 import java.util.List;
@@ -51,8 +52,8 @@ public class CourseNoticeAdapter extends RecyclerView.Adapter<CourseNoticeAdapte
     public void onBindViewHolder(@NonNull NoticeHolder holder, int position) {
         Notification notice = this.noticeList.get(position);
         holder.contentTextView.setText(notice.getContent());
-        holder.authorTextView.setText(notice.getAuthor());
-        holder.dateTextView.setText(notice.getDateTime());
+        holder.authorTextView.setText(notice.getSenderId());
+        holder.dateTextView.setText(TimeFormat.formatDateTime(notice.getTime()));
     }
 
     @Override

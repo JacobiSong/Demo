@@ -16,6 +16,7 @@ import com.example.demo.entity.Notification;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,12 +53,12 @@ public class CourseNoticeActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void initNotice() {
         this.noticeList.add(new Notification(
-                "下午3:45上课",
-                "刘老师"
-        ));
-        this.noticeList.add(new Notification(
-                "请在周六晚上十二点之前提交作业",
-                "李老师"
+                10001,
+                "10101010101",
+                "232342",
+                "上课",
+                "周末照常上课",
+                LocalDateTime.now()
         ));
     }
 }

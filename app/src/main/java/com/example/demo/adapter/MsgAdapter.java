@@ -16,11 +16,21 @@ import java.util.List;
 
 public class MsgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private int TYPE_RECEIVED = 0;
+    private int TYPE_SEND = 1;
+
     private List<Message> messageList; //所有消息
 
     public MsgAdapter(List<Message> messageList) {
         super();
         this.messageList = messageList;
+    }
+
+    /**
+     * 临时用于判断消息是发送还是接受，用于生成左右两种不同的消息UI
+     */
+    private boolean isSend(Message message) {
+        return message.getSenderId().equals("1100000000");
     }
 
     //两个Holder风别用于缓存item_msg_left.xml和item_msg_right.xml布局中的控件
@@ -53,13 +63,17 @@ public class MsgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public int getItemViewType(int position) {
         Message message = this.messageList.get(position);
-        return message.getType();
+        if (message.getSenderId().equals("1100000000")) {
+            return this.TYPE_SEND;
+        } else {
+            return this.TYPE_RECEIVED;
+        }
     }
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (viewType == Message.TYPE_RECEIVED) {
+        if (viewType == this.TYPE_RECEIVED) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.item_msg_left_b, parent, false);
             return new LeftViewHolder(view);
@@ -75,7 +89,7 @@ public class MsgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         Message message = messageList.get(position);
         if (holder.getClass().equals(LeftViewHolder.class)) {
             ((LeftViewHolder) holder).leftMsg.setText(message.getContent());
-            ((LeftViewHolder) holder).leftName.setText(msg.getName());
+            ((LeftViewHolder) holder).leftName.setText(message.getSenderId());
         } else if (holder.getClass().equals(RightViewHolder.class)) {
             ((RightViewHolder) holder).rightMsg.setText(message.getContent());
         } else {

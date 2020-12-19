@@ -37,6 +37,7 @@ public class StudentDao extends AbstractDao<Student, String> {
 
     private DaoSession daoSession;
 
+
     public StudentDao(DaoConfig config) {
         super(config);
     }

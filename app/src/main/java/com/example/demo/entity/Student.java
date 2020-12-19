@@ -1,12 +1,13 @@
 package com.example.demo.entity;
 
-import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.NotNull;
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.DaoException;
 import com.example.demo.dao.DaoSession;
 import com.example.demo.dao.StudentDao;
+
+import org.greenrobot.greendao.DaoException;
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.NotNull;
 
 @Entity(
         active = true
@@ -34,18 +35,22 @@ public class Student {
 
     private int studentClass;
 
-    /** Used to resolve relations */
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
 
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 1943931642)
     private transient StudentDao myDao;
 
     @Generated(hash = 1669205012)
     public Student(String id, @NotNull String name, String phone, String email,
-            int gender, @NotNull String password, String department, String major,
-            int studentClass) {
+                   int gender, @NotNull String password, String department, String major,
+                   int studentClass) {
         this.id = id;
         this.name = name;
         this.phone = phone;
@@ -169,7 +174,9 @@ public class Student {
         myDao.update(this);
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 1701634981)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
