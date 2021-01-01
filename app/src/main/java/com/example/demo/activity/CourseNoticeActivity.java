@@ -2,10 +2,10 @@ package com.example.demo.activity;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,18 +32,21 @@ public class CourseNoticeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_notice);
         initNotice();
-        this.noticeRecyclerView = findViewById(R.id.recyclerViewInCourseNoticeView);
+        this.noticeRecyclerView = findViewById(R.id.recyclerViewInMenbersView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         this.noticeRecyclerView.setLayoutManager(linearLayoutManager);
         this.adapter = new CourseNoticeAdapter(this.noticeList);
         this.noticeRecyclerView.setAdapter(this.adapter);
+    }
 
-        //隐藏系统自带的标题栏
-        ActionBar actionbar = getSupportActionBar();
-        if (actionbar != null) {
-            actionbar.hide();
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
         }
-
+        return super.onOptionsItemSelected(item);
     }
 
     public void back(@NotNull View view) {

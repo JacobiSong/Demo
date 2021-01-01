@@ -13,9 +13,9 @@
         <service
             android:name=".service.CoreService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
         <service
-            android:name=".DbIntentService"
+            android:name=".service.DbIntentService"
             android:exported="false" />
 
         <activity
@@ -27,11 +27,34 @@
         <activity
             android:name=".activity.UserProfileActivity"
             android:label="@string/title_activity_user_profile" />
-        <activity android:name=".activity.CourseInformationActivity" />
-        <activity android:name=".activity.CourseNoticeActivity" />
-        <activity android:name=".activity.CourseFileActivity" />
-        <activity android:name=".activity.CourseMenuActivity" />
-        <activity android:name=".activity.CourseChatActivity" />
+        <activity
+            android:name=".activity.CourseInformationActivity"
+            android:label="课程信息"
+            android:parentActivityName=".activity.CourseChatActivity" />
+        <activity
+            android:name=".activity.CourseNoticeActivity"
+            android:label="通知"
+            android:parentActivityName=".activity.CourseMenuActivity" />
+        <activity
+            android:name=".activity.CourseFileActivity"
+            android:label="文件"
+            android:parentActivityName=".activity.CourseMenuActivity" />
+        <activity
+            android:name=".activity.CourseMenuActivity"
+            android:label="菜单"
+            android:parentActivityName=".activity.CourseMenuActivity" />
+        <activity
+            android:name=".activity.MembersActivity"
+            android:label="群成员"
+            android:parentActivityName=".activity.CourseChatActivity" />
+        <activity
+            android:name=".activity.UserInfoActivity"
+            android:label="信息"
+            android:parentActivityName=".activity.CourseChatActivity" />
+        <activity
+            android:name=".activity.CourseChatActivity"
+            android:label="课程"
+            android:parentActivityName=".activity.MainActivity" />
         <activity android:name=".activity.RegisterActivity" />
         <activity
             android:name=".activity.SettingsActivity"
@@ -42,7 +65,6 @@
         <activity android:name=".activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

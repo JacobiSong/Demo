@@ -2,11 +2,13 @@ package com.example.demo.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -37,23 +39,46 @@ public class CourseChatActivity extends AppCompatActivity {
         msgRecyclerView.setLayoutManager(linearLayoutManager);
         this.adapter = new MsgAdapter(this.messageList);
         msgRecyclerView.setAdapter(this.adapter);
-        //隐藏系统自带的标题栏
-        ActionBar actionbar = getSupportActionBar();
-        if (actionbar != null) {
-            actionbar.hide();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.courses_chat_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+            case R.id.action_cart://监听菜单按钮
+                Intent intent = new Intent(this, CourseMenuActivity.class);
+                startActivity(intent);
+                break;
         }
+        return super.onOptionsItemSelected(item);
+    }
+
+    //点击头像后跳转到用户信息
+    public void toUserInfo(View view) {
+        Intent intent = new Intent(this, UserInfoActivity.class);
+        startActivity(intent);
     }
 
     //点击发送按钮后发送消息
     public void sendMsg(View v) {
         TextView textView = findViewById(R.id.msgTextView);
         String content = textView.getText().toString(); // 获取消息
+        System.out.println("消息内容为" + content);
         if (!"".equals(content)) { // 消息不为空时发送
             Message sendMessage = new Message(
                     initIndex++,
                     "1100000000",
                     "123456",
-                    "你好",
+                    content,
                     LocalDateTime.now()
             );
             this.messageList.add(sendMessage);
@@ -68,11 +93,6 @@ public class CourseChatActivity extends AppCompatActivity {
         this.finish();
     }
 
-    //点击菜单，打开课程菜单
-    public void toCourseMenu(View view) {
-        Intent intent = new Intent(this, CourseMenuActivity.class);
-        startActivity(intent);
-    }
 
     private void initMsg() {
         this.messageList.add(new Message(

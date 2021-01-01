@@ -75,11 +75,11 @@ public class MsgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == this.TYPE_RECEIVED) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_msg_left_b, parent, false);
+                    .inflate(R.layout.item_msg_left, parent, false);
             return new LeftViewHolder(view);
         } else {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_msg_right_b, parent, false);
+                    .inflate(R.layout.item_msg_right, parent, false);
             return new RightViewHolder(view);
         }
     }

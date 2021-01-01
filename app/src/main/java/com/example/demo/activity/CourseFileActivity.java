@@ -1,9 +1,9 @@
 package com.example.demo.activity;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,11 +31,16 @@ public class CourseFileActivity extends AppCompatActivity {
         fileRecyclerView.setLayoutManager(linearLayoutManager);
         this.adapter = new CourseFileAdapter(this.fileList);
         fileRecyclerView.setAdapter(this.adapter);
-        //隐藏系统自带标题栏
-        ActionBar actionbar = getSupportActionBar();
-        if (actionbar != null) {
-            actionbar.hide();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     public void back(View view) {
