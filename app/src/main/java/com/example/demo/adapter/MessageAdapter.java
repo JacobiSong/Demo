@@ -42,8 +42,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         public LeftViewHolder(@NonNull View view) {
             super(view);
-            this.imageView = view.findViewById(R.id.imageLeftUser);
-            this.leftMsg = view.findViewById(R.id.leftMsg);
+            this.imageView = view.findViewById(R.id.imageLeft);
+            this.leftMsg = view.findViewById(R.id.textLeftMsg);
             //this.leftName = view.findViewById(R.id.textLeftName);
         }
     }
@@ -55,7 +55,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         public RightViewHolder(@NonNull View view) {
             super(view);
-            this.rightMsg = view.findViewById(R.id.rightMsg);
+            this.rightMsg = view.findViewById(R.id.textRightMsg);
             //this.rightImage = view.findViewById(R.id.imageRight);
         }
     }
