@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.demo.R;
-import com.example.demo.adapter.MsgAdapter;
+import com.example.demo.adapter.MessageAdapter;
 import com.example.demo.entity.Message;
 
 import java.time.LocalDateTime;
@@ -24,7 +24,7 @@ import java.util.List;
 public class CourseChatActivity extends AppCompatActivity {
 
     private final List<Message> messageList = new ArrayList<>();
-    private MsgAdapter adapter = null;
+    private MessageAdapter adapter = null;
     private RecyclerView msgRecyclerView;
 
     private static int initIndex = 10000003; // 临时用于messageID自增，连上数据库后可删除该变量
@@ -37,7 +37,7 @@ public class CourseChatActivity extends AppCompatActivity {
         msgRecyclerView = findViewById(R.id.recyclerViewInCourseView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         msgRecyclerView.setLayoutManager(linearLayoutManager);
-        this.adapter = new MsgAdapter(this.messageList);
+        this.adapter = new MessageAdapter(this.messageList);
         msgRecyclerView.setAdapter(this.adapter);
     }
 

@@ -15,8 +15,10 @@ public class CoreService extends Service {
         }
     }
 
+    private Timer timer;
     public CoreService() {
-
+        Timer timer = new Timer();
+        timer.schedule(new SwapTask(), 0, 60000);
     }
 
     @Override
@@ -26,7 +28,13 @@ public class CoreService extends Service {
     }
 
     public void swapData() {
-        Timer timer = new Timer();
-        timer.schedule(new SwapTask(), 0, 3000);
+
+    }
+
+    @Override
+    public boolean stopService(Intent name) {
+        timer.cancel();
+        timer.purge();
+        return super.stopService(name);
     }
 }
