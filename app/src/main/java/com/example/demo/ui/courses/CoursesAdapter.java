@@ -8,21 +8,22 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.demo.R;
+import com.example.demo.datagram.DatagramProto;
 
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class CourseAdapter extends BaseAdapter {
-    private Context context;
-    private List<CourseProfile> data;
-    public CourseAdapter(Context context, List<CourseProfile> data) {
+public class CoursesAdapter extends BaseAdapter {
+    private final Context context;
+    private final DatagramProto.Courses data;
+    public CoursesAdapter(Context context, DatagramProto.Courses data) {
         this.context = context;
         this.data = data;
     }
     @Override
     public int getCount() {
-        return data.size();
+        return data.getCoursesCount();
     }
 
     @Override
@@ -43,8 +44,7 @@ public class CourseAdapter extends BaseAdapter {
         final TextView courseName = view.findViewById(R.id.course_name);
         final TextView courseMessage = view.findViewById(R.id.course_message);
         circleImageView.setImageResource(R.drawable.school_60);
-        courseName.setText(data.get(position).getClassName());
-        courseMessage.setText(data.get(position).getClassMessage());
+        courseName.setText(data.getCourses(position).getName());
         return view;
     }
 }

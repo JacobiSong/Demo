@@ -10,10 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.demo.R;
 import com.example.demo.adapter.CourseFileAdapter;
-import com.example.demo.entity.File;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class CourseFileActivity extends AppCompatActivity {
 

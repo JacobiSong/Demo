@@ -11,7 +11,7 @@ import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.demo.R;
-import com.example.demo.TimeFormat;
+import com.example.demo.entity.TimeFormat;
 import com.example.demo.entity.Notification;
 
 import java.util.List;

@@ -1,6 +1,8 @@
 package com.example.demo.ui.courses.add;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,22 +10,18 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.demo.R;
-import com.example.demo.ui.courses.CourseProfile;
-
-import org.w3c.dom.Text;
-
-import java.util.List;
+import com.example.demo.datagram.DatagramProto;
 
 public class CourseAddAdapter extends BaseAdapter {
-    private Context context;
-    private List<CourseAddProfile> data;
-    public CourseAddAdapter(Context context, List<CourseAddProfile> data) {
+    private final Context context;
+    private final DatagramProto.Courses data;
+    public CourseAddAdapter(Context context, DatagramProto.Courses data) {
         this.context = context;
         this.data = data;
     }
     @Override
     public int getCount() {
-        return data.size();
+        return data.getCoursesCount();
     }
 
     @Override
@@ -42,8 +40,8 @@ public class CourseAddAdapter extends BaseAdapter {
         View view = inflater.inflate(R.layout.course_add_item, null);
         final TextView name = view.findViewById(R.id.course_add_name);
         final TextView time = view.findViewById(R.id.course_add_time);
-        name.setText(data.get(position).getName());
-        time.setText(data.get(position).getTime());
+        name.setText(data.getCourses(position).getName());
+        time.setText(data.getCourses(position).getTime());
         return view;
     }
 }

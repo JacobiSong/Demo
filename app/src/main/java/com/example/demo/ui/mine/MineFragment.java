@@ -17,8 +17,6 @@ import com.example.demo.activity.UserProfileActivity;
 
 public class MineFragment extends Fragment {
 
-    private MineViewModel mineViewModel;
-
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_mine, container, false);

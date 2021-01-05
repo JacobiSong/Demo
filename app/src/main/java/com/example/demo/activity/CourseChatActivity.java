@@ -14,16 +14,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.demo.R;
-import com.example.demo.adapter.MessageAdapter;
-import com.example.demo.entity.Message;
+import com.example.demo.datagram.DatagramProto;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 
 public class CourseChatActivity extends AppCompatActivity {
 
-    private final List<Message> messageList = new ArrayList<>();
+    private DatagramProto.Messages messages;
     private MessageAdapter adapter = null;
     private RecyclerView msgRecyclerView;
 

@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,11 +19,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.demo.R;
-import com.example.demo.activity.CourseChatActivity;
 import com.example.demo.activity.NotificationActivity;
-import com.example.demo.ui.courses.CourseAdapter;
-import com.example.demo.ui.courses.CourseProfile;
-import com.example.demo.ui.courses.CoursesFragment;
+import com.example.demo.datagram.DatagramProto;
 
 import java.lang.ref.WeakReference;
 
@@ -32,50 +28,24 @@ public class NotificationsFragment extends Fragment {
 
     private NotificationsViewModel notificationsViewModel;
     private NotificationAdapter notificationAdapter;
-    private MyHandler mHandler;
-    private SwipeRefreshLayout swipeRefreshLayout;
 
-    public NotificationsViewModel getNotificationsViewModel() {
-        return notificationsViewModel;
-    }
-
-    public NotificationAdapter getNotificationAdapter() {
-        return notificationAdapter;
-    }
-
-    public SwipeRefreshLayout getSwipeRefreshLayout() {
-        return swipeRefreshLayout;
-    }
-
-    private static class MyHandler extends Handler {
-        private final WeakReference<NotificationsFragment> mFragment;
-
-        public MyHandler(NotificationsFragment fragment) {
-            mFragment = new WeakReference<NotificationsFragment>(fragment);
-        }
-        @Override
-        public void handleMessage(Message msg) {
-            NotificationsFragment fragment = mFragment.get();
-            if (fragment != null) {
-                switch (msg.what) {
-                    case 100:
-                        fragment.getNotificationsViewModel().getNotifications().getValue().add(new NotificationProfile("移动互联网", "作业发布", "18:00"));
-                        fragment.getNotificationAdapter().notifyDataSetChanged();
-                        fragment.getSwipeRefreshLayout().setRefreshing(false);
-                        break;
-                }
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        notificationsViewModel = new ViewModelProvider(getActivity()).get(NotificationsViewModel.class);
+        notificationsViewModel.getNotifications().observe(getActivity(), new Observer<DatagramProto.Notifications>() {
+            @Override
+            public void onChanged(DatagramProto.Notifications notifications) {
+                notificationAdapter.notifyDataSetChanged();
             }
-        }
+        });
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        notificationsViewModel =
-                new ViewModelProvider(this).get(NotificationsViewModel.class);
         notificationAdapter = new NotificationAdapter(getContext(), notificationsViewModel.getNotifications().getValue());
-        mHandler = new NotificationsFragment.MyHandler(this);
         View root = inflater.inflate(R.layout.fragment_notifications, container, false);
-        swipeRefreshLayout = root.findViewById(R.id.notification_refresh);
+        SwipeRefreshLayout swipeRefreshLayout = root.findViewById(R.id.notification_refresh);
         ListView listView = root.findViewById(R.id.notifications_list);
         listView.setAdapter(notificationAdapter);
         listView.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -95,8 +65,9 @@ public class NotificationsFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getActivity(), NotificationActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(getActivity(), NotificationActivity.class)
+                        .putExtra("receiver_id", notificationsViewModel.getNotifications().getValue().getNotifications(position).getSenderId())
+                        .putExtra("id", notificationsViewModel.getNotifications().getValue().getNotifications(position).getId()));
             }
         });
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -105,10 +76,12 @@ public class NotificationsFragment extends Fragment {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        Message msg = new Message();
-                        msg.what = 100;
-                        msg.obj = "";
-                        mHandler.sendMessage(msg);
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        swipeRefreshLayout.setRefreshing(false);
                     }
                 }).start();
             }

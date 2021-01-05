@@ -1,9 +1,8 @@
 package com.example.demo.ui.courses;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,71 +12,47 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.demo.MyApplication;
 import com.example.demo.R;
 import com.example.demo.activity.CourseAddActivity;
 import com.example.demo.activity.CourseChatActivity;
+import com.example.demo.datagram.DatagramProto;
 
-import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 
 public class CoursesFragment extends Fragment {
 
     private CoursesViewModel coursesViewModel;
-    private CourseAdapter courseAdapter;
-    private MyHandler mHandler;
-    private SwipeRefreshLayout swipeRefreshLayout;
-    private Toolbar toolbar;
+    private CoursesAdapter coursesAdapter;
 
-    private static class MyHandler extends Handler {
-        private final WeakReference<CoursesFragment> mFragment;
-
-        public MyHandler(CoursesFragment fragment) {
-            mFragment = new WeakReference<CoursesFragment>(fragment);
-        }
-        @Override
-        public void handleMessage(Message msg) {
-            CoursesFragment fragment = mFragment.get();
-            if (fragment != null) {
-                switch (msg.what) {
-                    case 100:
-                        fragment.getCoursesViewModel().getCourses().getValue().add(new CourseProfile("移动互联网", "移动互联网2020"));
-                        fragment.getCourseAdapter().notifyDataSetChanged();
-                        fragment.getSwipeRefreshLayout().setRefreshing(false);
-                        break;
-                }
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        coursesViewModel = new ViewModelProvider(getActivity()).get(CoursesViewModel.class);
+        coursesViewModel.getCourses().observe(getActivity(), new Observer<DatagramProto.Courses>() {
+            @Override
+            public void onChanged(DatagramProto.Courses courses) {
+                coursesAdapter.notifyDataSetChanged();
             }
-        }
-    }
-
-    public CoursesViewModel getCoursesViewModel() {
-        return coursesViewModel;
-    }
-
-    public CourseAdapter getCourseAdapter() {
-        return courseAdapter;
-    }
-
-    public SwipeRefreshLayout getSwipeRefreshLayout() {
-        return swipeRefreshLayout;
+        });
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        coursesViewModel = new ViewModelProvider(this).get(CoursesViewModel.class);
-        courseAdapter = new CourseAdapter(getContext(), coursesViewModel.getCourses().getValue());
-        mHandler = new MyHandler(this);
+        coursesAdapter = new CoursesAdapter(getContext(), coursesViewModel.getCourses().getValue());
         View root = inflater.inflate(R.layout.fragment_courses, container, false);
-        swipeRefreshLayout = root.findViewById(R.id.course_refresh);
+        SwipeRefreshLayout swipeRefreshLayout = root.findViewById(R.id.course_refresh);
         ListView listView = root.findViewById(R.id.courses_list);
-        listView.setAdapter(courseAdapter);
+        listView.setAdapter(coursesAdapter);
         listView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -95,26 +70,28 @@ public class CoursesFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getActivity(), CourseChatActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(getActivity(), CourseChatActivity.class).putExtra("id", coursesViewModel.getCourses().getValue().getCourses(position).getId()));
             }
         });
-        //swipeRefreshLayout.setColorSchemeResources(new int[]{});
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        Message msg = new Message();
-                        msg.what = 100;
-                        msg.obj = "";
-                        mHandler.sendMessage(msg);
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        swipeRefreshLayout.setRefreshing(false);
                     }
                 }).start();
             }
         });
-        setHasOptionsMenu(true);
+        if (getActivity().getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE).getInt("identity", 0) == 1) {
+            setHasOptionsMenu(true);
+        }
         return root;
     }
 
@@ -132,7 +109,7 @@ public class CoursesFragment extends Fragment {
                     Method m = menu.getClass().getDeclaredMethod("setOptionalIconsVisible", Boolean.TYPE);
                     m.setAccessible(true);
                     m.invoke(menu, true);
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
             }
         }
@@ -141,13 +118,8 @@ public class CoursesFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.course_add:
-                Intent intent = new Intent(getActivity(), CourseAddActivity.class);
-                startActivity(intent);
-                break;
-            default:
-                break;
+        if (item.getItemId() == R.id.course_add) {
+            startActivity(new Intent(getActivity(), CourseAddActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }
