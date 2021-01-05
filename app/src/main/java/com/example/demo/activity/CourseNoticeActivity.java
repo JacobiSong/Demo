@@ -7,22 +7,19 @@ import android.view.View;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.demo.R;
-import com.example.demo.adapter.CourseNoticeAdapter;
-import com.example.demo.entity.Notification;
+import com.example.demo.ui.coursenotice.CourseNoticeAdapter;
+import com.example.demo.ui.coursenotice.CourseNoticeViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 public class CourseNoticeActivity extends AppCompatActivity {
 
-    private final List<Notification> noticeList = new ArrayList<>();
+    private CourseNoticeViewModel courseNoticeViewModel;
     private CourseNoticeAdapter adapter;
     private RecyclerView noticeRecyclerView;
 
@@ -31,11 +28,10 @@ public class CourseNoticeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_notice);
-        initNotice();
+        this.courseNoticeViewModel = new ViewModelProvider(this).get(CourseNoticeViewModel.class);
         this.noticeRecyclerView = findViewById(R.id.recyclerViewInMenbersView);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        this.noticeRecyclerView.setLayoutManager(linearLayoutManager);
-        this.adapter = new CourseNoticeAdapter(this.noticeList);
+        this.noticeRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        this.adapter = new CourseNoticeAdapter(this.courseNoticeViewModel.getNoticeList());
         this.noticeRecyclerView.setAdapter(this.adapter);
     }
 
@@ -51,17 +47,5 @@ public class CourseNoticeActivity extends AppCompatActivity {
 
     public void back(@NotNull View view) {
         this.finish();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void initNotice() {
-        this.noticeList.add(new Notification(
-                10001,
-                "10101010101",
-                "232342",
-                "上课",
-                "周末照常上课",
-                LocalDateTime.now()
-        ));
     }
 }

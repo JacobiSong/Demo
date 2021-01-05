@@ -6,19 +6,17 @@ import android.view.MenuItem;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.demo.R;
-import com.example.demo.adapter.MemberAdapter;
-import com.example.demo.entity.Student;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.example.demo.ui.coursemenber.MemberAdapter;
+import com.example.demo.ui.coursemenber.MemberViewModel;
 
 public class MembersActivity extends AppCompatActivity {
 
-    private List<Student> studentList;
+    private MemberViewModel memberViewModel;
     private MemberAdapter adapter;
     private RecyclerView memberRecyclerView;
 
@@ -26,8 +24,7 @@ public class MembersActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_members);
-
-        initStudents();
+        memberViewModel = new ViewModelProvider(this).get(MemberViewModel.class);
         initMembers();
     }
 
@@ -50,22 +47,7 @@ public class MembersActivity extends AppCompatActivity {
         memberRecyclerView = findViewById(R.id.recyclerViewInMenbersView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         memberRecyclerView.setLayoutManager(linearLayoutManager);
-        this.adapter = new MemberAdapter(this.studentList);
+        this.adapter = new MemberAdapter(this.memberViewModel.getStudentList());
         memberRecyclerView.setAdapter(this.adapter);
-    }
-
-    private void initStudents() {
-        this.studentList = new ArrayList<>();
-        this.studentList.add(new Student(
-                "123456234",
-                "小明",
-                "13999999999",
-                "xxx@gmail.com",
-                0,
-                "qwer1234",
-                "计算机科学与技术学院",
-                "软件工程",
-                11111
-        ));
     }
 }

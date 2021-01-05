@@ -28,7 +28,8 @@ import com.example.demo.activity.CourseChatActivity;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 
-public class CoursesFragment extends Fragment {
+public class
+CoursesFragment extends Fragment {
 
     private CoursesViewModel coursesViewModel;
     private CourseAdapter courseAdapter;
@@ -42,6 +43,7 @@ public class CoursesFragment extends Fragment {
         public MyHandler(CoursesFragment fragment) {
             mFragment = new WeakReference<CoursesFragment>(fragment);
         }
+
         @Override
         public void handleMessage(Message msg) {
             CoursesFragment fragment = mFragment.get();

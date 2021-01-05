@@ -6,27 +6,22 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.demo.R;
 import com.example.demo.entity.Course;
+import com.example.demo.ui.courseinfo.CourseInfoViewModel;
 
 public class CourseInformationActivity extends AppCompatActivity {
 
-    private Course course;
+    private CourseInfoViewModel courseInfoViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_infomation);
-
-        initInfo();
-        //设置显示内容
-        ((TextView) findViewById(R.id.textCourseName)).setText(this.course.getName());
-        ((TextView) findViewById(R.id.textTeacherName)).setText("XXXXXXX");
-        ((TextView) findViewById(R.id.textClassRoom)).setText(this.course.getClassroom());
-        ((TextView) findViewById(R.id.textCourseTime)).setText(this.course.getTime());
-        ((TextView) findViewById(R.id.textCourseRemark)).setText(this.course.getRemarks());
-
+        courseInfoViewModel = new ViewModelProvider(this).get(CourseInfoViewModel.class);
+        initView();
     }
 
     @Override
@@ -43,15 +38,12 @@ public class CourseInformationActivity extends AppCompatActivity {
         this.finish();
     }
 
-    private void initInfo() {
-        this.course = new Course(
-                "cs_10001",
-                "数据结构",
-                "正心716",
-                "[2-15周]周一12节、周三12节",
-                true,
-                "先导课程：C语言程序设计",
-                3
-        );
+    private void initView() {
+        Course course = this.courseInfoViewModel.getCourse();
+        ((TextView) findViewById(R.id.textCourseName)).setText(course.getName());
+        ((TextView) findViewById(R.id.textTeacherName)).setText("XXXXXXX");
+        ((TextView) findViewById(R.id.textClassRoom)).setText(course.getClassroom());
+        ((TextView) findViewById(R.id.textCourseTime)).setText(course.getTime());
+        ((TextView) findViewById(R.id.textCourseRemark)).setText(course.getRemarks());
     }
 }

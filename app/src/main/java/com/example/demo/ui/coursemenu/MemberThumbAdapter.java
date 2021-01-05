@@ -1,4 +1,4 @@
-package com.example.demo.adapter;
+package com.example.demo.ui.coursemenu;
 
 import android.content.Context;
 import android.view.View;

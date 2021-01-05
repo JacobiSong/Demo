@@ -1,4 +1,4 @@
-package com.example.demo.adapter;
+package com.example.demo.ui.coursechat;
 
 import android.view.LayoutInflater;
 import android.view.View;

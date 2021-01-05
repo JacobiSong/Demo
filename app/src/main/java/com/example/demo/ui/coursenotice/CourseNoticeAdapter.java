@@ -1,4 +1,4 @@
-package com.example.demo.adapter;
+package com.example.demo.ui.coursenotice;
 
 import android.os.Build;
 import android.view.LayoutInflater;

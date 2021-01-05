@@ -2,22 +2,19 @@ package com.example.demo.activity;
 
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.demo.R;
-import com.example.demo.adapter.CourseFileAdapter;
-import com.example.demo.entity.File;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.example.demo.ui.coursefile.CourseFileAdapter;
+import com.example.demo.ui.coursefile.CourseFileViewModel;
 
 public class CourseFileActivity extends AppCompatActivity {
 
-    private final List<File> fileList = new ArrayList<>();
+    private CourseFileViewModel courseFileViewModel;
     private CourseFileAdapter adapter;
     private RecyclerView fileRecyclerView;
 
@@ -25,11 +22,11 @@ public class CourseFileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_file);
-        initFile();
+
+        this.courseFileViewModel = new ViewModelProvider(this).get(CourseFileViewModel.class);
         fileRecyclerView = findViewById(R.id.recyclerViewInFileView);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        fileRecyclerView.setLayoutManager(linearLayoutManager);
-        this.adapter = new CourseFileAdapter(this.fileList);
+        fileRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        this.adapter = new CourseFileAdapter(this.courseFileViewModel.getFiles());
         fileRecyclerView.setAdapter(this.adapter);
     }
 
@@ -43,20 +40,4 @@ public class CourseFileActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void back(View view) {
-        this.finish();
-    }
-
-    private void initFile() {
-        this.fileList.add(new File(
-                "作业1.pdf",
-                "张老师",
-                78.6
-        ));
-        this.fileList.add(new File(
-                "单元测评2.docx",
-                "张老师",
-                107.3
-        ));
-    }
 }

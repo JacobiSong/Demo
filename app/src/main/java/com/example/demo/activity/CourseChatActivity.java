@@ -10,20 +10,21 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.demo.R;
-import com.example.demo.adapter.MessageAdapter;
 import com.example.demo.entity.Message;
+import com.example.demo.ui.coursechat.CourseChatViewModel;
+import com.example.demo.ui.coursechat.MessageAdapter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 public class CourseChatActivity extends AppCompatActivity {
 
-    private final List<Message> messageList = new ArrayList<>();
+    private CourseChatViewModel courseChatViewModel;
     private MessageAdapter adapter = null;
     private RecyclerView msgRecyclerView;
 
@@ -33,11 +34,11 @@ public class CourseChatActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_chat);
-        initMsg();
+
+        courseChatViewModel = new ViewModelProvider(this).get(CourseChatViewModel.class);
         msgRecyclerView = findViewById(R.id.recyclerViewInCourseView);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        msgRecyclerView.setLayoutManager(linearLayoutManager);
-        this.adapter = new MessageAdapter(this.messageList);
+        msgRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        this.adapter = new MessageAdapter(this.courseChatViewModel.getMessageList());
         msgRecyclerView.setAdapter(this.adapter);
     }
 
@@ -81,33 +82,11 @@ public class CourseChatActivity extends AppCompatActivity {
                     content,
                     LocalDateTime.now()
             );
-            this.messageList.add(sendMessage);
-            adapter.notifyItemInserted(this.messageList.size() - 1); // 刷新
-            msgRecyclerView.scrollToPosition(this.messageList.size() - 1); // 将ListView定位到最后一行
+            List<Message> messageList = this.courseChatViewModel.getMessageList();
+            messageList.add(sendMessage);
+            adapter.notifyItemInserted(messageList.size() - 1); // 刷新
+            msgRecyclerView.scrollToPosition(messageList.size() - 1); // 将ListView定位到最后一行
             textView.setText(""); // 清空输入框
         }
-    }
-
-    //点击返回按钮，关闭当前Activity
-    public void back(View view) {
-        this.finish();
-    }
-
-
-    private void initMsg() {
-        this.messageList.add(new Message(
-                10000001,
-                "1188888888",
-                "123456",
-                "你好",
-                LocalDateTime.now()
-        ));
-        this.messageList.add(new Message(
-                10000002,
-                "1100000000",
-                "123456",
-                "你好",
-                LocalDateTime.now()
-        ));
     }
 }
