@@ -21,52 +21,54 @@ import io.reactivex.functions.Consumer;
 
 public class NotificationsViewModel extends ViewModel {
 
-    private final MutableLiveData<DatagramProto.Notifications> notifications;
-    List<DatagramProto.Notification> list = new ArrayList<>();
+    private final MutableLiveData<List<DatagramProto.Notification>> notifications;
     QueryObservable coursesObservable;
     long time = 0;
     Map<QueryObservable, Long> observables = new HashMap<>();
     public NotificationsViewModel() {
         notifications = new MutableLiveData<>();
+        notifications.setValue(new ArrayList<>());
         coursesObservable = MyApplication.getDatabase().createQuery("course", "");
         coursesObservable.subscribe(new Consumer<SqlBrite.Query>() {
             @Override
             public void accept(SqlBrite.Query query) throws Exception {
-                Cursor cursor = MyApplication.getDatabase().query("select id, last_modified from course where last_modified > ? order by last_modified desc", time);
-                if (cursor.moveToFirst()) {
-                    time = cursor.getLong(1);
-                    do {
-                        String courseId = cursor.getString(0);
-                        QueryObservable queryObservable = MyApplication.getDatabase().createQuery(courseId + "_n", "");
-                        queryObservable.subscribe(new Consumer<SqlBrite.Query>() {
-                            @Override
-                            public void accept(SqlBrite.Query query) throws Exception {
-                                Cursor cursor = MyApplication.getDatabase().query("select id, title, time from " + courseId + "_n where time > ? order by time desc", time);
-                                if (cursor.moveToFirst()) {
-                                    observables.put(queryObservable, cursor.getLong(2));
-                                }
-                                do {
-                                    list.add(DatagramProto.Notification.newBuilder().setId(cursor.getLong(0)).setReceiverId(courseId)
-                                            .setTitle(cursor.getString(1)).setTime(cursor.getLong(2)).build());
-                                } while (cursor.moveToNext());
-                                list.sort(new Comparator<DatagramProto.Notification>() {
-                                    @Override
-                                    public int compare(DatagramProto.Notification o1, DatagramProto.Notification o2) {
-                                        long time1 = o1.getTime();
-                                        long time2 = o2.getTime();
-                                        if (o1 == o2) return 0;
-                                        return time1 < time2 ? 1 : -1;
-                                    }
-                                });
-                                notifications.setValue(DatagramProto.Notifications.newBuilder().addAllNotifications(list).build());
+                List<DatagramProto.Notification> list = notifications.getValue();
+                Cursor cursor = MyApplication.getDatabase().query("select id, last_modified from course where last_modified > ? order by last_modified", time);
+                while (cursor.moveToNext()) {
+                    String courseId = cursor.getString(0);
+                    QueryObservable queryObservable = MyApplication.getDatabase().createQuery(courseId + "_n", "");
+                    observables.put(queryObservable, cursor.getLong(1));
+                    queryObservable.subscribe(new Consumer<SqlBrite.Query>() {
+                        @Override
+                        public void accept(SqlBrite.Query query) throws Exception {
+                            Cursor cursor = MyApplication.getDatabase().query("select id, title, time from " + courseId + "_n where time > ? order by time", observables.get(queryObservable));
+                            while (cursor.moveToNext()) {
+                                list.add(DatagramProto.Notification.newBuilder().setId(cursor.getLong(0)).setReceiverId(courseId)
+                                        .setTitle(cursor.getString(1)).setTime(cursor.getLong(2)).build());
                             }
-                        });
-                    } while (cursor.moveToNext());
+                            if (cursor.moveToLast()) {
+                                observables.put(queryObservable, cursor.getLong(2));
+                            }
+                            list.sort(new Comparator<DatagramProto.Notification>() {
+                                @Override
+                                public int compare(DatagramProto.Notification o1, DatagramProto.Notification o2) {
+                                    long time1 = o1.getTime();
+                                    long time2 = o2.getTime();
+                                    if (o1 == o2) return 0;
+                                    return time1 < time2 ? 1 : -1;
+                                }
+                            });
+                            notifications.postValue(list);
+                        }
+                    });
+                }
+                if (cursor.moveToLast()) {
+                    time = cursor.getLong(1);
                 }
             }
         });
     }
-    public LiveData<DatagramProto.Notifications> getNotifications() {
+    public LiveData<List<DatagramProto.Notification>> getNotifications() {
         return notifications;
     }
 }

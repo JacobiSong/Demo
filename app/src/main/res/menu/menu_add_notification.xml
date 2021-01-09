@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/course_add"
-        android:title="@string/course_add"
+        android:id="@+id/notification_add"
+        android:title="发布通知"
         app:showAsAction="always" />
 </menu>

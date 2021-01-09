@@ -5,7 +5,7 @@
     android:id="@+id/mailTypeSecletionRadioGroup"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.RegisterActivity">
+    tools:context=".ui.RegisterActivity">
 
     <EditText
         android:id="@+id/editTextTexEmailAddressRegister"
@@ -30,8 +30,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        app:layout_constraintStart_toStartOf="@+id/editTextTexEmailAddressRegister"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTexEmailAddressRegister">
+        app:layout_constraintStart_toStartOf="@id/editTextTexEmailAddressRegister"
+        app:layout_constraintTop_toBottomOf="@id/editTextTexEmailAddressRegister">
 
         <RadioButton
             android:id="@+id/radioButtonTeacherMail"
@@ -57,10 +57,10 @@
         android:ems="10"
         android:hint="@string/hint_password"
         android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="@+id/editTextTexEmailAddressRegister"
+        app:layout_constraintEnd_toEndOf="@id/editTextTexEmailAddressRegister"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/editTextTexEmailAddressRegister"
-        app:layout_constraintTop_toBottomOf="@+id/verificationCodeEditTextNumber" />
+        app:layout_constraintStart_toStartOf="@id/editTextTexEmailAddressRegister"
+        app:layout_constraintTop_toBottomOf="@id/verificationCodeEditTextNumber" />
 
     <EditText
         android:id="@+id/editTextTextPasswordRegisterRepeat"
@@ -70,9 +70,9 @@
         android:ems="10"
         android:hint="@string/hint_repeat_password"
         android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="@+id/editTextTextPasswordRegister"
-        app:layout_constraintStart_toStartOf="@+id/editTextTextPasswordRegister"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPasswordRegister" />
+        app:layout_constraintEnd_toEndOf="@id/editTextTextPasswordRegister"
+        app:layout_constraintStart_toStartOf="@id/editTextTextPasswordRegister"
+        app:layout_constraintTop_toBottomOf="@id/editTextTextPasswordRegister" />
 
     <Button
         android:id="@+id/confirmButton"
@@ -80,9 +80,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:text="@string/button_text_confirm"
+        android:onClick="register"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPasswordRegisterRepeat" />
+        app:layout_constraintTop_toBottomOf="@id/editTextTextPasswordRegisterRepeat" />
 
     <EditText
         android:id="@+id/verificationCodeEditTextNumber"
@@ -92,15 +93,15 @@
         android:ems="10"
         android:hint="@string/hint_verification_code"
         android:inputType="number"
-        app:layout_constraintStart_toStartOf="@+id/editTextTexEmailAddressRegister"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+        app:layout_constraintStart_toStartOf="@id/editTextTexEmailAddressRegister"
+        app:layout_constraintTop_toBottomOf="@id/radioGroup" />
 
     <Button
         android:id="@+id/getVerificationCodeButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/button_text_get_verification_code"
-        app:layout_constraintBaseline_toBaselineOf="@+id/verificationCodeEditTextNumber"
-        app:layout_constraintEnd_toEndOf="@+id/editTextTexEmailAddressRegister" />
+        app:layout_constraintBaseline_toBaselineOf="@id/verificationCodeEditTextNumber"
+        app:layout_constraintEnd_toEndOf="@id/editTextTexEmailAddressRegister" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

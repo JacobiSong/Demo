@@ -1,4 +1,4 @@
-package com.example.demo.adapter;
+package com.example.demo.ui.courses.chat.menu;
 
 import android.content.Context;
 import android.view.View;
@@ -7,41 +7,43 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.lifecycle.LiveData;
+
 import com.example.demo.R;
-import com.example.demo.entity.Student;
+import com.example.demo.datagram.DatagramProto;
 
 import java.util.List;
 
 public class MemberThumbAdapter extends BaseAdapter {
 
     private final Context context;
-    private final List<Student> studentList;
+    private final LiveData<List<DatagramProto.User>> data;
 
-    public MemberThumbAdapter(Context context, List<Student> studentList) {
+    public MemberThumbAdapter(Context context, LiveData<List<DatagramProto.User>> data) {
         this.context = context;
-        this.studentList = studentList;
+        this.data = data;
     }
 
     @Override
     public int getCount() {
-        return this.studentList.size();
+        return data.getValue().size();
     }
 
     @Override
     public Object getItem(int position) {
-        return studentList.get(position);
+        return data.getValue().get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return position;
+        return 0;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
         //后续需要修改
-        Student student = this.studentList.get(position);
+        DatagramProto.User user = data.getValue().get(position);
 
         UserThumbHolder holder;
         if (convertView == null) {
@@ -53,7 +55,7 @@ public class MemberThumbAdapter extends BaseAdapter {
         }
 
         holder.iconImageView.setImageResource(R.drawable.ic_user);
-        holder.usernameTextView.setText(student.getName());
+        holder.usernameTextView.setText(user.getName());
 
         return convertView;
     }

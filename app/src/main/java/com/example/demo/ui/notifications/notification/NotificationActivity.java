@@ -1,4 +1,4 @@
-package com.example.demo.activity;
+package com.example.demo.ui.notifications.notification;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -8,17 +8,18 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.example.demo.R;
-import com.example.demo.ui.courses.add.CourseAddFragment;
+import com.example.demo.ui.notifications.notification.NotificationFragment;
 
-public class CourseAddActivity extends AppCompatActivity {
+public class NotificationActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.course_add_activity);
+        setTitle("通知");
+        setContentView(R.layout.notification_activity);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, CourseAddFragment.newInstance())
+                    .replace(R.id.notification_container, NotificationFragment.newInstance())
                     .commitNow();
         }
         ActionBar actionBar = getSupportActionBar();
@@ -29,12 +30,8 @@ public class CourseAddActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                break;
-            default:
-                break;
+        if (item.getItemId() == android.R.id.home) {
+            finish();
         }
         return true;
     }

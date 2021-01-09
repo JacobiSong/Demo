@@ -1,4 +1,4 @@
-package com.example.demo.activity;
+package com.example.demo.ui.mine.profile;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -8,17 +8,17 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.example.demo.R;
-import com.example.demo.ui.notifications.notification.NotificationFragment;
+import com.example.demo.ui.mine.profile.UserProfileFragment;
 
-public class NotificationActivity extends AppCompatActivity {
+public class UserProfileActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.notification_activity);
+        setContentView(R.layout.user_profile_activity);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.notification_container, NotificationFragment.newInstance())
+                    .replace(R.id.user_profile_container, UserProfileFragment.newInstance())
                     .commitNow();
         }
         ActionBar actionBar = getSupportActionBar();
@@ -29,8 +29,12 @@ public class NotificationActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+            default:
+                break;
         }
         return true;
     }

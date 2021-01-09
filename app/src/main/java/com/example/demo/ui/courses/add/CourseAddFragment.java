@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,10 +22,11 @@ import android.widget.ListView;
 import com.example.demo.MyApplication;
 import com.example.demo.R;
 import com.example.demo.datagram.DatagramProto;
-import com.example.demo.netty.ClientHandler;
+import com.example.demo.service.ClientHandler;
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import io.netty.channel.Channel;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CourseAddFragment extends Fragment {
 
@@ -33,9 +35,11 @@ public class CourseAddFragment extends Fragment {
         public void onReceive(Context context, Intent intent) {
             swipeRefreshLayout.setRefreshing(false);
             try {
-                courses = DatagramProto.Courses.parseFrom(intent.getByteArrayExtra("courses"));
+                DatagramProto.Courses courses = DatagramProto.Courses.parseFrom(intent.getByteArrayExtra("courses"));
+                list.clear();
+                list.addAll(courses.getCoursesList());
             } catch (InvalidProtocolBufferException ignored) {
-                courses = DatagramProto.Courses.newBuilder().build();
+                list.clear();
             }
             courseAddAdapter.notifyDataSetChanged();
         }
@@ -43,7 +47,7 @@ public class CourseAddFragment extends Fragment {
 
     private final MyBroadcastReceiver broadcastReceiver = new MyBroadcastReceiver();
     private CourseAddAdapter courseAddAdapter;
-    private DatagramProto.Courses courses = DatagramProto.Courses.newBuilder().build();
+    private final List<DatagramProto.Course> list = new ArrayList<>();
     private SwipeRefreshLayout swipeRefreshLayout;
 
     public static CourseAddFragment newInstance() {
@@ -54,7 +58,7 @@ public class CourseAddFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        courseAddAdapter = new CourseAddAdapter(getContext(), courses);
+        courseAddAdapter = new CourseAddAdapter(getContext(), list);
         View root = inflater.inflate(R.layout.course_add_fragment, container, false);
         swipeRefreshLayout = root.findViewById(R.id.course_add_refresh);
         ListView listView = root.findViewById(R.id.course_add_list);
@@ -75,7 +79,7 @@ public class CourseAddFragment extends Fragment {
                 MyApplication.getServer().getChannel().writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
                         DatagramProto.DatagramVersion1.newBuilder().setToken(ClientHandler.getToken()).setOk(101)
                                 .setType(DatagramProto.DatagramVersion1.Type.COURSE).setCourse(
-                                DatagramProto.Course.newBuilder().setId(courses.getCourses(position).getId()).build()
+                                DatagramProto.Course.newBuilder().setId(list.get(position).getId()).build()
                         )
                                 .setSubtype(DatagramProto.DatagramVersion1.Subtype.REQUEST).build().toByteString()
                 ).build());

@@ -5,11 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#60DADADA"
-    tools:context=".activity.CourseInformationActivity">
+    tools:context=".ui.courses.chat.menu.CourseInfoActivity">
 
 
     <TextView
-        android:id="@+id/text_email"
+        android:id="@+id/text_phone"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -72,13 +72,13 @@
         android:paddingLeft="24dp"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
-        android:text="专业"
+        android:text="身份"
         android:textSize="22dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_title_gender" />
 
     <TextView
-        android:id="@+id/text_phone"
+        android:id="@+id/text_identity"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -93,7 +93,7 @@
         app:layout_constraintStart_toEndOf="@+id/text_title_phone" />
 
     <TextView
-        android:id="@+id/text_department"
+        android:id="@+id/text_email"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"

@@ -1,20 +1,15 @@
 package com.example.demo.ui.mine;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.TypedArray;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.demo.R;
-import com.example.demo.activity.SettingsActivity;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 

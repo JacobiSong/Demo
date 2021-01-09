@@ -1,4 +1,4 @@
-package com.example.demo.activity;
+package com.example.demo.ui.courses.chat;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -6,10 +6,13 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.demo.MyApplication;
 import com.example.demo.R;
+import com.example.demo.datagram.DatagramProto;
+import com.example.demo.service.ClientHandler;
 import com.squareup.sqlbrite3.QueryObservable;
 import com.squareup.sqlbrite3.SqlBrite;
 
@@ -20,6 +23,7 @@ public class UserInfoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle("群成员信息");
         setContentView(R.layout.activity_user_info);
         Intent intent = getIntent();
         String id = intent.getStringExtra("id");
@@ -35,7 +39,9 @@ public class UserInfoActivity extends AppCompatActivity {
                     int gender = cursor.getInt(3);
                     ((TextView) findViewById(R.id.text_gender)).setText(gender == 0 ? "保密" : gender == 1 ? "女" : "男");
                     int type = cursor.getInt(4);
+                    ((TextView) findViewById(R.id.text_identity)).setText(type == 0 ? "学生" : "教师");
                     if (type == 0) {
+
                         identityObservable = MyApplication.getDatabase().createQuery("student", "select department, major, class_no from student where id = ?", id);
                         identityObservable.subscribe(new Consumer<SqlBrite.Query>() {
                             @Override
@@ -61,6 +67,16 @@ public class UserInfoActivity extends AppCompatActivity {
                 }
             }
         });
+        MyApplication.getServer().getChannel().writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
+                DatagramProto.DatagramVersion1.newBuilder().setType(DatagramProto.DatagramVersion1.Type.USER)
+                        .setSubtype(DatagramProto.DatagramVersion1.Subtype.REQUEST).setToken(ClientHandler.getToken())
+                        .setUser(DatagramProto.User.newBuilder().setId(id).setLastModified(0).build())
+                        .setOk(100).build().toByteString()
+        ).build());
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     @Override

@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.CourseMenuActivity">
+    tools:context=".ui.courses.chat.menu.CourseMenuActivity">
 
-    <com.example.demo.tool.HorizontalListView
+    <com.example.demo.view.HorizontalListView
         android:id="@+id/horizontalListViewForTeacherMember"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
 
-    <com.example.demo.tool.HorizontalListView
+    <com.example.demo.view.HorizontalListView
         android:id="@+id/horizontalListViewForStudentMember"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -34,7 +34,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:background="#00FF0000"
-        android:onClick="toCourseFileView"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -91,7 +90,7 @@
         android:id="@+id/imageButton4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="toMembersView"
+        android:onClick="toTeachers"
         app:layout_constraintBottom_toTopOf="@+id/horizontalListViewForTeacherMember"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_right_arrow" />
@@ -100,7 +99,7 @@
         android:id="@+id/imageButton5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="toMembersView"
+        android:onClick="toStudents"
         app:layout_constraintBottom_toTopOf="@+id/horizontalListViewForStudentMember"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_right_arrow" />

@@ -1,5 +1,7 @@
-package com.example.demo.adapter;
+package com.example.demo.ui.courses.chat;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,30 +9,34 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.demo.MyApplication;
 import com.example.demo.R;
-import com.example.demo.entity.Message;
+import com.example.demo.datagram.DatagramProto;
 
 import java.util.List;
 
 public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private int TYPE_RECEIVED = 0;
+    private final int TYPE_RECEIVED = 0;
     private int TYPE_SEND = 1;
+    private Context context;
 
-    private List<Message> messageList; //所有消息
+    private final LiveData<List<DatagramProto.Message>> data; //所有消息
 
-    public MessageAdapter(List<Message> messageList) {
+    public MessageAdapter(Context context, LiveData<List<DatagramProto.Message>> data) {
         super();
-        this.messageList = messageList;
+        this.data = data;
+        this.context = context;
     }
 
     /**
      * 临时用于判断消息是发送还是接受，用于生成左右两种不同的消息UI
      */
-    private boolean isSend(Message message) {
-        return message.getSenderId().equals("1100000000");
+    private boolean isSend(DatagramProto.Message message) {
+        return message.getSenderId().equals(MyApplication.getUsername());
     }
 
     //两个Holder风别用于缓存item_msg_left.xml和item_msg_right.xml布局中的控件
@@ -42,8 +48,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         public LeftViewHolder(@NonNull View view) {
             super(view);
-            this.imageView = view.findViewById(R.id.imageLeft);
-            this.leftMsg = view.findViewById(R.id.textLeftMsg);
+            imageView = view.findViewById(R.id.imageLeft);
+            leftMsg = view.findViewById(R.id.textLeftMsg);
             //this.leftName = view.findViewById(R.id.textLeftName);
         }
     }
@@ -62,8 +68,8 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemViewType(int position) {
-        Message message = this.messageList.get(position);
-        if (message.getSenderId().equals("1100000000")) {
+        DatagramProto.Message message = data.getValue().get(position);
+        if (message.getSenderId().equals(MyApplication.getUsername())) {
             return this.TYPE_SEND;
         } else {
             return this.TYPE_RECEIVED;
@@ -86,9 +92,15 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        Message message = messageList.get(position);
+        DatagramProto.Message message = data.getValue().get(position);
         if (holder.getClass().equals(LeftViewHolder.class)) {
             ((LeftViewHolder) holder).leftMsg.setText(message.getContent());
+            ((LeftViewHolder) holder).imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    context.startActivity(new Intent(context, UserInfoActivity.class).putExtra("id", data.getValue().get(position).getId()));
+                }
+            });
             //((LeftViewHolder) holder).leftName.setText(message.getSenderId());
         } else if (holder.getClass().equals(RightViewHolder.class)) {
             ((RightViewHolder) holder).rightMsg.setText(message.getContent());
@@ -99,6 +111,6 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemCount() {
-        return this.messageList.size();
+        return data.getValue().size();
     }
 }

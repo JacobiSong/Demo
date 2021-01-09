@@ -38,10 +38,9 @@ public class DatabaseHelper {
             "course_id varchar(10) not null, " +
             "constraint un1 unique(user_id, course_id))";
     private static final String CREATE_T_PUSH = "create table t_push (" +
-            "id bigint not null primary key autoincrement, " +
+            "id integer not null primary key autoincrement, " +
             "type int not null, " +
             "id1 varchar(10) not null, " +
-            "id2 int not null, " +
             "time bigint not null)";
 
     private final SupportSQLiteOpenHelper supportSQLiteOpenHelper;

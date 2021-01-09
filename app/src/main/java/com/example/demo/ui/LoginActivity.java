@@ -1,4 +1,4 @@
-package com.example.demo.activity;
+package com.example.demo.ui;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -6,13 +6,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.demo.MyApplication;
@@ -55,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
         editor.putString("password", password);
         editor.putInt("identity", identity);
         editor.apply();
-        MyApplication.getServer().login(userSp.getString("ip", "10.0.2.2"), userSp.getInt("port", 8888),
+        MyApplication.getServer().login(userSp.getString("ip", "140.143.6.64"), userSp.getInt("port", 8888),
                 username, password, identity, userSp.getLong("db_version", 0));
     }
 
@@ -67,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
         editor.apply();
         MyApplication.setUsername(username);
         MyApplication.setDatabase(new SqlBrite.Builder().build().wrapDatabaseHelper(new DatabaseHelper(username, 1).getSupportSQLiteOpenHelper(), Schedulers.io()));
-        startActivity(new Intent(this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+        startActivity(new Intent(this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
     public void jumpToRegister(View view) {

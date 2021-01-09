@@ -1,4 +1,4 @@
-package com.example.demo.activity;
+package com.example.demo.ui;
 
 import android.annotation.SuppressLint;
 
@@ -88,16 +88,5 @@ public class LaunchActivity extends AppCompatActivity {
         super.onPostCreate(savedInstanceState);
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, 100);
-        String username = getSharedPreferences("last_login", MODE_PRIVATE).getString("username", "");
-        if (!username.isEmpty()) {
-            MyApplication.setUsername(username);
-            MyApplication.setDatabase(new SqlBrite.Builder().build().wrapDatabaseHelper(new DatabaseHelper(username, 1).getSupportSQLiteOpenHelper(), Schedulers.io()));
-            SharedPreferences userSp = getSharedPreferences("user_" + username, MODE_PRIVATE);
-            MyApplication.getServer().login(userSp.getString("ip", "140.143.6.64"), userSp.getInt("port", 8888), username,
-                    userSp.getString("password", ""), userSp.getInt("identity", 0), userSp.getLong("db_version", 0));
-            startActivity(new Intent(this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-        } else {
-            startActivity(new Intent(this, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-        }
     }
 }

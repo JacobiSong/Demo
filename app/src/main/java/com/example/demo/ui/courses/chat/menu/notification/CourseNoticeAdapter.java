@@ -1,5 +1,7 @@
-package com.example.demo.adapter;
+package com.example.demo.ui.courses.chat.menu.notification;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,21 +10,25 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.demo.R;
-import com.example.demo.entity.TimeFormat;
-import com.example.demo.entity.Notification;
+import com.example.demo.datagram.DatagramProto;
+import com.example.demo.ui.notifications.notification.NotificationActivity;
+import com.example.demo.utils.TimeConverter;
 
+import java.util.Collections;
 import java.util.List;
 
 public class CourseNoticeAdapter extends RecyclerView.Adapter<CourseNoticeAdapter.NoticeHolder> {
 
-    private final List<Notification> noticeList;
+    private final LiveData<List<DatagramProto.Notification>> data;
+    private final Context context;
 
-    public CourseNoticeAdapter(List<Notification> noticeList) {
-        super();
-        this.noticeList = noticeList;
+    public CourseNoticeAdapter(Context context, LiveData<List<DatagramProto.Notification>> data) {
+        this.context = context;
+        this.data = data;
     }
 
     class NoticeHolder extends RecyclerView.ViewHolder {
@@ -50,14 +56,22 @@ public class CourseNoticeAdapter extends RecyclerView.Adapter<CourseNoticeAdapte
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onBindViewHolder(@NonNull NoticeHolder holder, int position) {
-        Notification notice = this.noticeList.get(position);
+        DatagramProto.Notification notice = data.getValue().get(data.getValue().size() - 1 - position);
         holder.contentTextView.setText(notice.getContent());
         holder.authorTextView.setText(notice.getSenderId());
-        holder.dateTextView.setText(TimeFormat.formatDateTime(notice.getTime()));
+        holder.dateTextView.setText(TimeConverter.long2LocalDateTime(notice.getTime()).toString());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.startActivity(new Intent(context, NotificationActivity.class)
+                        .putExtra("id", data.getValue().get(position).getId())
+                        .putExtra("receiver_id", data.getValue().get(position).getReceiverId()));
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return this.noticeList.size();
+        return this.data.getValue().size();
     }
 }

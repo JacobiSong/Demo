@@ -23,11 +23,12 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.demo.MyApplication;
 import com.example.demo.R;
-import com.example.demo.activity.CourseAddActivity;
-import com.example.demo.activity.CourseChatActivity;
+import com.example.demo.ui.courses.add.CourseAddActivity;
+import com.example.demo.ui.courses.chat.CourseChatActivity;
 import com.example.demo.datagram.DatagramProto;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 public class CoursesFragment extends Fragment {
 
@@ -38,9 +39,10 @@ public class CoursesFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         coursesViewModel = new ViewModelProvider(getActivity()).get(CoursesViewModel.class);
-        coursesViewModel.getCourses().observe(getActivity(), new Observer<DatagramProto.Courses>() {
+        coursesAdapter = new CoursesAdapter(getContext(), coursesViewModel.getCourses());
+        coursesViewModel.getCourses().observe(getActivity(), new Observer<List<DatagramProto.Course>>() {
             @Override
-            public void onChanged(DatagramProto.Courses courses) {
+            public void onChanged(List<DatagramProto.Course> courses) {
                 coursesAdapter.notifyDataSetChanged();
             }
         });
@@ -48,17 +50,16 @@ public class CoursesFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        coursesAdapter = new CoursesAdapter(getContext(), coursesViewModel.getCourses().getValue());
         View root = inflater.inflate(R.layout.fragment_courses, container, false);
         SwipeRefreshLayout swipeRefreshLayout = root.findViewById(R.id.course_refresh);
         ListView listView = root.findViewById(R.id.courses_list);
         listView.setAdapter(coursesAdapter);
+        coursesAdapter.notifyDataSetChanged();
         listView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
 
             }
-
             @Override
             public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 if (firstVisibleItem == 0)
@@ -70,23 +71,16 @@ public class CoursesFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startActivity(new Intent(getActivity(), CourseChatActivity.class).putExtra("id", coursesViewModel.getCourses().getValue().getCourses(position).getId()));
+                startActivity(new Intent(getActivity(), CourseChatActivity.class)
+                        .putExtra("id", coursesViewModel.getCourses().getValue().get(position).getId())
+                        .putExtra("name", coursesViewModel.getCourses().getValue().get(position).getName()));
             }
         });
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                }).start();
+                coursesAdapter.notifyDataSetChanged();
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
         if (getActivity().getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE).getInt("identity", 0) == 1) {
@@ -103,14 +97,13 @@ public class CoursesFragment extends Fragment {
 
     @Override
     public void onPrepareOptionsMenu(@NonNull Menu menu) {
-        if (menu != null) {
-            if (menu.getClass() == MenuBuilder.class) {
-                try {
-                    Method m = menu.getClass().getDeclaredMethod("setOptionalIconsVisible", Boolean.TYPE);
-                    m.setAccessible(true);
-                    m.invoke(menu, true);
-                } catch (Exception ignored) {
-                }
+        if (menu.getClass() == MenuBuilder.class) {
+            try {
+                Method m = menu.getClass().getDeclaredMethod("setOptionalIconsVisible", Boolean.TYPE);
+                m.setAccessible(true);
+                m.invoke(menu, true);
+            } catch (Exception ignored) {
+
             }
         }
         super.onPrepareOptionsMenu(menu);

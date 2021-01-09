@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
 import com.example.demo.R;
 import com.example.demo.datagram.DatagramProto;
 
@@ -16,14 +19,14 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CoursesAdapter extends BaseAdapter {
     private final Context context;
-    private final DatagramProto.Courses data;
-    public CoursesAdapter(Context context, DatagramProto.Courses data) {
+    private final LiveData<List<DatagramProto.Course>> data;
+    public CoursesAdapter(Context context, LiveData<List<DatagramProto.Course>> data) {
         this.context = context;
         this.data = data;
     }
     @Override
     public int getCount() {
-        return data.getCoursesCount();
+        return data.getValue().size();
     }
 
     @Override
@@ -44,7 +47,7 @@ public class CoursesAdapter extends BaseAdapter {
         final TextView courseName = view.findViewById(R.id.course_name);
         final TextView courseMessage = view.findViewById(R.id.course_message);
         circleImageView.setImageResource(R.drawable.school_60);
-        courseName.setText(data.getCourses(position).getName());
+        courseName.setText(data.getValue().get(position).getName());
         return view;
     }
 }

@@ -4,4 +4,4 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/user_profile_container"
-    tools:context=".activity.UserProfileActivity" />
+    tools:context=".ui.mine.profile.UserProfileActivity" />

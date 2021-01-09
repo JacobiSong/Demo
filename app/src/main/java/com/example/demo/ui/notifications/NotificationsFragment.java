@@ -2,8 +2,6 @@ package com.example.demo.ui.notifications;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +17,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.demo.R;
-import com.example.demo.activity.NotificationActivity;
+import com.example.demo.ui.notifications.notification.NotificationActivity;
 import com.example.demo.datagram.DatagramProto;
 
-import java.lang.ref.WeakReference;
+import java.util.List;
 
 public class NotificationsFragment extends Fragment {
 
@@ -33,9 +31,10 @@ public class NotificationsFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         notificationsViewModel = new ViewModelProvider(getActivity()).get(NotificationsViewModel.class);
-        notificationsViewModel.getNotifications().observe(getActivity(), new Observer<DatagramProto.Notifications>() {
+        notificationAdapter = new NotificationAdapter(getContext(), notificationsViewModel.getNotifications());
+        notificationsViewModel.getNotifications().observe(getActivity(), new Observer<List<DatagramProto.Notification>>() {
             @Override
-            public void onChanged(DatagramProto.Notifications notifications) {
+            public void onChanged(List<DatagramProto.Notification> notifications) {
                 notificationAdapter.notifyDataSetChanged();
             }
         });
@@ -43,7 +42,6 @@ public class NotificationsFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        notificationAdapter = new NotificationAdapter(getContext(), notificationsViewModel.getNotifications().getValue());
         View root = inflater.inflate(R.layout.fragment_notifications, container, false);
         SwipeRefreshLayout swipeRefreshLayout = root.findViewById(R.id.notification_refresh);
         ListView listView = root.findViewById(R.id.notifications_list);
@@ -66,24 +64,15 @@ public class NotificationsFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 startActivity(new Intent(getActivity(), NotificationActivity.class)
-                        .putExtra("receiver_id", notificationsViewModel.getNotifications().getValue().getNotifications(position).getSenderId())
-                        .putExtra("id", notificationsViewModel.getNotifications().getValue().getNotifications(position).getId()));
+                        .putExtra("receiver_id", notificationsViewModel.getNotifications().getValue().get(position).getSenderId())
+                        .putExtra("id", notificationsViewModel.getNotifications().getValue().get(position).getId()));
             }
         });
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                }).start();
+                notificationAdapter.notifyDataSetChanged();
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
         return root;

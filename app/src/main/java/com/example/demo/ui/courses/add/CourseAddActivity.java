@@ -1,4 +1,4 @@
-package com.example.demo.activity;
+package com.example.demo.ui.courses.add;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -8,17 +8,17 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.example.demo.R;
-import com.example.demo.ui.mine.profile.UserProfileFragment;
+import com.example.demo.ui.courses.add.CourseAddFragment;
 
-public class UserProfileActivity extends AppCompatActivity {
+public class CourseAddActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.user_profile_activity);
+        setContentView(R.layout.course_add_activity);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.user_profile_container, UserProfileFragment.newInstance())
+                    .replace(R.id.container, CourseAddFragment.newInstance())
                     .commitNow();
         }
         ActionBar actionBar = getSupportActionBar();
@@ -29,12 +29,8 @@ public class UserProfileActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                break;
-            default:
-                break;
+        if (item.getItemId() == android.R.id.home) {
+            finish();
         }
         return true;
     }

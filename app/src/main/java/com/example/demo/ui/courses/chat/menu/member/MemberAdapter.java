@@ -1,5 +1,7 @@
-package com.example.demo.adapter;
+package com.example.demo.ui.courses.chat.menu.member;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,18 +9,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.demo.R;
+import com.example.demo.datagram.DatagramProto;
+import com.example.demo.ui.courses.chat.UserInfoActivity;
+
+import java.lang.reflect.Member;
+import java.util.List;
 
 public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberHolder> {
 
-    //临时使用Student类
-    private final List<Student> studentList;
+    private final LiveData<List<DatagramProto.User>> data;
+    private final Context context;
 
-    public MemberAdapter(List<Student> studentList) {
-        super();
-        this.studentList = studentList;
+    public MemberAdapter(Context context, LiveData<List<DatagramProto.User>> data) {
+        this.context = context;
+        this.data = data;
     }
 
     class MemberHolder extends RecyclerView.ViewHolder {
@@ -44,18 +52,22 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberHold
 
     @Override
     public void onBindViewHolder(@NonNull MemberHolder holder, int position) {
-        Student student = this.studentList.get(position);
-        //设置头像，此处暂时设置为固定头像，有需要可更改
+        DatagramProto.User student = this.data.getValue().get(position);
         holder.iconImageView.setImageResource(R.drawable.ic_user);
         holder.usernameTextView.setText(student.getName());
-        //设置用户类型，此处暂时设置为学生，后续需要更改
         holder.typeTextView.setText("学生");
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.startActivity(new Intent(context, UserInfoActivity.class)
+                        .putExtra("id", data.getValue().get(position).getId())
+                        .putExtra("last_modified", data.getValue().get(position).getLastModified()));
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return this.studentList.size();
+        return this.data.getValue().size();
     }
-
-
 }

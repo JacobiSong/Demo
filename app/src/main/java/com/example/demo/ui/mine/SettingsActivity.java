@@ -1,4 +1,4 @@
-package com.example.demo.activity;
+package com.example.demo.ui.mine;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;

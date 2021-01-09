@@ -1,7 +1,7 @@
 package com.example.demo.ui.courses;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -19,28 +19,34 @@ import io.reactivex.functions.Consumer;
 
 public class CoursesViewModel extends ViewModel {
 
-    private MutableLiveData<DatagramProto.Courses> courses;
-
-    QueryObservable queryObservable;
+    private final MutableLiveData<List<DatagramProto.Course>> courses;
+    private long time = 0;
+    private final QueryObservable queryObservable;
 
     public CoursesViewModel() {
         courses = new MutableLiveData<>();
-        queryObservable = MyApplication.getDatabase().createQuery("course", "select id, name, time, semester from course");
+        courses.setValue(new ArrayList<>());
+        Log.e("SYQ", "CoursesViewModel: ");
+        queryObservable = MyApplication.getDatabase().createQuery("course", "select id, name, time, semester, last_modified from course " +
+                "where last_modified > ? order by last_modified", time);
         queryObservable.subscribe(new Consumer<SqlBrite.Query>() {
             @Override
             public void accept(SqlBrite.Query query) throws Exception {
-                DatagramProto.Courses.Builder builder = DatagramProto.Courses.newBuilder();
                 Cursor cursor = query.run();
+                List<DatagramProto.Course> list = courses.getValue();
                 while(cursor.moveToNext()) {
-                    builder.addCourses(DatagramProto.Course.newBuilder().setId(cursor.getString(0)).setName(cursor.getString(1))
+                    list.add(DatagramProto.Course.newBuilder().setId(cursor.getString(0)).setName(cursor.getString(1))
                             .setTime(cursor.getString(2)).setSemester(cursor.getString(3)).build());
                 }
-                courses.setValue(builder.build());
+                if (cursor.moveToLast()) {
+                    time = cursor.getLong(4);
+                }
+                courses.postValue(list);
             }
         });
     }
 
-    public LiveData<DatagramProto.Courses> getCourses() {
+    public LiveData<List<DatagramProto.Course>> getCourses() {
         return courses;
     }
 }

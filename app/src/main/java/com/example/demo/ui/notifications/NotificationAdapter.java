@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import androidx.lifecycle.LiveData;
+
 import com.example.demo.MyApplication;
 import com.example.demo.R;
 import com.example.demo.datagram.DatagramProto;
@@ -18,14 +20,14 @@ import java.util.List;
 
 public class NotificationAdapter extends BaseAdapter {
     private final Context context;
-    private final DatagramProto.Notifications data;
-    public NotificationAdapter(Context context, DatagramProto.Notifications data) {
+    private final LiveData<List<DatagramProto.Notification>> data;
+    public NotificationAdapter(Context context, LiveData<List<DatagramProto.Notification>> data) {
         this.context = context;
         this.data = data;
     }
     @Override
     public int getCount() {
-        return data.getNotificationsCount();
+        return data.getValue().size();
     }
 
     @Override
@@ -46,12 +48,13 @@ public class NotificationAdapter extends BaseAdapter {
         final TextView notificationCourse = view.findViewById(R.id.notification_course);
         final TextView notificationMessage = view.findViewById(R.id.notification_message);
         final TextView notificationTime = view.findViewById(R.id.notification_time);
-        Cursor cursor = MyApplication.getDatabase().query("select name from course where id = ?",  data.getNotifications(position).getReceiverId());
+        DatagramProto.Notification notification = data.getValue().get(position);
+        Cursor cursor = MyApplication.getDatabase().query("select name from course where id = ?",  notification.getReceiverId());
         if (cursor.moveToFirst()) {
             notificationCourse.setText(cursor.getString(0));
         }
-        notificationMessage.setText(data.getNotifications(position).getTitle());
-        LocalDateTime localDateTime = TimeConverter.long2LocalDateTime(data.getNotifications(position).getTime());
+        notificationMessage.setText(notification.getTitle());
+        LocalDateTime localDateTime = TimeConverter.long2LocalDateTime(notification.getTime());
         notificationTime.setText(localDateTime.toString());
         return view;
     }

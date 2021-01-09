@@ -12,16 +12,18 @@ import android.widget.TextView;
 import com.example.demo.R;
 import com.example.demo.datagram.DatagramProto;
 
+import java.util.List;
+
 public class CourseAddAdapter extends BaseAdapter {
     private final Context context;
-    private final DatagramProto.Courses data;
-    public CourseAddAdapter(Context context, DatagramProto.Courses data) {
+    private final List<DatagramProto.Course> data;
+    public CourseAddAdapter(Context context, List<DatagramProto.Course> data) {
         this.context = context;
         this.data = data;
     }
     @Override
     public int getCount() {
-        return data.getCoursesCount();
+        return data.size();
     }
 
     @Override
@@ -40,8 +42,8 @@ public class CourseAddAdapter extends BaseAdapter {
         View view = inflater.inflate(R.layout.course_add_item, null);
         final TextView name = view.findViewById(R.id.course_add_name);
         final TextView time = view.findViewById(R.id.course_add_time);
-        name.setText(data.getCourses(position).getName());
-        time.setText(data.getCourses(position).getTime());
+        name.setText(data.get(position).getName());
+        time.setText(data.get(position).getTime());
         return view;
     }
 }

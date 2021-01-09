@@ -23,5 +23,16 @@
             app:mine_icon="@drawable/settings_24"
             app:mine_text="设置"
             app:mine_line="false" />
+
+        <Button
+            android:id="@+id/logout_button"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="20dp"
+            android:theme="@style/Theme.Design.Light.NoActionBar"
+            android:text="退 出 账 号"
+            android:textColor="#DD0000"
+            android:textSize="20sp"
+            android:textStyle="bold" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
