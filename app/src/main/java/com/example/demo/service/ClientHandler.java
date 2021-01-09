@@ -1,10 +1,12 @@
-package com.example.demo.netty;
+package com.example.demo.service;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Looper;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.demo.MyApplication;
@@ -61,6 +63,9 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
     private void version1Response(ChannelHandlerContext ctx, DatagramProto.DatagramVersion1 msg) {
         final DatagramProto.DatagramVersion1.Type type = msg.getType();
         switch (type) {
+            case KEEP_ALIVE: {
+                MyApplication.getServer().pushAll();
+            }
             case LOGIN: { // 登录响应
                 switch (msg.getOk()) {
                     case 100: // 登录成功
@@ -68,7 +73,10 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
                         MyApplication.getInstance().sendBroadcast(new Intent().setAction("com.example.demo.login"));
                         break;
                     case 200: // 账号或密码错误
+                        Looper.prepare();
                         Toast.makeText(MyApplication.getInstance(), "账号或密码错误", Toast.LENGTH_SHORT).show();
+                        Looper.loop();
+                        Looper.myLooper().quit();
                         break;
                     default:
                         break;
@@ -79,12 +87,22 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
                 switch (msg.getOk()) {
                     case 100:
                         MyApplication.getInstance().sendBroadcast(new Intent().setAction("com.example.demo.register"));
+                        Looper.prepare();
+                        Toast.makeText(MyApplication.getInstance(), "注册成功", Toast.LENGTH_LONG).show();
+                        Looper.loop();
+                        Looper.myLooper().quit();
                         break;
                     case 200:
-                        Toast.makeText(MyApplication.getInstance(), "账号已被注册", Toast.LENGTH_SHORT).show();
+                        Looper.prepare();
+                        Toast.makeText(MyApplication.getInstance(), "账号已被注册", Toast.LENGTH_LONG).show();
+                        Looper.loop();
+                        Looper.myLooper().quit();
                         break;
                     case 201:
-                        Toast.makeText(MyApplication.getInstance(), "注册失败", Toast.LENGTH_SHORT).show();
+                        Looper.prepare();
+                        Toast.makeText(MyApplication.getInstance(), "注册失败", Toast.LENGTH_LONG).show();
+                        Looper.loop();
+                        Looper.myLooper().quit();
                         break;
                     default:
                         break;
@@ -97,6 +115,10 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
                     token = "";
                     ctx.close();
                     MyApplication.getInstance().sendBroadcast(new Intent().setAction("com.example.demo.logout"));
+                    Looper.prepare();
+                    Toast.makeText(MyApplication.getInstance(), "登出成功", Toast.LENGTH_SHORT).show();
+                    Looper.loop();
+                    Looper.myLooper().quit();
                 }
                 break;
             }
@@ -106,13 +128,22 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
                         MyApplication.getInstance().sendBroadcast(new Intent().setAction("com.example.demo.course").putExtra("courses", msg.getCourses().toByteArray()));
                         break;
                     case 101:
+                        Looper.prepare();
                         Toast.makeText(MyApplication.getInstance(), "添加成功", Toast.LENGTH_SHORT).show();
+                        Looper.loop();
+                        Looper.myLooper().quit();
                         break;
                     case 200:
+                        Looper.prepare();
                         Toast.makeText(MyApplication.getInstance(), "该课程群已被注册", Toast.LENGTH_SHORT).show();
+                        Looper.loop();
+                        Looper.myLooper().quit();
                         break;
                     case 201:
+                        Looper.prepare();
                         Toast.makeText(MyApplication.getInstance(), "创建失败", Toast.LENGTH_SHORT).show();
+                        Looper.loop();
+                        Looper.myLooper().quit();
                         break;
                     default:
                         break;
@@ -155,10 +186,16 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
                     case 104:
                     case 107:
                     case 106:
+                        Looper.prepare();
                         Toast.makeText(MyApplication.getInstance(), "修改成功", Toast.LENGTH_SHORT).show();
+                        Looper.loop();
+                        Looper.myLooper().quit();
                         break;
                     case 200:
+                        Looper.prepare();
                         Toast.makeText(MyApplication.getInstance(), "无此用户", Toast.LENGTH_SHORT).show();
+                        Looper.loop();
+                        Looper.myLooper().quit();
                         break;
                     case 201:
                     case 202:
@@ -167,10 +204,16 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
                     case 205:
                     case 206:
                     case 207:
+                        Looper.prepare();
                         Toast.makeText(MyApplication.getInstance(), "修改失败", Toast.LENGTH_SHORT).show();
+                        Looper.loop();
+                        Looper.myLooper().quit();
                         break;
                     case 210:
+                        Looper.prepare();
                         Toast.makeText(MyApplication.getInstance(), "您没有该权限", Toast.LENGTH_SHORT).show();
+                        Looper.loop();
+                        Looper.myLooper().quit();
                         break;
                     default:
                         break;
@@ -178,18 +221,35 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
                 break;
             }
             case MESSAGE: {
-                if (msg.getOk() == 200) {
-                    Toast.makeText(MyApplication.getInstance(), "消息发送失败", Toast.LENGTH_SHORT).show();
+                switch (msg.getOk()) {
+                    case 100:
+                        MyApplication.getDatabase().delete("t_push", "temporary_id = " + msg.getMessage().getTemporaryId() + " and type = 1", null);
+                        break;
+                    case 200:
+                        Looper.prepare();
+                        Toast.makeText(MyApplication.getInstance(), "消息发送失败", Toast.LENGTH_SHORT).show();
+                        Looper.loop();
+                        Looper.myLooper().quit();
+                        break;
+                    default:
+                        break;
                 }
                 break;
             }
             case NOTIFICATION: {
                 switch (msg.getOk()) {
                     case 100:
+                        MyApplication.getDatabase().delete("t_push", "temporary_id = " + msg.getNotification().getTemporaryId() + " and type = 2", null);
+                        Looper.prepare();
                         Toast.makeText(MyApplication.getInstance(), "通知发送成功", Toast.LENGTH_SHORT).show();
+                        Looper.loop();
+                        Looper.myLooper().quit();
                         break;
                     case 200:
+                        Looper.prepare();
                         Toast.makeText(MyApplication.getInstance(), "通知发送失败", Toast.LENGTH_SHORT).show();
+                        Looper.loop();
+                        Looper.myLooper().quit();
                         break;
                 }
                 break;
