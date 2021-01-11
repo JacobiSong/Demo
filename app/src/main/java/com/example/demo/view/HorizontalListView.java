@@ -17,7 +17,6 @@ import java.util.Queue;
 
 public class HorizontalListView extends AdapterView<ListAdapter> {
 
-    public boolean mAlwaysOverrideTouch = true;
     protected ListAdapter mAdapter;
     private int mLeftViewIndex = -1;
     private int mRightViewIndex = 0;
@@ -27,7 +26,7 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
     private int mDisplayOffset = 0;
     protected Scroller mScroller;
     private GestureDetector mGesture;
-    private Queue<View> mRemovedViewQueue = new LinkedList<View>();
+    private final Queue<View> mRemovedViewQueue = new LinkedList<>();
     private OnItemSelectedListener mOnItemSelected;
     private OnItemClickListener mOnItemClicked;
     private OnItemLongClickListener mOnItemLongClicked;
@@ -65,7 +64,7 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
         mOnItemLongClicked = listener;
     }
 
-    private DataSetObserver mDataObserver = new DataSetObserver() {
+    private final DataSetObserver mDataObserver = new DataSetObserver() {
 
         @Override
         public void onChanged() {
@@ -92,7 +91,6 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
 
     @Override
     public View getSelectedView() {
-        //TODO: implement
         return null;
     }
 
@@ -114,13 +112,13 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
 
     @Override
     public void setSelection(int position) {
-        //TODO: implement
+
     }
 
     private void addAndMeasureChild(final View child, int viewPos) {
         LayoutParams params = child.getLayoutParams();
         if (params == null) {
-            params = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+            params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         }
 
         addViewInLayout(child, viewPos, params, true);
@@ -146,8 +144,7 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
         }
 
         if (mScroller.computeScrollOffset()) {
-            int scrollx = mScroller.getCurrX();
-            mNextX = scrollx;
+            mNextX = mScroller.getCurrX();
         }
 
         if (mNextX <= 0) {
@@ -168,12 +165,7 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
         mCurrentX = mNextX;
 
         if (!mScroller.isFinished()) {
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    requestLayout();
-                }
-            });
+            post(this::requestLayout);
 
         }
     }
@@ -258,11 +250,6 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
         }
     }
 
-    public synchronized void scrollTo(int x) {
-        mScroller.startScroll(mNextX, 0, x - mNextX, 0);
-        requestLayout();
-    }
-
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         boolean handled = super.dispatchTouchEvent(ev);
@@ -270,8 +257,7 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
         return handled;
     }
 
-    protected boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-                              float velocityY) {
+    protected boolean onFling(float velocityX) {
         synchronized (HorizontalListView.this) {
             mScroller.fling(mNextX, 0, (int) -velocityX, 0, 0, mMaxX, 0, 0);
         }
@@ -280,22 +266,22 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
         return true;
     }
 
-    protected boolean onDown(MotionEvent e) {
+    protected boolean onDown() {
         mScroller.forceFinished(true);
         return true;
     }
 
-    private OnGestureListener mOnGesture = new GestureDetector.SimpleOnGestureListener() {
+    private final OnGestureListener mOnGesture = new GestureDetector.SimpleOnGestureListener() {
 
         @Override
         public boolean onDown(MotionEvent e) {
-            return HorizontalListView.this.onDown(e);
+            return HorizontalListView.this.onDown();
         }
 
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
                                float velocityY) {
-            return HorizontalListView.this.onFling(e1, e2, velocityX, velocityY);
+            return HorizontalListView.this.onFling(velocityX);
         }
 
         @Override

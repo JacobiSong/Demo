@@ -1,7 +1,5 @@
 package com.example.demo.ui.mine.profile;
 
-import androidx.lifecycle.ViewModelProvider;
-
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;

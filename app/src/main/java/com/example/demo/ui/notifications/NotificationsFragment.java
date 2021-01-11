@@ -6,21 +6,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.demo.R;
 import com.example.demo.ui.notifications.notification.NotificationActivity;
-import com.example.demo.datagram.DatagramProto;
 
-import java.util.List;
+import java.util.Objects;
 
 public class NotificationsFragment extends Fragment {
 
@@ -30,14 +27,9 @@ public class NotificationsFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        notificationsViewModel = new ViewModelProvider(getActivity()).get(NotificationsViewModel.class);
+        notificationsViewModel = new ViewModelProvider(requireActivity()).get(NotificationsViewModel.class);
         notificationAdapter = new NotificationAdapter(getContext(), notificationsViewModel.getNotifications());
-        notificationsViewModel.getNotifications().observe(getActivity(), new Observer<List<DatagramProto.Notification>>() {
-            @Override
-            public void onChanged(List<DatagramProto.Notification> notifications) {
-                notificationAdapter.notifyDataSetChanged();
-            }
-        });
+        notificationsViewModel.getNotifications().observe(requireActivity(), notifications -> notificationAdapter.notifyDataSetChanged());
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -54,26 +46,15 @@ public class NotificationsFragment extends Fragment {
 
             @Override
             public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                if (firstVisibleItem == 0)
-                    swipeRefreshLayout.setEnabled(true);
-                else
-                    swipeRefreshLayout.setEnabled(false);
+                swipeRefreshLayout.setEnabled(firstVisibleItem == 0);
             }
         });
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startActivity(new Intent(getActivity(), NotificationActivity.class)
-                        .putExtra("receiver_id", notificationsViewModel.getNotifications().getValue().get(position).getSenderId())
-                        .putExtra("id", notificationsViewModel.getNotifications().getValue().get(position).getId()));
-            }
-        });
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                notificationAdapter.notifyDataSetChanged();
-                swipeRefreshLayout.setRefreshing(false);
-            }
+        listView.setOnItemClickListener((parent, view, position, id) -> startActivity(new Intent(getActivity(), NotificationActivity.class)
+                .putExtra("receiver_id", Objects.requireNonNull(notificationsViewModel.getNotifications().getValue()).get(position).getReceiverId())
+                .putExtra("id", notificationsViewModel.getNotifications().getValue().get(position).getId())));
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            notificationAdapter.notifyDataSetChanged();
+            swipeRefreshLayout.setRefreshing(false);
         });
         return root;
     }

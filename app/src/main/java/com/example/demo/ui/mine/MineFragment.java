@@ -2,6 +2,7 @@ package com.example.demo.ui.mine;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,32 +23,21 @@ public class MineFragment extends Fragment {
 
         View root = inflater.inflate(R.layout.fragment_mine, container, false);
         MineHeader mineHeader = root.findViewById(R.id.mine_header);
-        mineHeader.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), UserProfileActivity.class);
-                startActivity(intent);
-            }
+        mineHeader.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), UserProfileActivity.class);
+            startActivity(intent);
         });
         MineItemView mineItemView = root.findViewById(R.id.mine_settings);
-        mineItemView.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), SettingsActivity.class);
-                startActivity(intent);
-            }
+        mineItemView.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), SettingsActivity.class);
+            startActivity(intent);
         });
         Button button = root.findViewById(R.id.logout_button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MyApplication.getServer().getChannel().writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
-                        DatagramProto.DatagramVersion1.newBuilder().setOk(100).setToken(ClientHandler.getToken())
-                                .setType(DatagramProto.DatagramVersion1.Type.LOGOUT).setSubtype(DatagramProto.DatagramVersion1.Subtype.REQUEST)
-                                .build().toByteString()
-                ).build());
-            }
-        });
+        button.setOnClickListener(v -> MyApplication.getServer().getChannel().writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
+                DatagramProto.DatagramVersion1.newBuilder().setOk(100).setToken(ClientHandler.getToken())
+                        .setType(DatagramProto.DatagramVersion1.Type.LOGOUT).setSubtype(DatagramProto.DatagramVersion1.Subtype.REQUEST)
+                        .build().toByteString()
+        ).build()));
         return root;
     }
 }

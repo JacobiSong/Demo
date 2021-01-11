@@ -3,6 +3,7 @@ package com.example.demo.ui.courses;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -10,14 +11,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -25,10 +24,9 @@ import com.example.demo.MyApplication;
 import com.example.demo.R;
 import com.example.demo.ui.courses.add.CourseAddActivity;
 import com.example.demo.ui.courses.chat.CourseChatActivity;
-import com.example.demo.datagram.DatagramProto;
 
 import java.lang.reflect.Method;
-import java.util.List;
+import java.util.Objects;
 
 public class CoursesFragment extends Fragment {
 
@@ -38,14 +36,10 @@ public class CoursesFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        coursesViewModel = new ViewModelProvider(getActivity()).get(CoursesViewModel.class);
+        Log.d("SYQ", "onCreate: CoursesFragment");
+        coursesViewModel = new ViewModelProvider(requireActivity()).get(CoursesViewModel.class);
         coursesAdapter = new CoursesAdapter(getContext(), coursesViewModel.getCourses());
-        coursesViewModel.getCourses().observe(getActivity(), new Observer<List<DatagramProto.Course>>() {
-            @Override
-            public void onChanged(List<DatagramProto.Course> courses) {
-                coursesAdapter.notifyDataSetChanged();
-            }
-        });
+        coursesViewModel.getCourses().observe(requireActivity(), courses -> coursesAdapter.notifyDataSetChanged());
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -61,28 +55,17 @@ public class CoursesFragment extends Fragment {
             }
             @Override
             public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                if (firstVisibleItem == 0)
-                    swipeRefreshLayout.setEnabled(true);
-                else
-                    swipeRefreshLayout.setEnabled(false);
+                swipeRefreshLayout.setEnabled(firstVisibleItem == 0);
             }
         });
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startActivity(new Intent(getActivity(), CourseChatActivity.class)
-                        .putExtra("id", coursesViewModel.getCourses().getValue().get(position).getId())
-                        .putExtra("name", coursesViewModel.getCourses().getValue().get(position).getName()));
-            }
+        listView.setOnItemClickListener((parent, view, position, id) -> startActivity(new Intent(getActivity(), CourseChatActivity.class)
+                .putExtra("id", Objects.requireNonNull(coursesViewModel.getCourses().getValue()).get(position).getId())
+                .putExtra("name", coursesViewModel.getCourses().getValue().get(position).getName())));
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            coursesAdapter.notifyDataSetChanged();
+            swipeRefreshLayout.setRefreshing(false);
         });
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                coursesAdapter.notifyDataSetChanged();
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        });
-        if (getActivity().getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE).getInt("identity", 0) == 1) {
+        if (requireActivity().getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE).getInt("identity", 0) == 1) {
             setHasOptionsMenu(true);
         }
         return root;

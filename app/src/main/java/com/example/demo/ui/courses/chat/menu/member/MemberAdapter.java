@@ -16,8 +16,8 @@ import com.example.demo.R;
 import com.example.demo.datagram.DatagramProto;
 import com.example.demo.ui.courses.chat.UserInfoActivity;
 
-import java.lang.reflect.Member;
 import java.util.List;
+import java.util.Objects;
 
 public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberHolder> {
 
@@ -29,7 +29,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberHold
         this.data = data;
     }
 
-    class MemberHolder extends RecyclerView.ViewHolder {
+    static class MemberHolder extends RecyclerView.ViewHolder {
         private final TextView usernameTextView;
         private final TextView typeTextView;
         private final ImageView iconImageView;
@@ -47,27 +47,22 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberHold
     public MemberHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_member, parent, false);
-        return new MemberAdapter.MemberHolder(view);
+        return new MemberHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MemberHolder holder, int position) {
-        DatagramProto.User student = this.data.getValue().get(position);
+        DatagramProto.User student = Objects.requireNonNull(this.data.getValue()).get(position);
         holder.iconImageView.setImageResource(R.drawable.ic_user);
         holder.usernameTextView.setText(student.getName());
         holder.typeTextView.setText("学生");
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                context.startActivity(new Intent(context, UserInfoActivity.class)
-                        .putExtra("id", data.getValue().get(position).getId())
-                        .putExtra("last_modified", data.getValue().get(position).getLastModified()));
-            }
-        });
+        holder.itemView.setOnClickListener(v -> context.startActivity(new Intent(context, UserInfoActivity.class)
+                .putExtra("id", data.getValue().get(position).getId())
+                .putExtra("last_modified", data.getValue().get(position).getLastModified())));
     }
 
     @Override
     public int getItemCount() {
-        return this.data.getValue().size();
+        return Objects.requireNonNull(this.data.getValue()).size();
     }
 }

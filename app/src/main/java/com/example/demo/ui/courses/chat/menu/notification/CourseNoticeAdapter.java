@@ -18,8 +18,8 @@ import com.example.demo.datagram.DatagramProto;
 import com.example.demo.ui.notifications.notification.NotificationActivity;
 import com.example.demo.utils.TimeConverter;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class CourseNoticeAdapter extends RecyclerView.Adapter<CourseNoticeAdapter.NoticeHolder> {
 
@@ -31,7 +31,7 @@ public class CourseNoticeAdapter extends RecyclerView.Adapter<CourseNoticeAdapte
         this.data = data;
     }
 
-    class NoticeHolder extends RecyclerView.ViewHolder {
+    static class NoticeHolder extends RecyclerView.ViewHolder {
 
         private final TextView contentTextView;
         private final TextView authorTextView;
@@ -50,28 +50,23 @@ public class CourseNoticeAdapter extends RecyclerView.Adapter<CourseNoticeAdapte
     public NoticeHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_notice, parent, false);
-        return new CourseNoticeAdapter.NoticeHolder(view);
+        return new NoticeHolder(view);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onBindViewHolder(@NonNull NoticeHolder holder, int position) {
-        DatagramProto.Notification notice = data.getValue().get(data.getValue().size() - 1 - position);
+        DatagramProto.Notification notice = Objects.requireNonNull(data.getValue()).get(data.getValue().size() - 1 - position);
         holder.contentTextView.setText(notice.getContent());
         holder.authorTextView.setText(notice.getSenderId());
         holder.dateTextView.setText(TimeConverter.long2LocalDateTime(notice.getTime()).toString());
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                context.startActivity(new Intent(context, NotificationActivity.class)
-                        .putExtra("id", data.getValue().get(position).getId())
-                        .putExtra("receiver_id", data.getValue().get(position).getReceiverId()));
-            }
-        });
+        holder.itemView.setOnClickListener(v -> context.startActivity(new Intent(context, NotificationActivity.class)
+                .putExtra("id", data.getValue().get(position).getId())
+                .putExtra("receiver_id", data.getValue().get(position).getReceiverId())));
     }
 
     @Override
     public int getItemCount() {
-        return this.data.getValue().size();
+        return Objects.requireNonNull(this.data.getValue()).size();
     }
 }

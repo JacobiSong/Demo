@@ -4,10 +4,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Looper;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.demo.MyApplication;
 import com.example.demo.datagram.DatagramProto;
@@ -30,7 +29,6 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
         // 获取报文版本
         final int version = msg.getVersion();
         if (version == 1) { // 处理版本1的报文
-            version1Handler(ctx, DatagramProto.DatagramVersion1.parseFrom(msg.getDatagram()));
             version1Handler(ctx, DatagramProto.DatagramVersion1.parseFrom(msg.getDatagram()));
         }
     }
@@ -67,18 +65,17 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
         switch (type) {
             case KEEP_ALIVE: {
                 MyApplication.getServer().pushAll();
+                break;
             }
             case LOGIN: { // 登录响应
                 switch (msg.getOk()) {
                     case 100: // 登录成功
                         token = msg.getToken();
                         MyApplication.getInstance().sendBroadcast(new Intent().setAction("com.example.demo.login"));
+                        MyApplication.getInstance().sendBroadcast(new Intent().setAction("com.example.demo.toast").putExtra("text", "登录成功"));
                         break;
                     case 200: // 账号或密码错误
-                        Looper.prepare();
-                        Toast.makeText(MyApplication.getInstance(), "账号或密码错误", Toast.LENGTH_SHORT).show();
-                        Looper.loop();
-                        Looper.myLooper().quit();
+                        MyApplication.getInstance().sendBroadcast(new Intent().setAction("com.example.demo.toast").putExtra("text", "账号或密码错误"));
                         break;
                     default:
                         break;
@@ -89,22 +86,13 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
                 switch (msg.getOk()) {
                     case 100:
                         MyApplication.getInstance().sendBroadcast(new Intent().setAction("com.example.demo.register"));
-                        Looper.prepare();
-                        Toast.makeText(MyApplication.getInstance(), "注册成功", Toast.LENGTH_LONG).show();
-                        Looper.loop();
-                        Looper.myLooper().quit();
+                        MyApplication.getInstance().sendBroadcast(new Intent().setAction("com.example.demo.toast").putExtra("text", "注册成功"));
                         break;
                     case 200:
-                        Looper.prepare();
-                        Toast.makeText(MyApplication.getInstance(), "账号已被注册", Toast.LENGTH_LONG).show();
-                        Looper.loop();
-                        Looper.myLooper().quit();
+                        MyApplication.getInstance().sendBroadcast(new Intent().setAction("com.example.demo.toast").putExtra("text", "账号已注册"));
                         break;
                     case 201:
-                        Looper.prepare();
-                        Toast.makeText(MyApplication.getInstance(), "注册失败", Toast.LENGTH_LONG).show();
-                        Looper.loop();
-                        Looper.myLooper().quit();
+                        MyApplication.getInstance().sendBroadcast(new Intent().setAction("com.example.demo.toast").putExtra("text", "注册失败"));
                         break;
                     default:
                         break;
@@ -117,10 +105,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
                     token = "";
                     ctx.close();
                     MyApplication.getInstance().sendBroadcast(new Intent().setAction("com.example.demo.logout"));
-                    Looper.prepare();
-                    Toast.makeText(MyApplication.getInstance(), "登出成功", Toast.LENGTH_SHORT).show();
-                    Looper.loop();
-                    Looper.myLooper().quit();
+                    MyApplication.getInstance().sendBroadcast(new Intent().setAction("com.example.demo.toast").putExtra("text", "登出成功"));
                 }
                 break;
             }
@@ -130,22 +115,13 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
                         MyApplication.getInstance().sendBroadcast(new Intent().setAction("com.example.demo.course").putExtra("courses", msg.getCourses().toByteArray()));
                         break;
                     case 101:
-                        Looper.prepare();
-                        Toast.makeText(MyApplication.getInstance(), "添加成功", Toast.LENGTH_SHORT).show();
-                        Looper.loop();
-                        Looper.myLooper().quit();
+                        MyApplication.getInstance().sendBroadcast(new Intent().setAction("com.example.demo.toast").putExtra("text", "添加成功"));
                         break;
                     case 200:
-                        Looper.prepare();
-                        Toast.makeText(MyApplication.getInstance(), "该课程群已被注册", Toast.LENGTH_SHORT).show();
-                        Looper.loop();
-                        Looper.myLooper().quit();
+                        MyApplication.getInstance().sendBroadcast(new Intent().setAction("com.example.demo.toast").putExtra("text", "该课程群已被注册"));
                         break;
                     case 201:
-                        Looper.prepare();
-                        Toast.makeText(MyApplication.getInstance(), "创建失败", Toast.LENGTH_SHORT).show();
-                        Looper.loop();
-                        Looper.myLooper().quit();
+                        MyApplication.getInstance().sendBroadcast(new Intent().setAction("com.example.demo.toast").putExtra("text", "创建失败"));
                         break;
                     default:
                         break;
@@ -188,16 +164,10 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
                     case 104:
                     case 107:
                     case 106:
-                        Looper.prepare();
-                        Toast.makeText(MyApplication.getInstance(), "修改成功", Toast.LENGTH_SHORT).show();
-                        Looper.loop();
-                        Looper.myLooper().quit();
+                        MyApplication.getInstance().sendBroadcast(new Intent().setAction("com.example.demo.toast").putExtra("text", "修改成功"));
                         break;
                     case 200:
-                        Looper.prepare();
-                        Toast.makeText(MyApplication.getInstance(), "无此用户", Toast.LENGTH_SHORT).show();
-                        Looper.loop();
-                        Looper.myLooper().quit();
+                        MyApplication.getInstance().sendBroadcast(new Intent().setAction("com.example.demo.toast").putExtra("text", "无此用户"));
                         break;
                     case 201:
                     case 202:
@@ -206,16 +176,10 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
                     case 205:
                     case 206:
                     case 207:
-                        Looper.prepare();
-                        Toast.makeText(MyApplication.getInstance(), "修改失败", Toast.LENGTH_SHORT).show();
-                        Looper.loop();
-                        Looper.myLooper().quit();
+                        MyApplication.getInstance().sendBroadcast(new Intent().setAction("com.example.demo.toast").putExtra("text", "修改失败"));
                         break;
                     case 210:
-                        Looper.prepare();
-                        Toast.makeText(MyApplication.getInstance(), "您没有该权限", Toast.LENGTH_SHORT).show();
-                        Looper.loop();
-                        Looper.myLooper().quit();
+                        MyApplication.getInstance().sendBroadcast(new Intent().setAction("com.example.demo.toast").putExtra("text", "您没有该权限"));
                         break;
                     default:
                         break;
@@ -228,10 +192,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
                         MyApplication.getDatabase().delete("t_push", "id = " + msg.getMessage().getTemporaryId() + " and type = 1");
                         break;
                     case 200:
-                        Looper.prepare();
-                        Toast.makeText(MyApplication.getInstance(), "消息发送失败", Toast.LENGTH_SHORT).show();
-                        Looper.loop();
-                        Looper.myLooper().quit();
+                        MyApplication.getInstance().sendBroadcast(new Intent().setAction("com.example.demo.toast").putExtra("text", "消息发送失败"));
                         break;
                     default:
                         break;
@@ -242,16 +203,10 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
                 switch (msg.getOk()) {
                     case 100:
                         MyApplication.getDatabase().delete("t_push", "id = " + msg.getNotification().getTemporaryId() + " and type = 2");
-                        Looper.prepare();
-                        Toast.makeText(MyApplication.getInstance(), "通知发送成功", Toast.LENGTH_SHORT).show();
-                        Looper.loop();
-                        Looper.myLooper().quit();
+                        MyApplication.getInstance().sendBroadcast(new Intent().setAction("com.example.demo.toast").putExtra("text", "通知发送成功"));
                         break;
                     case 200:
-                        Looper.prepare();
-                        Toast.makeText(MyApplication.getInstance(), "通知发送失败", Toast.LENGTH_SHORT).show();
-                        Looper.loop();
-                        Looper.myLooper().quit();
+                        MyApplication.getInstance().sendBroadcast(new Intent().setAction("com.example.demo.toast").putExtra("text", "通知发送失败"));
                         break;
                 }
                 break;
@@ -265,6 +220,9 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
      * 处理服务器发来的版本1的Push推送报文
      */
     private void version1Push(ChannelHandlerContext ctx, DatagramProto.DatagramVersion1 msg) {
+        while(MyApplication.getDatabase() == null) {
+            Log.d("ClientHandler", "loading database...");
+        }
         final DatagramProto.DatagramVersion1.Type type = msg.getType();
         switch (type) {
             case GROUP: {
@@ -285,6 +243,26 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
                     joinValues.put("user_id", user.getId());
                     joinValues.put("course_id", course.getId());
                     MyApplication.getDatabase().insert("t_join", SQLiteDatabase.CONFLICT_REPLACE, joinValues);
+                    String name = user.getName();
+                    if (!name.isEmpty()) {
+                        int identity = user.getIdentityValue();
+                        ContentValues userValues = new ContentValues();
+                        userValues.put("id", user.getId());
+                        switch (identity) {
+                            case 0:
+                                MyApplication.getDatabase().insert("student", SQLiteDatabase.CONFLICT_IGNORE, userValues);
+                                break;
+                            case 1:
+                                MyApplication.getDatabase().insert("teacher", SQLiteDatabase.CONFLICT_IGNORE, userValues);
+                                break;
+                            default:
+                                break;
+                        }
+                        userValues.put("last_modified", user.getCreateTime());
+                        userValues.put("name", name);
+                        userValues.put("identity", identity);
+                        MyApplication.getDatabase().insert("user", SQLiteDatabase.CONFLICT_IGNORE, userValues);
+                    }
                 }
                 MyApplication.getDatabase().execute("create table if not exists " + course.getId() + "_m (" +
                         "id bigint, " +
@@ -329,7 +307,12 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
                 messageValues.put("time", time);
                 messageValues.putNull("temporary_id");
                 if (sender_id.equals(MyApplication.getUsername())) {
-                    MyApplication.getDatabase().update(receiver_id + "_m", SQLiteDatabase.CONFLICT_REPLACE, messageValues, "temporary_id = " + temporary_id);
+                    Cursor cursor = MyApplication.getDatabase().query("select count(1) from " + receiver_id + "_m where temporary_id = ?", temporary_id);
+                    if (cursor.moveToFirst() && cursor.getInt(0) != 0) {
+                        MyApplication.getDatabase().update(receiver_id + "_m", SQLiteDatabase.CONFLICT_REPLACE, messageValues, "temporary_id = " + temporary_id);
+                    } else {
+                        MyApplication.getDatabase().insert(receiver_id + "_m", SQLiteDatabase.CONFLICT_REPLACE, messageValues);
+                    }
                 } else {
                     MyApplication.getDatabase().insert(receiver_id + "_m", SQLiteDatabase.CONFLICT_REPLACE, messageValues);
                 }
@@ -360,10 +343,16 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
                 notificationValues.put("time", notification.getTime());
                 notificationValues.putNull("temporary_id");
                 if (sender_id.equals(MyApplication.getUsername())) {
-                    MyApplication.getDatabase().update(receiver_id + "_n", SQLiteDatabase.CONFLICT_REPLACE, notificationValues, "temporary_id = " + temporary_id);
+                    Cursor cursor = MyApplication.getDatabase().query("select count(1) from " + receiver_id + "_n where temporary_id = ?", temporary_id);
+                    if (cursor.moveToFirst() && cursor.getInt(0) != 0) {
+                        MyApplication.getDatabase().update(receiver_id + "_n", SQLiteDatabase.CONFLICT_REPLACE, notificationValues, "temporary_id = " + temporary_id);
+                    } else {
+                        MyApplication.getDatabase().insert(receiver_id + "_n", SQLiteDatabase.CONFLICT_REPLACE, notificationValues);
+                    }
                 } else {
                     MyApplication.getDatabase().insert(receiver_id + "_n", SQLiteDatabase.CONFLICT_REPLACE, notificationValues);
                 }
+                MyApplication.getDatabase().executeAndTrigger("course", "drop table if exists _n");
                 SharedPreferences sp = MyApplication.getInstance().getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sp.edit();
                 editor.putLong("db_version", time);
@@ -416,7 +405,6 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         token = "";
-        // TODO : 断线重连
         super.channelInactive(ctx);
     }
 
@@ -425,7 +413,6 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
         cause.printStackTrace();
         // 捕获异常, 关闭连接
         token = "";
-        Log.d("SYQ", "exceptionCaught: " + "异常退出" + cause.getMessage());
         ctx.close();
     }
 

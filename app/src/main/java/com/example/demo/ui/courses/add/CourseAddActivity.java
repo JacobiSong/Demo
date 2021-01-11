@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.example.demo.R;
-import com.example.demo.ui.courses.add.CourseAddFragment;
 
 public class CourseAddActivity extends AppCompatActivity {
 

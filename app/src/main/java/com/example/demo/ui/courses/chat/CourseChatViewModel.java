@@ -9,34 +9,28 @@ import androidx.lifecycle.ViewModel;
 import com.example.demo.MyApplication;
 import com.example.demo.datagram.DatagramProto;
 import com.squareup.sqlbrite3.QueryObservable;
-import com.squareup.sqlbrite3.SqlBrite;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import io.reactivex.functions.Consumer;
 
 public class CourseChatViewModel extends ViewModel {
 
     private final MutableLiveData<List<DatagramProto.Message>> messages;
-    private final QueryObservable observable;
+
     public CourseChatViewModel(String courseId) {
         messages = new MutableLiveData<>();
         messages.setValue(new ArrayList<>());
-        observable = MyApplication.getDatabase().createQuery(courseId + "_m", "select content, time, sender_id from " + courseId + "_m order by time");
-        observable.subscribe(new Consumer<SqlBrite.Query>() {
-            @Override
-            public void accept(SqlBrite.Query query) throws Exception {
-                Cursor cursor = query.run();
-                List<DatagramProto.Message> list = new ArrayList<>();
-                while(cursor.moveToNext()) {
-                    list.add(DatagramProto.Message.newBuilder().setContent(cursor.getString(0))
-                            .setSenderId(cursor.getString(2))
-                            .setTime(cursor.getLong(1)).build());
-                }
-                messages.postValue(list);
+        QueryObservable observable = MyApplication.getDatabase().createQuery(courseId + "_m", "select content, time, sender_id from " + courseId + "_m order by time");
+        observable.subscribe(query -> {
+            Cursor cursor = query.run();
+            List<DatagramProto.Message> list = new ArrayList<>();
+            assert cursor != null;
+            while(cursor.moveToNext()) {
+                list.add(DatagramProto.Message.newBuilder().setContent(cursor.getString(0))
+                        .setSenderId(cursor.getString(2))
+                        .setTime(cursor.getLong(1)).build());
             }
+            messages.postValue(list);
         });
     }
 

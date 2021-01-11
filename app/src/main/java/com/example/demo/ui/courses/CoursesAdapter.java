@@ -8,12 +8,12 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import com.example.demo.R;
 import com.example.demo.datagram.DatagramProto;
 
 import java.util.List;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -26,7 +26,7 @@ public class CoursesAdapter extends BaseAdapter {
     }
     @Override
     public int getCount() {
-        return data.getValue().size();
+        return Objects.requireNonNull(data.getValue()).size();
     }
 
     @Override
@@ -45,9 +45,8 @@ public class CoursesAdapter extends BaseAdapter {
         View view = inflater.inflate(R.layout.course_item, null);
         final CircleImageView circleImageView = view.findViewById(R.id.course_icon);
         final TextView courseName = view.findViewById(R.id.course_name);
-        final TextView courseMessage = view.findViewById(R.id.course_message);
         circleImageView.setImageResource(R.drawable.school_60);
-        courseName.setText(data.getValue().get(position).getName());
+        courseName.setText(Objects.requireNonNull(data.getValue()).get(position).getName());
         return view;
     }
 }

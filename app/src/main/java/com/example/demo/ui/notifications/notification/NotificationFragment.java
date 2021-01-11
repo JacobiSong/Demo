@@ -1,7 +1,5 @@
 package com.example.demo.ui.notifications.notification;
 
-import androidx.lifecycle.ViewModelProvider;
-
 import android.database.Cursor;
 import android.os.Bundle;
 
@@ -38,20 +36,18 @@ public class NotificationFragment extends Fragment {
         TextView subtitle = root.findViewById(R.id.notification_activity_subtitle);
         TextView content = root.findViewById(R.id.notification_activity_content);
         content.setMovementMethod(ScrollingMovementMethod.getInstance());
-        String receiverId = getActivity().getIntent().getStringExtra("receiver_id");
-        long id = getActivity().getIntent().getLongExtra("id", 0);
+        String receiverId = requireActivity().getIntent().getStringExtra("receiver_id");
+        long id = requireActivity().getIntent().getLongExtra("id", 0);
         QueryObservable queryObservable = MyApplication.getDatabase().createQuery(receiverId + "_n", "select sender_id, title, content, time from " + receiverId + "_n where id = ?", id);
-        queryObservable.subscribe(new Consumer<SqlBrite.Query>() {
-            @Override
-            public void accept(SqlBrite.Query query) throws Exception {
-                Cursor cursor = query.run();
-                if (cursor.moveToFirst()) {
-                    Cursor c = MyApplication.getDatabase().query("select name from course where id = ?", receiverId);
-                    if (c.moveToFirst()) {
-                        title.setText(cursor.getString(1));
-                        subtitle.setText(c.getString(0));
-                        content.setText(cursor.getString(2));
-                    }
+        queryObservable.subscribe(query -> {
+            Cursor cursor = query.run();
+            assert cursor != null;
+            if (cursor.moveToFirst()) {
+                Cursor c = MyApplication.getDatabase().query("select name from course where id = ?", receiverId);
+                if (c.moveToFirst()) {
+                    title.setText(cursor.getString(1));
+                    subtitle.setText(c.getString(0));
+                    content.setText(cursor.getString(2));
                 }
             }
         });

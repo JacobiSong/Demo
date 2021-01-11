@@ -2,30 +2,27 @@ package com.example.demo;
 
 import android.app.Application;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.os.IBinder;
+import android.widget.Toast;
 
 import com.example.demo.service.ConnectService;
 import com.example.demo.ui.LaunchActivity;
-import com.example.demo.ui.LoginActivity;
-import com.example.demo.ui.MainActivity;
-import com.example.demo.utils.DatabaseHelper;
 import com.squareup.sqlbrite3.BriteDatabase;
-import com.squareup.sqlbrite3.SqlBrite;
-
-import io.reactivex.schedulers.Schedulers;
 
 public class MyApplication extends Application {
     private class MyBroadcastReceiver extends BroadcastReceiver {
-
         @Override
         public void onReceive(Context context, Intent intent) {
-            logout();
+            String action = intent.getAction();
+            if ("com.example.demo.logout".equals(action)) {
+                logout();
+            }
+            else if ("com.example.demo.toast".equals(action)) {
+                Toast.makeText(getApplicationContext(), intent.getStringExtra("text"), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -61,6 +58,7 @@ public class MyApplication extends Application {
         startService(new Intent(this, ConnectService.class));
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.example.demo.logout");
+        intentFilter.addAction("com.example.demo.toast");
         registerReceiver(broadcastReceiver, intentFilter);
     }
 

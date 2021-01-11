@@ -17,6 +17,7 @@ import com.example.demo.utils.TimeConverter;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 public class NotificationAdapter extends BaseAdapter {
     private final Context context;
@@ -27,7 +28,7 @@ public class NotificationAdapter extends BaseAdapter {
     }
     @Override
     public int getCount() {
-        return data.getValue().size();
+        return Objects.requireNonNull(data.getValue()).size();
     }
 
     @Override
@@ -48,7 +49,7 @@ public class NotificationAdapter extends BaseAdapter {
         final TextView notificationCourse = view.findViewById(R.id.notification_course);
         final TextView notificationMessage = view.findViewById(R.id.notification_message);
         final TextView notificationTime = view.findViewById(R.id.notification_time);
-        DatagramProto.Notification notification = data.getValue().get(position);
+        DatagramProto.Notification notification = Objects.requireNonNull(data.getValue()).get(position);
         Cursor cursor = MyApplication.getDatabase().query("select name from course where id = ?",  notification.getReceiverId());
         if (cursor.moveToFirst()) {
             notificationCourse.setText(cursor.getString(0));

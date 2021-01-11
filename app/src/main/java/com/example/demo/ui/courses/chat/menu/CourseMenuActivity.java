@@ -1,5 +1,6 @@
 package com.example.demo.ui.courses.chat.menu;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -9,22 +10,16 @@ import android.view.View;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 
+import com.example.demo.MyApplication;
 import com.example.demo.R;
 import com.example.demo.ui.courses.chat.menu.notification.AddNotificationActivity;
 import com.example.demo.ui.courses.chat.menu.notification.CourseNoticeActivity;
 import com.example.demo.ui.courses.chat.menu.member.MembersActivity;
-import com.example.demo.datagram.DatagramProto;
 import com.example.demo.view.HorizontalListView;
-
-import java.util.List;
 
 public class CourseMenuActivity extends AppCompatActivity {
 
-    private CourseMenuViewModel courseMenuViewModel;
-    private HorizontalListView horizontalListViewForStudent;
-    private HorizontalListView horizontalListViewForTeacher;
     private MemberThumbAdapter hListViewAdapterForStudent;
     private MemberThumbAdapter hListViewAdapterForTeacher;
 
@@ -32,25 +27,15 @@ public class CourseMenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(getIntent().getStringExtra("name"));
-        courseMenuViewModel = new CourseMenuViewModel(getIntent().getStringExtra("id"));
+        CourseMenuViewModel courseMenuViewModel = new CourseMenuViewModel(getIntent().getStringExtra("id"));
         hListViewAdapterForStudent = new MemberThumbAdapter(this, courseMenuViewModel.getStudents());
         hListViewAdapterForTeacher = new MemberThumbAdapter(this, courseMenuViewModel.getTeachers());
-        courseMenuViewModel.getStudents().observe(this, new Observer<List<DatagramProto.User>>() {
-            @Override
-            public void onChanged(List<DatagramProto.User> users) {
-                hListViewAdapterForStudent.notifyDataSetChanged();
-            }
-        });
-        courseMenuViewModel.getTeachers().observe(this, new Observer<List<DatagramProto.User>>() {
-            @Override
-            public void onChanged(List<DatagramProto.User> users) {
-                hListViewAdapterForTeacher.notifyDataSetChanged();
-            }
-        });
+        courseMenuViewModel.getStudents().observe(this, users -> hListViewAdapterForStudent.notifyDataSetChanged());
+        courseMenuViewModel.getTeachers().observe(this, users -> hListViewAdapterForTeacher.notifyDataSetChanged());
         setContentView(R.layout.activity_course_menu);
-        horizontalListViewForStudent = (HorizontalListView) findViewById(R.id.horizontalListViewForStudentMember);
+        HorizontalListView horizontalListViewForStudent = findViewById(R.id.horizontalListViewForStudentMember);
         horizontalListViewForStudent.setAdapter(hListViewAdapterForStudent);
-        horizontalListViewForTeacher = (HorizontalListView) findViewById(R.id.horizontalListViewForTeacherMember);
+        HorizontalListView horizontalListViewForTeacher = findViewById(R.id.horizontalListViewForTeacherMember);
         horizontalListViewForTeacher.setAdapter(hListViewAdapterForTeacher);
 
         ActionBar actionBar = getSupportActionBar();
@@ -61,8 +46,10 @@ public class CourseMenuActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_add_notification, menu);
+        if (getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE).getInt("identity", 0) == 1) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.menu_add_notification, menu);
+        }
         return true;
     }
 

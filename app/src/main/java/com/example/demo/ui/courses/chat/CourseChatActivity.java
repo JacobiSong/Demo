@@ -14,22 +14,16 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.demo.MyApplication;
 import com.example.demo.R;
 import com.example.demo.ui.courses.chat.menu.CourseMenuActivity;
-import com.example.demo.datagram.DatagramProto;
-
-import java.util.List;
 
 public class CourseChatActivity extends AppCompatActivity {
 
-    private CourseChatViewModel courseChatViewModel;
     private MessageAdapter adapter;
-    private RecyclerView msgRecyclerView;
     private String courseId;
 
     @Override
@@ -37,16 +31,11 @@ public class CourseChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setTitle(getIntent().getStringExtra("name"));
         courseId = getIntent().getStringExtra("id");
-        courseChatViewModel = new CourseChatViewModel(courseId);
+        CourseChatViewModel courseChatViewModel = new CourseChatViewModel(courseId);
         adapter = new MessageAdapter(this, courseChatViewModel.getMessages());
-        courseChatViewModel.getMessages().observe(this, new Observer<List<DatagramProto.Message>>() {
-            @Override
-            public void onChanged(List<DatagramProto.Message> messages) {
-                adapter.notifyDataSetChanged();
-            }
-        });
+        courseChatViewModel.getMessages().observe(this, messages -> adapter.notifyDataSetChanged());
         setContentView(R.layout.activity_course_chat);
-        msgRecyclerView = findViewById(R.id.recyclerViewInCourseView);
+        RecyclerView msgRecyclerView = findViewById(R.id.recyclerViewInCourseView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         msgRecyclerView.setLayoutManager(linearLayoutManager);
         msgRecyclerView.setAdapter(adapter);
@@ -96,8 +85,6 @@ public class CourseChatActivity extends AppCompatActivity {
             int temporary_id = (int) MyApplication.getDatabase().insert("t_push", SQLiteDatabase.CONFLICT_REPLACE, pushValues);
             messageValues.put("temporary_id", temporary_id);
             MyApplication.getDatabase().insert(courseId + "_m", SQLiteDatabase.CONFLICT_REPLACE, messageValues);
-            adapter.notifyItemInserted(courseChatViewModel.getMessages().getValue().size() - 1); // 刷新
-            msgRecyclerView.scrollToPosition(courseChatViewModel.getMessages().getValue().size() - 1); // 将ListView定位到最后一行
             textView.setText(""); // 清空输入框
             MyApplication.getServer().pushAll();
         } else {

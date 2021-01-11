@@ -20,23 +20,20 @@ import io.reactivex.functions.Consumer;
 public class CoursesViewModel extends ViewModel {
 
     private final MutableLiveData<List<DatagramProto.Course>> courses;
-    private final QueryObservable queryObservable;
 
     public CoursesViewModel() {
         courses = new MutableLiveData<>();
         courses.setValue(new ArrayList<>());
-        queryObservable = MyApplication.getDatabase().createQuery("course", "select id, name, time, semester from course");
-        queryObservable.subscribe(new Consumer<SqlBrite.Query>() {
-            @Override
-            public void accept(SqlBrite.Query query) throws Exception {
-                Cursor cursor = query.run();
-                List<DatagramProto.Course> list = new ArrayList<>();
-                while(cursor.moveToNext()) {
-                    list.add(DatagramProto.Course.newBuilder().setId(cursor.getString(0)).setName(cursor.getString(1))
-                            .setTime(cursor.getString(2)).setSemester(cursor.getString(3)).build());
-                }
-                courses.postValue(list);
+        QueryObservable queryObservable = MyApplication.getDatabase().createQuery("course", "select id, name, time, semester from course");
+        queryObservable.subscribe(query -> {
+            Cursor cursor = query.run();
+            List<DatagramProto.Course> list = new ArrayList<>();
+            assert cursor != null;
+            while(cursor.moveToNext()) {
+                list.add(DatagramProto.Course.newBuilder().setId(cursor.getString(0)).setName(cursor.getString(1))
+                        .setTime(cursor.getString(2)).setSemester(cursor.getString(3)).build());
             }
+            courses.postValue(list);
         });
     }
 

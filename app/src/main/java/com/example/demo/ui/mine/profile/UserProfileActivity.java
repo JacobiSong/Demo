@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.example.demo.R;
-import com.example.demo.ui.mine.profile.UserProfileFragment;
 
 public class UserProfileActivity extends AppCompatActivity {
 
@@ -29,12 +28,8 @@ public class UserProfileActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                break;
-            default:
-                break;
+        if (item.getItemId() == android.R.id.home) {
+            finish();
         }
         return true;
     }

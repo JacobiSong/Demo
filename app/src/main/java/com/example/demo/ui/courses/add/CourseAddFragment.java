@@ -11,12 +11,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.demo.MyApplication;
@@ -74,33 +72,18 @@ public class CourseAddFragment extends Fragment {
                 swipeRefreshLayout.setEnabled(firstVisibleItem == 0);
             }
         });
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                MyApplication.getServer().getChannel().writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
-                        DatagramProto.DatagramVersion1.newBuilder().setToken(ClientHandler.getToken()).setOk(101)
-                                .setType(DatagramProto.DatagramVersion1.Type.COURSE).setCourse(
-                                DatagramProto.Course.newBuilder().setId(list.get(position).getId()).build()
-                        )
-                                .setSubtype(DatagramProto.DatagramVersion1.Subtype.REQUEST).build().toByteString()
-                ).build());
-            }
-        });
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        MyApplication.getServer().getChannel().writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
-                                DatagramProto.DatagramVersion1.newBuilder().setType(DatagramProto.DatagramVersion1.Type.COURSE)
-                                        .setSubtype(DatagramProto.DatagramVersion1.Subtype.REQUEST).setOk(100)
-                                        .setToken(ClientHandler.getToken()).build().toByteString()
-                        ).build());
-                    }
-                }).start();
-            }
-        });
+        listView.setOnItemClickListener((parent, view, position, id) -> MyApplication.getServer().getChannel().writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
+                DatagramProto.DatagramVersion1.newBuilder().setToken(ClientHandler.getToken()).setOk(101)
+                        .setType(DatagramProto.DatagramVersion1.Type.COURSE).setCourse(
+                        DatagramProto.Course.newBuilder().setId(list.get(position).getId()).build()
+                )
+                        .setSubtype(DatagramProto.DatagramVersion1.Subtype.REQUEST).build().toByteString()
+        ).build()));
+        swipeRefreshLayout.setOnRefreshListener(() -> new Thread(() -> MyApplication.getServer().getChannel().writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
+                DatagramProto.DatagramVersion1.newBuilder().setType(DatagramProto.DatagramVersion1.Type.COURSE)
+                        .setSubtype(DatagramProto.DatagramVersion1.Subtype.REQUEST).setOk(100)
+                        .setToken(ClientHandler.getToken()).build().toByteString()
+        ).build())).start());
         return root;
     }
 
@@ -109,7 +92,7 @@ public class CourseAddFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.example.demo.course");
-        getActivity().registerReceiver(broadcastReceiver, intentFilter);
+        requireActivity().registerReceiver(broadcastReceiver, intentFilter);
         MyApplication.getServer().getChannel().writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
                 DatagramProto.DatagramVersion1.newBuilder().setType(DatagramProto.DatagramVersion1.Type.COURSE)
                         .setSubtype(DatagramProto.DatagramVersion1.Subtype.REQUEST).setOk(100)
@@ -119,7 +102,7 @@ public class CourseAddFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        getActivity().unregisterReceiver(broadcastReceiver);
+        requireActivity().unregisterReceiver(broadcastReceiver);
         super.onDestroy();
     }
 }
