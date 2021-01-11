@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 
 import com.example.demo.service.ConnectService;
+import com.example.demo.ui.LaunchActivity;
 import com.example.demo.ui.LoginActivity;
 import com.example.demo.ui.MainActivity;
 import com.example.demo.utils.DatabaseHelper;
@@ -35,7 +36,7 @@ public class MyApplication extends Application {
         SharedPreferences.Editor editor = getSharedPreferences("last_login", MODE_PRIVATE).edit();
         editor.putString("username", "");
         editor.apply();
-        startActivity(new Intent(getApplicationContext(), LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+        startActivity(new Intent(getApplicationContext(), LaunchActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
     private enum Configuration {
@@ -53,36 +54,13 @@ public class MyApplication extends Application {
         }
     }
 
-    private final ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            Configuration.INSTANCE.server = (ConnectService.MyBinder) service;
-            String username = getSharedPreferences("last_login", MODE_PRIVATE).getString("username", "");
-            if (!username.isEmpty()) {
-                Configuration.INSTANCE.username = username;
-                Configuration.INSTANCE.database = new SqlBrite.Builder().build().wrapDatabaseHelper(new DatabaseHelper(username, 1).getSupportSQLiteOpenHelper(), Schedulers.io());
-                SharedPreferences userSp = getSharedPreferences("user_" + username, MODE_PRIVATE);
-                MyApplication.getServer().login(userSp.getString("ip", "140.143.6.64"), userSp.getInt("port", 8888), username,
-                        userSp.getString("password", ""), userSp.getInt("identity", 0), userSp.getLong("db_version", 0));
-                startActivity(new Intent(getApplicationContext(), MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
-            } else {
-                startActivity(new Intent(getApplicationContext(), LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
-            }
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-
-        }
-    };
-
     @Override
     public void onCreate() {
         super.onCreate();
         Configuration.INSTANCE.mContext = this;
-        bindService(new Intent(this, ConnectService.class), serviceConnection, BIND_AUTO_CREATE);
+        startService(new Intent(this, ConnectService.class));
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("com.example.demo.login");
+        intentFilter.addAction("com.example.demo.logout");
         registerReceiver(broadcastReceiver, intentFilter);
     }
 
@@ -111,5 +89,9 @@ public class MyApplication extends Application {
 
     public static String getUsername() {
         return Configuration.INSTANCE.username;
+    }
+
+    public static void setServer(ConnectService.MyBinder binder) {
+        Configuration.INSTANCE.server = binder;
     }
 }

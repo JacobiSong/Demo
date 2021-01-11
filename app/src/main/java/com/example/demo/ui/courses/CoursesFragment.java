@@ -54,7 +54,6 @@ public class CoursesFragment extends Fragment {
         SwipeRefreshLayout swipeRefreshLayout = root.findViewById(R.id.course_refresh);
         ListView listView = root.findViewById(R.id.courses_list);
         listView.setAdapter(coursesAdapter);
-        coursesAdapter.notifyDataSetChanged();
         listView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {

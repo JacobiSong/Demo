@@ -42,6 +42,7 @@ public class CourseAddFragment extends Fragment {
                 list.clear();
             }
             courseAddAdapter.notifyDataSetChanged();
+            swipeRefreshLayout.setRefreshing(false);
         }
     }
 

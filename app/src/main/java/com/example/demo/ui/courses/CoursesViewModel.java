@@ -20,26 +20,20 @@ import io.reactivex.functions.Consumer;
 public class CoursesViewModel extends ViewModel {
 
     private final MutableLiveData<List<DatagramProto.Course>> courses;
-    private long time = 0;
     private final QueryObservable queryObservable;
 
     public CoursesViewModel() {
         courses = new MutableLiveData<>();
         courses.setValue(new ArrayList<>());
-        Log.e("SYQ", "CoursesViewModel: ");
-        queryObservable = MyApplication.getDatabase().createQuery("course", "select id, name, time, semester, last_modified from course " +
-                "where last_modified > ? order by last_modified", time);
+        queryObservable = MyApplication.getDatabase().createQuery("course", "select id, name, time, semester from course");
         queryObservable.subscribe(new Consumer<SqlBrite.Query>() {
             @Override
             public void accept(SqlBrite.Query query) throws Exception {
                 Cursor cursor = query.run();
-                List<DatagramProto.Course> list = courses.getValue();
+                List<DatagramProto.Course> list = new ArrayList<>();
                 while(cursor.moveToNext()) {
                     list.add(DatagramProto.Course.newBuilder().setId(cursor.getString(0)).setName(cursor.getString(1))
                             .setTime(cursor.getString(2)).setSemester(cursor.getString(3)).build());
-                }
-                if (cursor.moveToLast()) {
-                    time = cursor.getLong(4);
                 }
                 courses.postValue(list);
             }

@@ -5,14 +5,18 @@ import android.annotation.SuppressLint;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.view.View;
 
 import com.example.demo.MyApplication;
 import com.example.demo.R;
+import com.example.demo.service.ConnectService;
 import com.example.demo.utils.DatabaseHelper;
 import com.squareup.sqlbrite3.SqlBrite;
 
@@ -24,6 +28,27 @@ import io.reactivex.schedulers.Schedulers;
  */
 public class LaunchActivity extends AppCompatActivity {
 
+    private final ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            MyApplication.setServer((ConnectService.MyBinder) service);
+            String username = getSharedPreferences("last_login", MODE_PRIVATE).getString("username", "");
+            if (!username.isEmpty()) {
+                MyApplication.setUsername(username);
+                MyApplication.setDatabase(new SqlBrite.Builder().build().wrapDatabaseHelper(new DatabaseHelper(username, 1).getSupportSQLiteOpenHelper(), Schedulers.io()));
+                SharedPreferences userSp = getSharedPreferences("user_" + username, MODE_PRIVATE);
+                MyApplication.getServer().login(userSp.getString("ip", "140.143.6.64"), userSp.getInt("port", 8888), username,
+                        userSp.getString("password", ""), userSp.getInt("identity", 0), userSp.getLong("db_version", 0));
+                startActivity(new Intent(getApplicationContext(), MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+            } else {
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+            }
+        }
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+    };
     /**
      * Some older devices needs a small delay between UI widget updates
      * and a change of the status and navigation bar.
@@ -88,5 +113,17 @@ public class LaunchActivity extends AppCompatActivity {
         super.onPostCreate(savedInstanceState);
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, 100);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        bindService(new Intent(this, ConnectService.class), serviceConnection, BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unbindService(serviceConnection);
     }
 }

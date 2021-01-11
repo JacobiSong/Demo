@@ -31,6 +31,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
         final int version = msg.getVersion();
         if (version == 1) { // 处理版本1的报文
             version1Handler(ctx, DatagramProto.DatagramVersion1.parseFrom(msg.getDatagram()));
+            version1Handler(ctx, DatagramProto.DatagramVersion1.parseFrom(msg.getDatagram()));
         }
     }
 
@@ -38,6 +39,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
      * 处理版本1的报文
      */
     private void version1Handler(ChannelHandlerContext ctx, DatagramProto.DatagramVersion1 msg) {
+        Log.d("Datagram", "version1Handler: " + msg);
         // 检查token是否合法
         if (msg.getType() != DatagramProto.DatagramVersion1.Type.LOGIN && msg.getType() != DatagramProto.DatagramVersion1.Type.REGISTER
                 && !token.equals(msg.getToken())) {
@@ -223,7 +225,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
             case MESSAGE: {
                 switch (msg.getOk()) {
                     case 100:
-                        MyApplication.getDatabase().delete("t_push", "temporary_id = " + msg.getMessage().getTemporaryId() + " and type = 1", null);
+                        MyApplication.getDatabase().delete("t_push", "id = " + msg.getMessage().getTemporaryId() + " and type = 1");
                         break;
                     case 200:
                         Looper.prepare();
@@ -239,7 +241,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
             case NOTIFICATION: {
                 switch (msg.getOk()) {
                     case 100:
-                        MyApplication.getDatabase().delete("t_push", "temporary_id = " + msg.getNotification().getTemporaryId() + " and type = 2", null);
+                        MyApplication.getDatabase().delete("t_push", "id = " + msg.getNotification().getTemporaryId() + " and type = 2");
                         Looper.prepare();
                         Toast.makeText(MyApplication.getInstance(), "通知发送成功", Toast.LENGTH_SHORT).show();
                         Looper.loop();
@@ -423,6 +425,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
         cause.printStackTrace();
         // 捕获异常, 关闭连接
         token = "";
+        Log.d("SYQ", "exceptionCaught: " + "异常退出" + cause.getMessage());
         ctx.close();
     }
 
