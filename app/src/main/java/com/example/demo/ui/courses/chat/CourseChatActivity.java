@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -25,17 +24,23 @@ public class CourseChatActivity extends AppCompatActivity {
 
     private MessageAdapter adapter;
     private String courseId;
+    private CourseChatViewModel courseChatViewModel;
+    private RecyclerView msgRecyclerView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(getIntent().getStringExtra("name"));
         courseId = getIntent().getStringExtra("id");
-        CourseChatViewModel courseChatViewModel = new CourseChatViewModel(courseId);
+        courseChatViewModel = new CourseChatViewModel(courseId);
         adapter = new MessageAdapter(this, courseChatViewModel.getMessages());
-        courseChatViewModel.getMessages().observe(this, messages -> adapter.notifyDataSetChanged());
+
+        courseChatViewModel.getMessages().observe(this, messages -> {
+            adapter.notifyDataSetChanged();
+            msgRecyclerView.scrollToPosition(courseChatViewModel.getMessages().getValue().size() - 1);
+        });
         setContentView(R.layout.activity_course_chat);
-        RecyclerView msgRecyclerView = findViewById(R.id.recyclerViewInCourseView);
+        msgRecyclerView = findViewById(R.id.recyclerViewInCourseView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         msgRecyclerView.setLayoutManager(linearLayoutManager);
         msgRecyclerView.setAdapter(adapter);

@@ -7,11 +7,9 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Binder;
 import android.os.IBinder;
-import android.provider.ContactsContract;
 
 import com.example.demo.MyApplication;
 import com.example.demo.datagram.DatagramProto;
-import com.example.demo.message.Datagram;
 
 import java.util.concurrent.TimeUnit;
 
@@ -90,6 +88,7 @@ public class ConnectService extends Service {
             });
             thread.start();
         }
+
         public void register(String username, String password, int identity) {
             if (channel != null && channel.isOpen()) {
                 channel.close();
@@ -135,7 +134,7 @@ public class ConnectService extends Service {
                     while (cursor.moveToNext()) {
                         int temporary_id = cursor.getInt(0);
                         int type = cursor.getInt(1);
-                        String courseId= cursor.getString(2);
+                        String courseId = cursor.getString(2);
                         switch (type) {
                             case 1: {
                                 Cursor c = MyApplication.getDatabase().query("select sender_id, receiver_id, content, time from " + courseId + "_m where temporary_id = ?", temporary_id);
@@ -317,7 +316,7 @@ public class ConnectService extends Service {
                             DatagramProto.DatagramVersion1.newBuilder().setType(DatagramProto.DatagramVersion1.Type.USER)
                                     .setSubtype(DatagramProto.DatagramVersion1.Subtype.REQUEST).setOk(104)
                                     .setToken(ClientHandler.getToken()).setUser(
-                                            DatagramProto.User.newBuilder().setPassword(text).build()
+                                    DatagramProto.User.newBuilder().setPassword(text).build()
                             ).build().toByteString()
                     ).build());
                 }

@@ -58,7 +58,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public int getItemViewType(int position) {
         DatagramProto.Message message = Objects.requireNonNull(data.getValue()).get(position);
         if (message.getSenderId().equals(MyApplication.getUsername())) {
-            return 1;
+            return position;
         } else {
             return 0;
         }
