@@ -1,14 +1,17 @@
 package com.example.demo.service;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Binder;
 import android.os.IBinder;
+import android.provider.ContactsContract;
 
 import com.example.demo.MyApplication;
 import com.example.demo.datagram.DatagramProto;
+import com.example.demo.message.Datagram;
 
 import java.util.concurrent.TimeUnit;
 
@@ -211,6 +214,113 @@ public class ConnectService extends Service {
                         )
                                 .setSubtype(DatagramProto.DatagramVersion1.Subtype.REQUEST).build().toByteString()
                 ).build());
+            }
+        }
+
+        public void changeUserProfile(String type, String text) {
+            if (channel != null && channel.isActive()) {
+                if ("com.example.demo.user.change.gender".equals(type)) {
+                    if ("保密".equals(text)) {
+                        channel.writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
+                                DatagramProto.DatagramVersion1.newBuilder().setToken(ClientHandler.getToken())
+                                        .setOk(103).setType(DatagramProto.DatagramVersion1.Type.USER)
+                                        .setSubtype(DatagramProto.DatagramVersion1.Subtype.REQUEST)
+                                        .setUser(
+                                                DatagramProto.User.newBuilder().setGenderValue(0).build()
+                                        ).build().toByteString()
+                        ).build());
+                    } else if ("女".equals(text)) {
+                        channel.writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
+                                DatagramProto.DatagramVersion1.newBuilder().setToken(ClientHandler.getToken())
+                                        .setOk(103).setType(DatagramProto.DatagramVersion1.Type.USER)
+                                        .setSubtype(DatagramProto.DatagramVersion1.Subtype.REQUEST)
+                                        .setUser(
+                                                DatagramProto.User.newBuilder().setGenderValue(1).build()
+                                        ).build().toByteString()
+                        ).build());
+                    } else if ("男".equals(text)) {
+                        channel.writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
+                                DatagramProto.DatagramVersion1.newBuilder().setToken(ClientHandler.getToken())
+                                        .setOk(103).setType(DatagramProto.DatagramVersion1.Type.USER)
+                                        .setSubtype(DatagramProto.DatagramVersion1.Subtype.REQUEST)
+                                        .setUser(
+                                                DatagramProto.User.newBuilder().setGenderValue(2).build()
+                                        ).build().toByteString()
+                        ).build());
+                    }
+                } else if ("com.example.demo.user.change.phone".equals(type)) {
+                    channel.writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
+                            DatagramProto.DatagramVersion1.newBuilder().setToken(ClientHandler.getToken())
+                                    .setOk(101).setType(DatagramProto.DatagramVersion1.Type.USER)
+                                    .setSubtype(DatagramProto.DatagramVersion1.Subtype.REQUEST)
+                                    .setUser(
+                                            DatagramProto.User.newBuilder().setPhone(text).build()
+                                    ).build().toByteString()
+                    ).build());
+                } else if ("com.example.demo.user.change.email".equals(type)) {
+                    channel.writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
+                            DatagramProto.DatagramVersion1.newBuilder().setToken(ClientHandler.getToken())
+                                    .setOk(102).setType(DatagramProto.DatagramVersion1.Type.USER)
+                                    .setSubtype(DatagramProto.DatagramVersion1.Subtype.REQUEST)
+                                    .setUser(
+                                            DatagramProto.User.newBuilder().setEmail(text).build()
+                                    ).build().toByteString()
+                    ).build());
+                } else if ("com.example.demo.user.change.department".equals(type)) {
+                    if (getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE).getInt("identity", 0) == 1) {
+                        channel.writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
+                                DatagramProto.DatagramVersion1.newBuilder().setToken(ClientHandler.getToken())
+                                        .setOk(105).setType(DatagramProto.DatagramVersion1.Type.USER)
+                                        .setSubtype(DatagramProto.DatagramVersion1.Subtype.REQUEST)
+                                        .setUser(
+                                                DatagramProto.User.newBuilder().setTeacher(
+                                                        DatagramProto.Teacher.newBuilder().setDepartment(text).build()
+                                                ).build()
+                                        ).build().toByteString()
+                        ).build());
+                    } else {
+                        channel.writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
+                                DatagramProto.DatagramVersion1.newBuilder().setToken(ClientHandler.getToken())
+                                        .setOk(105).setType(DatagramProto.DatagramVersion1.Type.USER)
+                                        .setSubtype(DatagramProto.DatagramVersion1.Subtype.REQUEST)
+                                        .setUser(
+                                                DatagramProto.User.newBuilder().setStudent(
+                                                        DatagramProto.Student.newBuilder().setDepartment(text).build()
+                                                ).build()
+                                        ).build().toByteString()
+                        ).build());
+                    }
+                } else if ("com.example.demo.user.change.major".equals(type)) {
+                    channel.writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
+                            DatagramProto.DatagramVersion1.newBuilder().setToken(ClientHandler.getToken())
+                                    .setOk(106).setType(DatagramProto.DatagramVersion1.Type.USER)
+                                    .setSubtype(DatagramProto.DatagramVersion1.Subtype.REQUEST)
+                                    .setUser(
+                                            DatagramProto.User.newBuilder().setStudent(
+                                                    DatagramProto.Student.newBuilder().setMajor(text).build()
+                                            ).build()
+                                    ).build().toByteString()
+                    ).build());
+                } else if ("com.example.demo.user.change.class_no".equals(type)) {
+                    channel.writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
+                            DatagramProto.DatagramVersion1.newBuilder().setToken(ClientHandler.getToken())
+                                    .setOk(107).setType(DatagramProto.DatagramVersion1.Type.USER)
+                                    .setSubtype(DatagramProto.DatagramVersion1.Subtype.REQUEST)
+                                    .setUser(
+                                            DatagramProto.User.newBuilder().setStudent(
+                                                    DatagramProto.Student.newBuilder().setClassNo(text).build()
+                                            ).build()
+                                    ).build().toByteString()
+                    ).build());
+                } else if ("com.example.demo.user.change.password".equals(type)) {
+                    channel.writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
+                            DatagramProto.DatagramVersion1.newBuilder().setType(DatagramProto.DatagramVersion1.Type.USER)
+                                    .setSubtype(DatagramProto.DatagramVersion1.Subtype.REQUEST).setOk(104)
+                                    .setToken(ClientHandler.getToken()).setUser(
+                                            DatagramProto.User.newBuilder().setPassword(text).build()
+                            ).build().toByteString()
+                    ).build());
+                }
             }
         }
     }

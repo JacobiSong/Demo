@@ -11,16 +11,23 @@ import android.widget.TextView;
 
 import com.example.demo.R;
 
+import org.w3c.dom.Text;
+
 public class UserProfileItem extends RelativeLayout {
+    private final TextView message;
+    private final ImageView imageView;
+    private String str = "";
     public UserProfileItem(Context context, AttributeSet attrs) {
         super(context, attrs);
         LayoutInflater.from(getContext()).inflate(R.layout.user_profile_item,this);
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.UserProfileItem);
-        TextView text = findViewById(R.id.user_profile_item_text);
-        ImageView arrow = findViewById(R.id.user_profile_item_arrow);
+        message = findViewById(R.id.user_profile_item_message);
+        ((TextView)findViewById(R.id.user_profile_item_text)).setText(
+                typedArray.getString(R.styleable.UserProfileItem_user_profile_text)
+        );
+        imageView = findViewById(R.id.user_profile_item_arrow);
         RelativeLayout line = findViewById(R.id.user_profile_item_line);
         final RelativeLayout root = findViewById(R.id.user_profile_root);
-        text.setText(typedArray.getString(R.styleable.UserProfileItem_user_profile_text));
         if (typedArray.getBoolean(R.styleable.UserProfileItem_user_profile_line, false)) {
             line.setBackgroundColor(getResources().getColor(R.color.light_gray));
         }
@@ -28,16 +35,15 @@ public class UserProfileItem extends RelativeLayout {
             line.setBackgroundColor(getResources().getColor(R.color.white));
         }
         if (typedArray.getBoolean(R.styleable.UserProfileItem_user_profile_arrow, false)) {
-            arrow.setBackground(getResources().getDrawable(R.drawable.arrow_right_24));
+            imageView.setBackground(getResources().getDrawable(R.drawable.arrow_right_24));
         }
         else {
-            arrow.setBackground(null);
+            imageView.setBackground(null);
         }
         setOnTouchListener((v, event) -> {
             switch (event.getAction()){
                 case MotionEvent.ACTION_DOWN: {
                     root.setBackgroundColor(getResources().getColor(R.color.gray));
-                    break;
                 }
                 case MotionEvent.ACTION_MOVE: {
                     break;
@@ -49,7 +55,29 @@ public class UserProfileItem extends RelativeLayout {
                 default:
                     break;
             }
-            return true;
+            return !typedArray.getBoolean(R.styleable.UserProfileItem_user_profile_arrow, false);
         });
+    }
+
+    public void setText(String text) {
+        if (text == null || text.isEmpty()) {
+            str = "";
+            message.setText("未设置");
+        } else {
+            str = text;
+            message.setText(text);
+        }
+    }
+
+    public String getText() {
+        return str;
+    }
+
+    public void clearImage() {
+        imageView.setBackground(null);
+    }
+
+    public void setImage(int RId) {
+        imageView.setBackground(getResources().getDrawable(RId));
     }
 }

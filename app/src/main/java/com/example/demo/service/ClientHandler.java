@@ -134,7 +134,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
             }
             case USER: {
                 switch (msg.getOk()) {
-                    case 100:
+                    case 100: {
                         DatagramProto.User user = msg.getUser();
                         ContentValues userValues = new ContentValues();
                         userValues.put("phone", user.getPhone());
@@ -161,15 +161,123 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
                                 break;
                         }
                         break;
-                    case 101:
-                    case 102:
-                    case 103:
-                    case 105:
-                    case 104:
-                    case 107:
-                    case 106:
+                    }
+                    case 101: {
+                        ContentValues userValues = new ContentValues();
+                        userValues.put("phone", msg.getUser().getPhone());
+                        long last_modified = msg.getUser().getLastModified();
+                        userValues.put("last_modified", last_modified);
+                        MyApplication.getDatabase().update("user", SQLiteDatabase.CONFLICT_REPLACE, userValues, "id = ?", MyApplication.getUsername());
+                        SharedPreferences sp = MyApplication.getInstance().getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE);
+                        long time = sp.getLong("db_version", 0);
+                        if (last_modified > time) {
+                            SharedPreferences.Editor editor = sp.edit();
+                            editor.putLong("db_version", last_modified);
+                            editor.apply();
+                        }
                         MyApplication.getInstance().sendBroadcast(new Intent().setAction("com.example.demo.toast").putExtra("text", "修改成功"));
                         break;
+                    }
+                    case 102: {
+                        ContentValues userValues = new ContentValues();
+                        userValues.put("email", msg.getUser().getEmail());
+                        long last_modified = msg.getUser().getLastModified();
+                        userValues.put("last_modified", last_modified);
+                        MyApplication.getDatabase().update("user", SQLiteDatabase.CONFLICT_REPLACE, userValues, "id = ?", MyApplication.getUsername());
+                        SharedPreferences sp = MyApplication.getInstance().getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE);
+                        long time = sp.getLong("db_version", 0);
+                        if (last_modified > time) {
+                            SharedPreferences.Editor editor = sp.edit();
+                            editor.putLong("db_version", last_modified);
+                            editor.apply();
+                        }
+                        MyApplication.getInstance().sendBroadcast(new Intent().setAction("com.example.demo.toast").putExtra("text", "修改成功"));
+                        break;
+                    }
+                    case 103: {
+                        ContentValues userValues = new ContentValues();
+                        userValues.put("gender", msg.getUser().getGenderValue());
+                        long last_modified = msg.getUser().getLastModified();
+                        userValues.put("last_modified", last_modified);
+                        MyApplication.getDatabase().update("user", SQLiteDatabase.CONFLICT_REPLACE, userValues, "id = ?", MyApplication.getUsername());
+                        SharedPreferences sp = MyApplication.getInstance().getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE);
+                        long time = sp.getLong("db_version", 0);
+                        if (last_modified > time) {
+                            SharedPreferences.Editor editor = sp.edit();
+                            editor.putLong("db_version", last_modified);
+                            editor.apply();
+                        }
+                        MyApplication.getInstance().sendBroadcast(new Intent().setAction("com.example.demo.toast").putExtra("text", "修改成功"));
+                        break;
+                    }
+                    case 104: {
+                        SharedPreferences.Editor editor = MyApplication.getInstance().getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE).edit();
+                        editor.putString("password", msg.getUser().getPassword());
+                        editor.apply();
+                        MyApplication.getInstance().sendBroadcast(new Intent().setAction("com.example.demo.toast").putExtra("text", "修改成功"));
+                        break;
+                    }
+                    case 105: {
+                        int identity = MyApplication.getInstance().getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE).getInt("identity", 0);
+                        if (identity == 0) {
+                            ContentValues studentValues = new ContentValues();
+                            studentValues.put("department", msg.getUser().getStudent().getDepartment());
+                            MyApplication.getDatabase().update("student", SQLiteDatabase.CONFLICT_REPLACE, studentValues, "id = ?", MyApplication.getUsername());
+                        } else {
+                            ContentValues teacherValues = new ContentValues();
+                            teacherValues.put("department", msg.getUser().getTeacher().getDepartment());
+                            MyApplication.getDatabase().update("teacher", SQLiteDatabase.CONFLICT_REPLACE, teacherValues, "id = ?", MyApplication.getUsername());
+                        }
+                        ContentValues userValues = new ContentValues();
+                        long last_modified = msg.getUser().getLastModified();
+                        userValues.put("last_modified", last_modified);
+                        MyApplication.getDatabase().update("user", SQLiteDatabase.CONFLICT_REPLACE, userValues, "id = ?", MyApplication.getUsername());
+                        SharedPreferences sp = MyApplication.getInstance().getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE);
+                        long time = sp.getLong("db_version", 0);
+                        if (last_modified > time) {
+                            SharedPreferences.Editor editor = sp.edit();
+                            editor.putLong("db_version", last_modified);
+                            editor.apply();
+                        }
+                        MyApplication.getInstance().sendBroadcast(new Intent().setAction("com.example.demo.toast").putExtra("text", "修改成功"));
+                        break;
+                    }
+                    case 106: {
+                        ContentValues studentValues = new ContentValues();
+                        studentValues.put("major", msg.getUser().getStudent().getMajor());
+                        MyApplication.getDatabase().update("student", SQLiteDatabase.CONFLICT_REPLACE, studentValues, "id = ?", MyApplication.getUsername());
+                        ContentValues userValues = new ContentValues();
+                        long last_modified = msg.getUser().getLastModified();
+                        userValues.put("last_modified", last_modified);
+                        MyApplication.getDatabase().update("user", SQLiteDatabase.CONFLICT_REPLACE, userValues, "id = ?", MyApplication.getUsername());
+                        SharedPreferences sp = MyApplication.getInstance().getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE);
+                        long time = sp.getLong("db_version", 0);
+                        if (last_modified > time) {
+                            SharedPreferences.Editor editor = sp.edit();
+                            editor.putLong("db_version", last_modified);
+                            editor.apply();
+                        }
+                        MyApplication.getInstance().sendBroadcast(new Intent().setAction("com.example.demo.toast").putExtra("text", "修改成功"));
+                        break;
+                    }
+                    case 107: {
+                        ContentValues studentValues = new ContentValues();
+                        studentValues.put("class_no", msg.getUser().getStudent().getClassNo());
+                        MyApplication.getDatabase().update("student", SQLiteDatabase.CONFLICT_REPLACE, studentValues, "id = ?", MyApplication.getUsername());
+                        ContentValues userValues = new ContentValues();
+                        long last_modified = msg.getUser().getLastModified();
+                        userValues.put("last_modified", last_modified);
+                        MyApplication.getDatabase().update("user", SQLiteDatabase.CONFLICT_REPLACE, userValues, "id = ?", MyApplication.getUsername());
+                        SharedPreferences sp = MyApplication.getInstance().getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE);
+                        long time = sp.getLong("db_version", 0);
+                        if (last_modified > time) {
+                            SharedPreferences.Editor editor = sp.edit();
+                            editor.putLong("db_version", last_modified);
+                            editor.apply();
+                        }
+                        MyApplication.getInstance().sendBroadcast(new Intent().setAction("com.example.demo.toast").putExtra("text", "修改成功"));
+                        break;
+                    }
                     case 200:
                         MyApplication.getInstance().sendBroadcast(new Intent().setAction("com.example.demo.toast").putExtra("text", "无此用户"));
                         break;
@@ -227,178 +335,225 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
         while(MyApplication.getDatabase() == null) {
             Log.d("ClientHandler", "loading database...");
         }
-        final DatagramProto.DatagramVersion1.Type type = msg.getType();
-        switch (type) {
-            case GROUP: {
-                DatagramProto.Group group = msg.getGroup();
-                DatagramProto.Course course = group.getCourse();
-                long lastModified = course.getLastModified();
-                ContentValues courseValues = new ContentValues();
-                courseValues.put("id", course.getId());
-                courseValues.put("name", course.getName());
-                courseValues.put("classroom", course.getClassroom());
-                courseValues.put("time", course.getTime());
-                courseValues.put("semester", course.getSemester());
-                courseValues.put("remarks", course.getRemarks());
-                courseValues.put("last_modified", lastModified);
-                MyApplication.getDatabase().insert("course", SQLiteDatabase.CONFLICT_REPLACE, courseValues);
-                for (DatagramProto.User user : group.getUsers().getUsersList()) {
-                    ContentValues joinValues = new ContentValues();
-                    joinValues.put("user_id", user.getId());
-                    joinValues.put("course_id", course.getId());
-                    MyApplication.getDatabase().insert("t_join", SQLiteDatabase.CONFLICT_REPLACE, joinValues);
-                    String name = user.getName();
-                    if (!name.isEmpty()) {
+        switch (msg.getOk()) {
+            case 100: {
+                switch (msg.getType()) {
+                    case GROUP: {
+                        DatagramProto.Group group = msg.getGroup();
+                        DatagramProto.Course course = group.getCourse();
+                        long lastModified = course.getLastModified();
+                        ContentValues courseValues = new ContentValues();
+                        courseValues.put("id", course.getId());
+                        courseValues.put("name", course.getName());
+                        courseValues.put("classroom", course.getClassroom());
+                        courseValues.put("time", course.getTime());
+                        courseValues.put("semester", course.getSemester());
+                        courseValues.put("remarks", course.getRemarks());
+                        courseValues.put("last_modified", lastModified);
+                        MyApplication.getDatabase().insert("course", SQLiteDatabase.CONFLICT_REPLACE, courseValues);
+                        for (DatagramProto.User user : group.getUsers().getUsersList()) {
+                            ContentValues joinValues = new ContentValues();
+                            joinValues.put("user_id", user.getId());
+                            joinValues.put("course_id", course.getId());
+                            MyApplication.getDatabase().insert("t_join", SQLiteDatabase.CONFLICT_REPLACE, joinValues);
+                            String name = user.getName();
+                            if (!name.isEmpty()) {
+                                int identity = user.getIdentityValue();
+                                ContentValues userValues = new ContentValues();
+                                userValues.put("id", user.getId());
+                                switch (identity) {
+                                    case 0:
+                                        MyApplication.getDatabase().insert("student", SQLiteDatabase.CONFLICT_IGNORE, userValues);
+                                        break;
+                                    case 1:
+                                        MyApplication.getDatabase().insert("teacher", SQLiteDatabase.CONFLICT_IGNORE, userValues);
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                userValues.put("last_modified", user.getCreateTime());
+                                userValues.put("name", name);
+                                userValues.put("identity", identity);
+                                MyApplication.getDatabase().insert("user", SQLiteDatabase.CONFLICT_IGNORE, userValues);
+                            }
+                        }
+                        MyApplication.getDatabase().execute("create table if not exists " + course.getId() + "_m (" +
+                                "id bigint, " +
+                                "sender_id varchar(10) not null, " +
+                                "receiver_id varchar(10) not null, " +
+                                "content varchar(1000) not null, " +
+                                "time bigint, " +
+                                "temporary_id int, " +
+                                "constraint un1 unique(id, temporary_id))");
+                        MyApplication.getDatabase().execute("create table if not exists " + course.getId() + "_n (" +
+                                "id bigint, " +
+                                "sender_id varchar(10) not null, " +
+                                "receiver_id varchar(10) not null, " +
+                                "title varchar(20) not null, " +
+                                "content varchar(1000) not null, " +
+                                "time bigint, " +
+                                "temporary_id int, " +
+                                "constraint un1 unique(id, temporary_id))");
+                        SharedPreferences sp = MyApplication.getInstance().getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sp.edit();
+                        editor.putLong("db_version", lastModified);
+                        editor.apply();
+                        // 发送Ack报文, 返回正确码100
+                        ctx.channel().writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
+                                DatagramProto.DatagramVersion1.newBuilder().setType(DatagramProto.DatagramVersion1.Type.GROUP)
+                                        .setSubtype(DatagramProto.DatagramVersion1.Subtype.ACK).setToken(token).setOk(100)
+                                        .setPush(msg.getPush()).build().toByteString()
+                        ).build());
+                        break;
+                    }
+                    case MESSAGE: {
+                        DatagramProto.Message message = msg.getMessage();
+                        String sender_id = message.getSenderId();
+                        String receiver_id = message.getReceiverId();
+                        int temporary_id = message.getTemporaryId();
+                        long time = message.getTime();
+                        ContentValues messageValues = new ContentValues();
+                        messageValues.put("id", message.getId());
+                        messageValues.put("sender_id", sender_id);
+                        messageValues.put("receiver_id", receiver_id);
+                        messageValues.put("content", message.getContent());
+                        messageValues.put("time", time);
+                        messageValues.putNull("temporary_id");
+                        if (sender_id.equals(MyApplication.getUsername())) {
+                            Cursor cursor = MyApplication.getDatabase().query("select count(1) from " + receiver_id + "_m where temporary_id = ?", temporary_id);
+                            if (cursor.moveToFirst() && cursor.getInt(0) != 0) {
+                                MyApplication.getDatabase().update(receiver_id + "_m", SQLiteDatabase.CONFLICT_REPLACE, messageValues, "temporary_id = " + temporary_id);
+                            } else {
+                                MyApplication.getDatabase().insert(receiver_id + "_m", SQLiteDatabase.CONFLICT_REPLACE, messageValues);
+                            }
+                        } else {
+                            MyApplication.getDatabase().insert(receiver_id + "_m", SQLiteDatabase.CONFLICT_REPLACE, messageValues);
+                        }
+                        SharedPreferences sp = MyApplication.getInstance().getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sp.edit();
+                        editor.putLong("db_version", time);
+                        editor.apply();
+                        // 发送Ack报文, 返回正确码100
+                        ctx.channel().writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
+                                DatagramProto.DatagramVersion1.newBuilder().setType(DatagramProto.DatagramVersion1.Type.MESSAGE)
+                                        .setSubtype(DatagramProto.DatagramVersion1.Subtype.ACK).setToken(token).setOk(100)
+                                        .setPush(msg.getPush()).build().toByteString()
+                        ).build());
+                        break;
+                    }
+                    case NOTIFICATION: {
+                        DatagramProto.Notification notification = msg.getNotification();
+                        String sender_id = notification.getSenderId();
+                        String receiver_id = notification.getReceiverId();
+                        int temporary_id = notification.getTemporaryId();
+                        long time = notification.getTime();
+                        ContentValues notificationValues = new ContentValues();
+                        notificationValues.put("id", notification.getId());
+                        notificationValues.put("sender_id", sender_id);
+                        notificationValues.put("receiver_id", receiver_id);
+                        notificationValues.put("title", notification.getTitle());
+                        notificationValues.put("content", notification.getContent());
+                        notificationValues.put("time", notification.getTime());
+                        notificationValues.putNull("temporary_id");
+                        if (sender_id.equals(MyApplication.getUsername())) {
+                            Cursor cursor = MyApplication.getDatabase().query("select count(1) from " + receiver_id + "_n where temporary_id = ?", temporary_id);
+                            if (cursor.moveToFirst() && cursor.getInt(0) != 0) {
+                                MyApplication.getDatabase().update(receiver_id + "_n", SQLiteDatabase.CONFLICT_REPLACE, notificationValues, "temporary_id = " + temporary_id);
+                            } else {
+                                MyApplication.getDatabase().insert(receiver_id + "_n", SQLiteDatabase.CONFLICT_REPLACE, notificationValues);
+                            }
+                        } else {
+                            MyApplication.getDatabase().insert(receiver_id + "_n", SQLiteDatabase.CONFLICT_REPLACE, notificationValues);
+                        }
+                        MyApplication.getDatabase().executeAndTrigger("course", "drop table if exists _n");
+                        SharedPreferences sp = MyApplication.getInstance().getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sp.edit();
+                        editor.putLong("db_version", time);
+                        editor.apply();
+                        // 发送Ack报文, 返回正确码100
+                        ctx.channel().writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
+                                DatagramProto.DatagramVersion1.newBuilder().setType(DatagramProto.DatagramVersion1.Type.NOTIFICATION)
+                                        .setSubtype(DatagramProto.DatagramVersion1.Subtype.ACK).setToken(token).setOk(100)
+                                        .setPush(msg.getPush()).build().toByteString()
+                        ).build());
+                        break;
+                    }
+                    case USER: {
+                        DatagramProto.User user = msg.getUser();
+                        long createTime = user.getCreateTime();
                         int identity = user.getIdentityValue();
                         ContentValues userValues = new ContentValues();
                         userValues.put("id", user.getId());
                         switch (identity) {
                             case 0:
-                                MyApplication.getDatabase().insert("student", SQLiteDatabase.CONFLICT_IGNORE, userValues);
+                                MyApplication.getDatabase().insert("student", SQLiteDatabase.CONFLICT_REPLACE, userValues);
                                 break;
                             case 1:
-                                MyApplication.getDatabase().insert("teacher", SQLiteDatabase.CONFLICT_IGNORE, userValues);
+                                MyApplication.getDatabase().insert("teacher", SQLiteDatabase.CONFLICT_REPLACE, userValues);
                                 break;
                             default:
                                 break;
                         }
-                        userValues.put("last_modified", user.getCreateTime());
-                        userValues.put("name", name);
+                        userValues.put("name", user.getName());
                         userValues.put("identity", identity);
-                        MyApplication.getDatabase().insert("user", SQLiteDatabase.CONFLICT_IGNORE, userValues);
-                    }
-                }
-                MyApplication.getDatabase().execute("create table if not exists " + course.getId() + "_m (" +
-                        "id bigint, " +
-                        "sender_id varchar(10) not null, " +
-                        "receiver_id varchar(10) not null, " +
-                        "content varchar(1000) not null, " +
-                        "time bigint, " +
-                        "temporary_id int, " +
-                        "constraint un1 unique(id, temporary_id))");
-                MyApplication.getDatabase().execute("create table if not exists " + course.getId() + "_n (" +
-                        "id bigint, " +
-                        "sender_id varchar(10) not null, " +
-                        "receiver_id varchar(10) not null, " +
-                        "title varchar(20) not null, " +
-                        "content varchar(1000) not null, " +
-                        "time bigint, " +
-                        "temporary_id int, " +
-                        "constraint un1 unique(id, temporary_id))");
-                SharedPreferences sp = MyApplication.getInstance().getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sp.edit();
-                editor.putLong("db_version", lastModified);
-                editor.apply();
-                // 发送Ack报文, 返回正确码100
-                ctx.channel().writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
-                        DatagramProto.DatagramVersion1.newBuilder().setType(DatagramProto.DatagramVersion1.Type.GROUP)
-                                .setSubtype(DatagramProto.DatagramVersion1.Subtype.ACK).setToken(token).setOk(100)
-                                .setPush(msg.getPush()).build().toByteString()
-                ).build());
-                break;
-            }
-            case MESSAGE: {
-                DatagramProto.Message message = msg.getMessage();
-                String sender_id = message.getSenderId();
-                String receiver_id = message.getReceiverId();
-                int temporary_id = message.getTemporaryId();
-                long time = message.getTime();
-                ContentValues messageValues = new ContentValues();
-                messageValues.put("id", message.getId());
-                messageValues.put("sender_id", sender_id);
-                messageValues.put("receiver_id", receiver_id);
-                messageValues.put("content", message.getContent());
-                messageValues.put("time", time);
-                messageValues.putNull("temporary_id");
-                if (sender_id.equals(MyApplication.getUsername())) {
-                    Cursor cursor = MyApplication.getDatabase().query("select count(1) from " + receiver_id + "_m where temporary_id = ?", temporary_id);
-                    if (cursor.moveToFirst() && cursor.getInt(0) != 0) {
-                        MyApplication.getDatabase().update(receiver_id + "_m", SQLiteDatabase.CONFLICT_REPLACE, messageValues, "temporary_id = " + temporary_id);
-                    } else {
-                        MyApplication.getDatabase().insert(receiver_id + "_m", SQLiteDatabase.CONFLICT_REPLACE, messageValues);
-                    }
-                } else {
-                    MyApplication.getDatabase().insert(receiver_id + "_m", SQLiteDatabase.CONFLICT_REPLACE, messageValues);
-                }
-                SharedPreferences sp = MyApplication.getInstance().getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sp.edit();
-                editor.putLong("db_version", time);
-                editor.apply();
-                // 发送Ack报文, 返回正确码100
-                ctx.channel().writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
-                        DatagramProto.DatagramVersion1.newBuilder().setType(DatagramProto.DatagramVersion1.Type.MESSAGE)
-                                .setSubtype(DatagramProto.DatagramVersion1.Subtype.ACK).setToken(token).setOk(100)
-                                .setPush(msg.getPush()).build().toByteString()
-                ).build());
-                break;
-            }
-            case NOTIFICATION: {
-                DatagramProto.Notification notification = msg.getNotification();
-                String sender_id = notification.getSenderId();
-                String receiver_id = notification.getReceiverId();
-                int temporary_id = notification.getTemporaryId();
-                long time = notification.getTime();
-                ContentValues notificationValues = new ContentValues();
-                notificationValues.put("id", notification.getId());
-                notificationValues.put("sender_id", sender_id);
-                notificationValues.put("receiver_id", receiver_id);
-                notificationValues.put("title", notification.getTitle());
-                notificationValues.put("content", notification.getContent());
-                notificationValues.put("time", notification.getTime());
-                notificationValues.putNull("temporary_id");
-                if (sender_id.equals(MyApplication.getUsername())) {
-                    Cursor cursor = MyApplication.getDatabase().query("select count(1) from " + receiver_id + "_n where temporary_id = ?", temporary_id);
-                    if (cursor.moveToFirst() && cursor.getInt(0) != 0) {
-                        MyApplication.getDatabase().update(receiver_id + "_n", SQLiteDatabase.CONFLICT_REPLACE, notificationValues, "temporary_id = " + temporary_id);
-                    } else {
-                        MyApplication.getDatabase().insert(receiver_id + "_n", SQLiteDatabase.CONFLICT_REPLACE, notificationValues);
-                    }
-                } else {
-                    MyApplication.getDatabase().insert(receiver_id + "_n", SQLiteDatabase.CONFLICT_REPLACE, notificationValues);
-                }
-                MyApplication.getDatabase().executeAndTrigger("course", "drop table if exists _n");
-                SharedPreferences sp = MyApplication.getInstance().getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sp.edit();
-                editor.putLong("db_version", time);
-                editor.apply();
-                // 发送Ack报文, 返回正确码100
-                ctx.channel().writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
-                        DatagramProto.DatagramVersion1.newBuilder().setType(DatagramProto.DatagramVersion1.Type.NOTIFICATION)
-                                .setSubtype(DatagramProto.DatagramVersion1.Subtype.ACK).setToken(token).setOk(100)
-                                .setPush(msg.getPush()).build().toByteString()
-                ).build());
-                break;
-            }
-            case USER: {
-                DatagramProto.User user = msg.getUser();
-                long createTime = user.getCreateTime();
-                int identity = user.getIdentityValue();
-                ContentValues userValues = new ContentValues();
-                userValues.put("id", user.getId());
-                switch (identity) {
-                    case 0:
-                        MyApplication.getDatabase().insert("student", SQLiteDatabase.CONFLICT_REPLACE, userValues);
+                        userValues.put("last_modified", createTime);
+                        MyApplication.getDatabase().insert("user", SQLiteDatabase.CONFLICT_REPLACE, userValues);
+                        SharedPreferences sp = MyApplication.getInstance().getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sp.edit();
+                        editor.putLong("db_version", createTime);
+                        editor.apply();
+                        // 发送Ack报文, 返回正确码100
+                        ctx.channel().writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
+                                DatagramProto.DatagramVersion1.newBuilder().setType(DatagramProto.DatagramVersion1.Type.USER)
+                                        .setSubtype(DatagramProto.DatagramVersion1.Subtype.ACK).setToken(token).setOk(100)
+                                        .setPush(msg.getPush()).build().toByteString()
+                        ).build());
                         break;
-                    case 1:
-                        MyApplication.getDatabase().insert("teacher", SQLiteDatabase.CONFLICT_REPLACE, userValues);
-                        break;
+                    }
                     default:
                         break;
                 }
-                userValues.put("name", user.getName());
-                userValues.put("identity", identity);
-                userValues.put("last_modified", createTime);
-                MyApplication.getDatabase().insert("user", SQLiteDatabase.CONFLICT_REPLACE, userValues);
-                SharedPreferences sp = MyApplication.getInstance().getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sp.edit();
-                editor.putLong("db_version", createTime);
-                editor.apply();
-                // 发送Ack报文, 返回正确码100
-                ctx.channel().writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
-                        DatagramProto.DatagramVersion1.newBuilder().setType(DatagramProto.DatagramVersion1.Type.USER)
-                                .setSubtype(DatagramProto.DatagramVersion1.Subtype.ACK).setToken(token).setOk(100)
-                                .setPush(msg.getPush()).build().toByteString()
-                ).build());
+                break;
+            }
+            case 101: {
+                if (msg.getType() == DatagramProto.DatagramVersion1.Type.USER) {
+                    DatagramProto.User user = msg.getUser();
+                    String id = user.getId();
+                    ContentValues userValues = new ContentValues();
+                    userValues.put("phone", user.getPhone());
+                    userValues.put("email", user.getEmail());
+                    userValues.put("gender", user.getGenderValue());
+                    userValues.put("last_modified", user.getLastModified());
+                    MyApplication.getDatabase().update("user", SQLiteDatabase.CONFLICT_REPLACE, userValues, "id = ?", id);
+                    switch (user.getIdentityValue()) {
+                        case 0: {
+                            ContentValues studentValues = new ContentValues();
+                            studentValues.put("department", user.getStudent().getDepartment());
+                            studentValues.put("major", user.getStudent().getMajor());
+                            studentValues.put("class_no", user.getStudent().getClassNo());
+                            MyApplication.getDatabase().update("student", SQLiteDatabase.CONFLICT_REPLACE, studentValues, "id = ?", id);
+                            break;
+                        }
+                        case 1: {
+                            ContentValues teacherValues = new ContentValues();
+                            teacherValues.put("department", user.getTeacher().getDepartment());
+                            MyApplication.getDatabase().update("teacher", SQLiteDatabase.CONFLICT_REPLACE, teacherValues, "id = ?", id);
+                            break;
+                        }
+                        default:
+                            break;
+                    }
+                    SharedPreferences sp = MyApplication.getInstance().getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.putLong("db_version", user.getLastModified());
+                    editor.apply();
+                    // 发送Ack报文, 返回正确码100
+                    ctx.channel().writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
+                            DatagramProto.DatagramVersion1.newBuilder().setType(DatagramProto.DatagramVersion1.Type.USER)
+                                    .setSubtype(DatagramProto.DatagramVersion1.Subtype.ACK).setToken(token).setOk(100)
+                                    .setPush(msg.getPush()).build().toByteString()
+                    ).build());
+                }
                 break;
             }
             default:

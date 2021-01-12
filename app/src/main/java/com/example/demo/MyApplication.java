@@ -23,8 +23,8 @@ public class MyApplication extends Application {
             else if ("com.example.demo.toast".equals(action)) {
                 Toast.makeText(getApplicationContext(), intent.getStringExtra("text"), Toast.LENGTH_SHORT).show();
             } else if ("com.example.demo.offline".equals(action)) {
-                Toast.makeText(getApplicationContext(), "当前处于离线状态", Toast.LENGTH_SHORT).show();
                 if (!Configuration.INSTANCE.username.isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "当前处于离线状态", Toast.LENGTH_SHORT).show();
                     if (Configuration.INSTANCE.offlineThread != null && !Configuration.INSTANCE.offlineThread.isInterrupted()) {
                         Configuration.INSTANCE.offlineThread.interrupt();
                     }

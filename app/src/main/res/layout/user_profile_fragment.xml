@@ -13,27 +13,76 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
         <com.example.demo.ui.mine.profile.UserProfileItem
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:user_profile_text="姓名"
-            app:user_profile_arrow="false"
-            app:user_profile_line="true"/>
-        <com.example.demo.ui.mine.profile.UserProfileItem
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:user_profile_text="班号"
-            app:user_profile_arrow="false"
-            app:user_profile_line="true"/>
-        <com.example.demo.ui.mine.profile.UserProfileItem
+            android:id="@+id/user_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:user_profile_text="学号"
             app:user_profile_arrow="false"
             app:user_profile_line="true"/>
+
         <com.example.demo.ui.mine.profile.UserProfileItem
+            android:id="@+id/user_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:user_profile_text="手机号"
+            app:user_profile_text="姓名"
+            app:user_profile_arrow="false"
+            app:user_profile_line="true"/>
+
+        <com.example.demo.ui.mine.profile.UserProfileItem
+            android:id="@+id/user_gender"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:user_profile_text="性别"
+            app:user_profile_arrow="true"
+            app:user_profile_line="true"/>
+
+        <com.example.demo.ui.mine.profile.UserProfileItem
+            android:id="@+id/user_phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:user_profile_text="手机"
+            app:user_profile_arrow="true"
+            app:user_profile_line="true"/>
+
+        <com.example.demo.ui.mine.profile.UserProfileItem
+            android:id="@+id/user_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:user_profile_text="邮箱"
+            app:user_profile_arrow="true"
+            app:user_profile_line="true"/>
+
+        <com.example.demo.ui.mine.profile.UserProfileItem
+            android:id="@+id/user_department"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:user_profile_text="院系"
+            app:user_profile_arrow="true"
+            app:user_profile_line="true"/>
+
+        <com.example.demo.ui.mine.profile.UserProfileItem
+            android:id="@+id/user_major"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:user_profile_text="专业"
+            app:user_profile_arrow="true"
+            app:user_profile_line="true"/>
+
+        <com.example.demo.ui.mine.profile.UserProfileItem
+            android:id="@+id/user_class_no"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:user_profile_text="班级"
+            app:user_profile_arrow="true"
+            app:user_profile_line="false"/>
+
+        <com.example.demo.ui.mine.profile.UserProfileItem
+            android:id="@+id/user_password"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:user_profile_text="更改密码"
             app:user_profile_arrow="true"
             app:user_profile_line="false"/>
     </LinearLayout>

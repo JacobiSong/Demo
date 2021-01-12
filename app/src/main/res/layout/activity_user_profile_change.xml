@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@color/light_gray"
+    android:layout_height="match_parent"
+    tools:context=".ui.mine.profile.UserProfileChangeActivity">
+
+    <LinearLayout
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.example.demo.ui.mine.profile.UserProfileItem
+            android:id="@+id/secret_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:user_profile_text="保密"
+            app:user_profile_line="true"
+            app:user_profile_arrow="true"/>
+        <com.example.demo.ui.mine.profile.UserProfileItem
+            android:id="@+id/female_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:user_profile_text="女"
+            app:user_profile_line="true"
+            app:user_profile_arrow="true"/>
+        <com.example.demo.ui.mine.profile.UserProfileItem
+            android:id="@+id/male_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:user_profile_text="男"
+            app:user_profile_arrow="true"
+            app:user_profile_line="false"/>
+        <EditText
+            android:id="@+id/user_profile_editor"
+            android:paddingStart="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textSize="20sp" />
+        <LinearLayout
+            android:id="@+id/old_password_linear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                android:text="原密码" />
+            <EditText
+                android:layout_marginLeft="10dp"
+                android:background="@color/white"
+                android:id="@+id/old_password"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:inputType="textPassword" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/new_password_linear"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                android:text="新密码" />
+            <EditText
+                android:layout_marginLeft="10dp"
+                android:background="@color/white"
+                android:id="@+id/new_password"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:inputType="textPassword" />
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

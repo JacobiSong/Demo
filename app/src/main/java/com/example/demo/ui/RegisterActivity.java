@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.example.demo.MyApplication;
 import com.example.demo.R;
@@ -52,8 +53,13 @@ public class RegisterActivity extends AppCompatActivity {
         registerReceiver(broadcastReceiver, intentFilter);
         String username = ((EditText)findViewById(R.id.editTextTexEmailAddressRegister)).getText().toString();
         String password = ((EditText)findViewById(R.id.editTextTextPasswordRegister)).getText().toString();
-        int identity = ((RadioGroup)findViewById(R.id.radioGroup)).getCheckedRadioButtonId() == R.id.radioButtonTeacherMail ? 1 : 0;
-        MyApplication.getServer().register(username, password, identity);
+        String passwordAgain = ((EditText)findViewById(R.id.editTextTextPasswordRegisterRepeat)).getText().toString();
+        if (!password.equals(passwordAgain)) {
+            Toast.makeText(this, "输入的密码不一致", Toast.LENGTH_SHORT).show();
+        } else {
+            int identity = ((RadioGroup) findViewById(R.id.radioGroup)).getCheckedRadioButtonId() == R.id.radioButtonTeacherMail ? 1 : 0;
+            MyApplication.getServer().register(username, password, identity);
+        }
     }
 
     private void success() {
