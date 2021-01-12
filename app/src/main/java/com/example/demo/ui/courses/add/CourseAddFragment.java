@@ -20,7 +20,6 @@ import android.widget.ListView;
 import com.example.demo.MyApplication;
 import com.example.demo.R;
 import com.example.demo.datagram.DatagramProto;
-import com.example.demo.service.ClientHandler;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.util.ArrayList;
@@ -72,18 +71,8 @@ public class CourseAddFragment extends Fragment {
                 swipeRefreshLayout.setEnabled(firstVisibleItem == 0);
             }
         });
-        listView.setOnItemClickListener((parent, view, position, id) -> MyApplication.getServer().getChannel().writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
-                DatagramProto.DatagramVersion1.newBuilder().setToken(ClientHandler.getToken()).setOk(101)
-                        .setType(DatagramProto.DatagramVersion1.Type.COURSE).setCourse(
-                        DatagramProto.Course.newBuilder().setId(list.get(position).getId()).build()
-                )
-                        .setSubtype(DatagramProto.DatagramVersion1.Subtype.REQUEST).build().toByteString()
-        ).build()));
-        swipeRefreshLayout.setOnRefreshListener(() -> new Thread(() -> MyApplication.getServer().getChannel().writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
-                DatagramProto.DatagramVersion1.newBuilder().setType(DatagramProto.DatagramVersion1.Type.COURSE)
-                        .setSubtype(DatagramProto.DatagramVersion1.Subtype.REQUEST).setOk(100)
-                        .setToken(ClientHandler.getToken()).build().toByteString()
-        ).build())).start());
+        listView.setOnItemClickListener((parent, view, position, id) -> MyApplication.getServer().addGroup(list.get(position).getId()));
+        swipeRefreshLayout.setOnRefreshListener(() -> MyApplication.getServer().getCourses());
         return root;
     }
 
@@ -93,11 +82,7 @@ public class CourseAddFragment extends Fragment {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.example.demo.course");
         requireActivity().registerReceiver(broadcastReceiver, intentFilter);
-        MyApplication.getServer().getChannel().writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
-                DatagramProto.DatagramVersion1.newBuilder().setType(DatagramProto.DatagramVersion1.Type.COURSE)
-                        .setSubtype(DatagramProto.DatagramVersion1.Subtype.REQUEST).setOk(100)
-                        .setToken(ClientHandler.getToken()).build().toByteString()
-        ).build());
+        MyApplication.getServer().getCourses();
     }
 
     @Override

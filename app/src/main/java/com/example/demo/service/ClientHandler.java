@@ -24,6 +24,10 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
         return token;
     }
 
+    public ClientHandler() {
+
+    }
+
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, DatagramProto.Datagram msg) throws Exception {
         // 获取报文版本
@@ -404,8 +408,9 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        token = "";
         super.channelInactive(ctx);
+        token = "";
+        MyApplication.getInstance().sendBroadcast(new Intent().setAction("com.example.demo.offline"));
     }
 
     @Override

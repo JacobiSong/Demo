@@ -37,8 +37,7 @@ public class LaunchActivity extends AppCompatActivity {
                 MyApplication.setUsername(username);
                 MyApplication.setDatabase(new SqlBrite.Builder().build().wrapDatabaseHelper(new DatabaseHelper(username, 1).getSupportSQLiteOpenHelper(), Schedulers.io()));
                 SharedPreferences userSp = getSharedPreferences("user_" + username, MODE_PRIVATE);
-                MyApplication.getServer().login(userSp.getString("ip", "140.143.6.64"), userSp.getInt("port", 8888), username,
-                        userSp.getString("password", ""), userSp.getInt("identity", 0), userSp.getLong("db_version", 0));
+                MyApplication.getServer().login(username, userSp.getString("password", ""), userSp.getInt("identity", 0), userSp.getLong("db_version", 0));
                 startActivity(new Intent(getApplicationContext(), MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
             } else {
                 startActivity(new Intent(getApplicationContext(), LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));

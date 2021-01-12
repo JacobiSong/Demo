@@ -43,17 +43,13 @@ public class LoginActivity extends AppCompatActivity {
         registerReceiver(broadcastReceiver, intentFilter);
         username = ((EditText)findViewById(R.id.editTextTextEmailAddress)).getText().toString();
         String password = ((EditText)findViewById(R.id.editTextTextPassword)).getText().toString();
-        int identity = 0;
-        if(((RadioGroup)findViewById(R.id.radioGroup)).getCheckedRadioButtonId() == R.id.radioButtonTeacherMail) {
-            identity = 1;
-        }
+        int identity = ((RadioGroup)findViewById(R.id.radioGroup)).getCheckedRadioButtonId() == R.id.radioButtonTeacherMail ? 1 : 0;
         SharedPreferences userSp = getSharedPreferences("user_" + username, MODE_PRIVATE);
         SharedPreferences.Editor editor = userSp.edit();
         editor.putString("password", password);
         editor.putInt("identity", identity);
         editor.apply();
-        MyApplication.getServer().login(userSp.getString("ip", "140.143.6.64"), userSp.getInt("port", 8888),
-                username, password, identity, userSp.getLong("db_version", 0));
+        MyApplication.getServer().login(username, password, identity, userSp.getLong("db_version", 0));
     }
 
     public void login() {
@@ -69,5 +65,9 @@ public class LoginActivity extends AppCompatActivity {
 
     public void jumpToRegister(View view) {
         startActivity(new Intent(this, RegisterActivity.class));
+    }
+
+    public void jumpToSettings(View view) {
+        startActivity(new Intent(this, SettingsActivity.class));
     }
 }

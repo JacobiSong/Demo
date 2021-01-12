@@ -19,12 +19,5 @@
             app:key="server_port"
             app:title="@string/server_port_preferences"
             tools:summary="@string/not_set" />
-        <EditTextPreference
-            app:positiveButtonText="@string/positive_button_text"
-            app:negativeButtonText="@string/negative_button_text"
-            app:dependency="server_manually"
-            app:key="server_password"
-            app:title="@string/server_password_preferences"
-            tools:summary="@string/not_set" />
     </PreferenceCategory>
 </PreferenceScreen>

@@ -53,7 +53,7 @@ public class RegisterActivity extends AppCompatActivity {
         String username = ((EditText)findViewById(R.id.editTextTexEmailAddressRegister)).getText().toString();
         String password = ((EditText)findViewById(R.id.editTextTextPasswordRegister)).getText().toString();
         int identity = ((RadioGroup)findViewById(R.id.radioGroup)).getCheckedRadioButtonId() == R.id.radioButtonTeacherMail ? 1 : 0;
-        MyApplication.getServer().register("140.143.6.64", 8888, username, password, identity);
+        MyApplication.getServer().register(username, password, identity);
     }
 
     private void success() {

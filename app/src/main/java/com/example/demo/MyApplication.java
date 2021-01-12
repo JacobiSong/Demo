@@ -22,6 +22,30 @@ public class MyApplication extends Application {
             }
             else if ("com.example.demo.toast".equals(action)) {
                 Toast.makeText(getApplicationContext(), intent.getStringExtra("text"), Toast.LENGTH_SHORT).show();
+            } else if ("com.example.demo.offline".equals(action)) {
+                Toast.makeText(getApplicationContext(), "当前处于离线状态", Toast.LENGTH_SHORT).show();
+                if (!Configuration.INSTANCE.username.isEmpty()) {
+                    if (Configuration.INSTANCE.offlineThread != null && !Configuration.INSTANCE.offlineThread.isInterrupted()) {
+                        Configuration.INSTANCE.offlineThread.interrupt();
+                    }
+                    Configuration.INSTANCE.offlineThread = new Thread(() -> {
+                        for (int i = 0; i < Integer.MAX_VALUE; i++) {
+                            try {
+                                SharedPreferences userSp = getSharedPreferences("user_" + Configuration.INSTANCE.username, MODE_PRIVATE);
+                                Configuration.INSTANCE.server.login(Configuration.INSTANCE.username,
+                                        userSp.getString("password", ""), userSp.getInt("identity", 0), userSp.getLong("db_version", 0));
+                                Thread.sleep(6000);
+                            } catch (InterruptedException e) {
+                                break;
+                            }
+                        }
+                    });
+                    Configuration.INSTANCE.offlineThread.start();
+                }
+            } else if ("com.example.demo.login".equals(action)) {
+                if (Configuration.INSTANCE.offlineThread != null && !Configuration.INSTANCE.offlineThread.isInterrupted()) {
+                    Configuration.INSTANCE.offlineThread.interrupt();
+                }
             }
         }
     }
@@ -38,6 +62,7 @@ public class MyApplication extends Application {
 
     private enum Configuration {
         INSTANCE;
+        private Thread offlineThread = null;
         private MyApplication mContext = null;
         private BriteDatabase database = null;
         private String username = "";
@@ -57,8 +82,10 @@ public class MyApplication extends Application {
         Configuration.INSTANCE.mContext = this;
         startService(new Intent(this, ConnectService.class));
         IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.example.demo.login");
         intentFilter.addAction("com.example.demo.logout");
         intentFilter.addAction("com.example.demo.toast");
+        intentFilter.addAction("com.example.demo.offline");
         registerReceiver(broadcastReceiver, intentFilter);
     }
 

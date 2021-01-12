@@ -36,7 +36,6 @@ public class CoursesFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("SYQ", "onCreate: CoursesFragment");
         coursesViewModel = new ViewModelProvider(requireActivity()).get(CoursesViewModel.class);
         coursesAdapter = new CoursesAdapter(getContext(), coursesViewModel.getCourses());
         coursesViewModel.getCourses().observe(requireActivity(), courses -> coursesAdapter.notifyDataSetChanged());
