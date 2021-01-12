@@ -54,7 +54,7 @@ public class MemberThumbAdapter extends BaseAdapter {
             holder = (UserThumbHolder) convertView.getTag();
         }
 
-        holder.iconImageView.setImageResource(R.drawable.ic_user);
+        holder.iconImageView.setImageResource(R.drawable.account_circle_80);
         holder.usernameTextView.setText(user.getName());
 
         return convertView;

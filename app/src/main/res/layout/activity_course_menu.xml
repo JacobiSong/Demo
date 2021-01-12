@@ -30,20 +30,20 @@
 
     <ImageButton
         android:id="@+id/imageButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_marginStart="24dp"
         android:background="#00FF0000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.48"
-        app:srcCompat="@drawable/ic_file" />
+        app:srcCompat="@drawable/folder_green" />
 
     <ImageButton
         android:id="@+id/imageButton2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_marginStart="24dp"
         android:layout_marginLeft="24dp"
         android:background="#00FF0000"
@@ -51,12 +51,12 @@
         app:layout_constraintBottom_toBottomOf="@+id/imageButton"
         app:layout_constraintStart_toEndOf="@+id/imageButton"
         app:layout_constraintTop_toTopOf="@+id/imageButton"
-        app:srcCompat="@drawable/ic_notice" />
+        app:srcCompat="@drawable/campaign_orange" />
 
     <ImageButton
         android:id="@+id/imageButton3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_marginStart="24dp"
         android:layout_marginLeft="24dp"
         android:background="#00FF0000"
@@ -64,12 +64,13 @@
         app:layout_constraintBottom_toBottomOf="@+id/imageButton2"
         app:layout_constraintStart_toEndOf="@+id/imageButton2"
         app:layout_constraintTop_toTopOf="@+id/imageButton2"
-        app:srcCompat="@drawable/ic_course" />
+        app:srcCompat="@drawable/book_blue" />
 
     <TextView
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="18sp"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
         android:text="教师"
@@ -82,6 +83,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
+        android:textSize="18sp"
         android:text="学生"
         app:layout_constraintBottom_toTopOf="@+id/horizontalListViewForStudentMember"
         app:layout_constraintStart_toStartOf="parent" />
@@ -93,7 +95,7 @@
         android:onClick="toTeachers"
         app:layout_constraintBottom_toTopOf="@+id/horizontalListViewForTeacherMember"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_right_arrow" />
+        app:srcCompat="@drawable/arrow_right_24" />
 
     <ImageButton
         android:id="@+id/imageButton5"
@@ -102,6 +104,6 @@
         android:onClick="toStudents"
         app:layout_constraintBottom_toTopOf="@+id/horizontalListViewForStudentMember"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_right_arrow" />
+        app:srcCompat="@drawable/arrow_right_24" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

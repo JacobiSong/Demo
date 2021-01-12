@@ -53,7 +53,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberHold
     @Override
     public void onBindViewHolder(@NonNull MemberHolder holder, int position) {
         DatagramProto.User student = Objects.requireNonNull(this.data.getValue()).get(position);
-        holder.iconImageView.setImageResource(R.drawable.ic_user);
+        holder.iconImageView.setImageResource(R.drawable.account_circle_80);
         holder.usernameTextView.setText(student.getName());
         holder.typeTextView.setText("学生");
         holder.itemView.setOnClickListener(v -> context.startActivity(new Intent(context, UserInfoActivity.class)
