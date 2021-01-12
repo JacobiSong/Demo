@@ -92,7 +92,7 @@ public class UserProfileChangeActivity extends AppCompatActivity {
             } else if ("com.example.demo.user.change.department".equals(action)) {
                 setTitle("更改院系");
             } else if ("com.example.demo.user.change.major".equals(action)) {
-                setTitle("更改手机号");
+                setTitle("更改专业");
             } else if ("com.example.demo.user.change.class_no".equals(action)) {
                 setTitle("更改班级");
             }
