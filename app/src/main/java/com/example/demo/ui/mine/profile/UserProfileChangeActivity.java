@@ -74,6 +74,7 @@ public class UserProfileChangeActivity extends AppCompatActivity {
                 editor.setText("男");
             });
         } else if("com.example.demo.user.change.password".equals(action)) {
+            setTitle("更改密码");
             secret.setVisibility(View.GONE);
             female.setVisibility(View.GONE);
             male.setVisibility(View.GONE);

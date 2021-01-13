@@ -17,6 +17,7 @@
             android:label="@string/title_activity_user_profile_change" />
         <activity
             android:name=".ui.courses.chat.menu.notification.AddNotificationActivity"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"
             android:label="发布通知" />
         <activity
             android:name=".ui.LaunchActivity"
@@ -67,6 +68,7 @@
             android:name=".ui.courses.chat.CourseChatActivity"
             android:alwaysRetainTaskState="true"
             android:label="课程"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"
             android:parentActivityName=".ui.MainActivity" />
         <activity
             android:name=".ui.RegisterActivity"

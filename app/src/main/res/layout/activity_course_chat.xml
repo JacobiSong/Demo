@@ -25,8 +25,8 @@
         android:layout_marginRight="8dp"
         android:ems="10"
         android:inputType="textMultiLine"
-        app:layout_constraintBaseline_toBaselineOf="@+id/button"
-        app:layout_constraintEnd_toStartOf="@+id/button"
+        app:layout_constraintBaseline_toBaselineOf="@id/button"
+        app:layout_constraintEnd_toStartOf="@id/button"
         app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -34,7 +34,7 @@
         android:id="@+id/recyclerViewInCourseView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/msgTextView"
+        app:layout_constraintBottom_toTopOf="@id/msgTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -52,13 +52,16 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberHold
 
     @Override
     public void onBindViewHolder(@NonNull MemberHolder holder, int position) {
-        DatagramProto.User student = Objects.requireNonNull(this.data.getValue()).get(position);
+        DatagramProto.User user = Objects.requireNonNull(this.data.getValue()).get(position);
         holder.iconImageView.setImageResource(R.drawable.account_circle_80);
-        holder.usernameTextView.setText(student.getName());
-        holder.typeTextView.setText("学生");
+        holder.usernameTextView.setText(user.getName());
+        if (user.getIdentityValue() == 0) {
+            holder.typeTextView.setText("学生");
+        } else {
+            holder.typeTextView.setText("教师");
+        }
         holder.itemView.setOnClickListener(v -> context.startActivity(new Intent(context, UserInfoActivity.class)
-                .putExtra("id", data.getValue().get(position).getId())
-                .putExtra("last_modified", data.getValue().get(position).getLastModified())));
+                .putExtra("id", user.getId())));
     }
 
     @Override

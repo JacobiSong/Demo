@@ -48,7 +48,7 @@ public class CourseMenuActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         if (getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE).getInt("identity", 0) == 1) {
             MenuInflater inflater = getMenuInflater();
-            inflater.inflate(R.menu.menu_add_notification, menu);
+            inflater.inflate(R.menu.course_info_menu, menu);
         }
         return true;
     }

@@ -185,12 +185,15 @@ public class ConnectService extends Service {
 
         public void getUserInfo(String userId) {
             if (channel != null && channel.isActive()) {
-                channel.writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
-                        DatagramProto.DatagramVersion1.newBuilder().setType(DatagramProto.DatagramVersion1.Type.USER)
-                                .setSubtype(DatagramProto.DatagramVersion1.Subtype.REQUEST).setToken(ClientHandler.getToken())
-                                .setUser(DatagramProto.User.newBuilder().setId(userId).setLastModified(0).build())
-                                .setOk(100).build().toByteString()
-                ).build());
+                Cursor cursor = MyApplication.getDatabase().query("select last_modified from user where id = ?", userId);
+                if (cursor.moveToFirst()) {
+                    channel.writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
+                            DatagramProto.DatagramVersion1.newBuilder().setType(DatagramProto.DatagramVersion1.Type.USER)
+                                    .setSubtype(DatagramProto.DatagramVersion1.Subtype.REQUEST).setToken(ClientHandler.getToken())
+                                    .setUser(DatagramProto.User.newBuilder().setId(userId).setLastModified(cursor.getLong(0)).build())
+                                    .setOk(100).build().toByteString()
+                    ).build());
+                }
             }
         }
 

@@ -18,11 +18,19 @@ import android.view.ViewGroup;
 
 import com.example.demo.MyApplication;
 import com.example.demo.R;
+import com.example.demo.datagram.DatagramProto;
 
 public class UserProfileFragment extends Fragment {
+    private UserProfileViewModel viewModel;
 
     public static UserProfileFragment newInstance() {
         return new UserProfileFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        viewModel = new UserProfileViewModel();
     }
 
     @Nullable
@@ -62,11 +70,13 @@ public class UserProfileFragment extends Fragment {
             Cursor cursor = query.run();
             if (cursor.moveToFirst()) {
                 int g = cursor.getInt(0);
-                requireActivity().runOnUiThread(() -> {
-                    gender.setText(g == 0 ? "保密" : g == 1 ? "女" : "男");
-                    phone.setText(cursor.getString(1));
-                    email.setText(cursor.getString(2));
-                });
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        gender.setText(g == 0 ? "保密" : g == 1 ? "女" : "男");
+                        phone.setText(cursor.getString(1));
+                        email.setText(cursor.getString(2));
+                    });
+                }
             }
         });
         if (requireActivity().getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE).getInt("identity", 0) == 1) {
@@ -75,8 +85,9 @@ public class UserProfileFragment extends Fragment {
             MyApplication.getDatabase().createQuery("user", "select department from teacher where id = ?", userId).subscribe(query -> {
                 Cursor cursor = query.run();
                 if (cursor.moveToFirst()) {
-                    requireActivity().runOnUiThread(() -> department.setText(cursor.getString(0)));
-
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(() -> department.setText(cursor.getString(0)));
+                    }
                 }
             });
 
@@ -88,16 +99,22 @@ public class UserProfileFragment extends Fragment {
             MyApplication.getDatabase().createQuery("user", "select department, major, class_no from student where id = ?", userId).subscribe(query -> {
                 Cursor cursor = query.run();
                 if (cursor.moveToFirst()) {
-                    requireActivity().runOnUiThread(() -> {
-                        department.setText(cursor.getString(0));
-                        major.setText(cursor.getString(1));
-                        classNo.setText(cursor.getString(2));
-                    });
-
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(() -> {
+                            department.setText(cursor.getString(0));
+                            major.setText(cursor.getString(1));
+                            classNo.setText(cursor.getString(2));
+                        });
+                    }
                 }
             });
         }
         return root;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
     }
 
     @Override

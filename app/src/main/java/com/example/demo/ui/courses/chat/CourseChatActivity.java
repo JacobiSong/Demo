@@ -26,7 +26,7 @@ public class CourseChatActivity extends AppCompatActivity {
     private String courseId;
     private CourseChatViewModel courseChatViewModel;
     private RecyclerView msgRecyclerView;
-
+    private TextView textView;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +44,12 @@ public class CourseChatActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         msgRecyclerView.setLayoutManager(linearLayoutManager);
         msgRecyclerView.setAdapter(adapter);
+        msgRecyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                msgRecyclerView.scrollToPosition(courseChatViewModel.getMessages().getValue().size() - 1);
+            }
+        });
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -73,7 +79,6 @@ public class CourseChatActivity extends AppCompatActivity {
 
     //点击发送按钮后发送消息
     public void sendMsg(View v) {
-        TextView textView = findViewById(R.id.msgTextView);
         String content = textView.getText().toString(); // 获取消息
         if (!"".equals(content)) { // 消息不为空时发送
             ContentValues pushValues = new ContentValues();
@@ -95,4 +100,6 @@ public class CourseChatActivity extends AppCompatActivity {
             Toast.makeText(this, "消息不能为空", Toast.LENGTH_SHORT).show();
         }
     }
+
+
 }
