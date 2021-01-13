@@ -34,13 +34,13 @@ public class CourseChatActivity extends AppCompatActivity {
         courseId = getIntent().getStringExtra("id");
         courseChatViewModel = new CourseChatViewModel(courseId);
         adapter = new MessageAdapter(this, courseChatViewModel.getMessages());
-
         courseChatViewModel.getMessages().observe(this, messages -> {
             adapter.notifyDataSetChanged();
             msgRecyclerView.scrollToPosition(courseChatViewModel.getMessages().getValue().size() - 1);
         });
         setContentView(R.layout.activity_course_chat);
         msgRecyclerView = findViewById(R.id.recyclerViewInCourseView);
+        textView = ((TextView)findViewById(R.id.msgTextView));
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         msgRecyclerView.setLayoutManager(linearLayoutManager);
         msgRecyclerView.setAdapter(adapter);
@@ -100,6 +100,4 @@ public class CourseChatActivity extends AppCompatActivity {
             Toast.makeText(this, "消息不能为空", Toast.LENGTH_SHORT).show();
         }
     }
-
-
 }
