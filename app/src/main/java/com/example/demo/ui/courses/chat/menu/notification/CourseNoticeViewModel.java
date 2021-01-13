@@ -19,14 +19,14 @@ public class CourseNoticeViewModel extends ViewModel {
         notifications = new MutableLiveData<>();
         notifications.setValue(new ArrayList<>());
         QueryObservable queryObservable = MyApplication.getDatabase().createQuery(courseId + "_n",
-                "select id, title, time, receiver_id from " + courseId + "_n order by time");
+                "select id, title, time, receiver_id, sender_id from " + courseId + "_n order by time");
         queryObservable.subscribe(query -> {
             Cursor cursor = query.run();
             List<DatagramProto.Notification> list = new ArrayList<>();
             assert cursor != null;
             while(cursor.moveToNext()) {
                 list.add(DatagramProto.Notification.newBuilder().setId(cursor.getLong(0)).setReceiverId(cursor.getString(3))
-                        .setTitle(cursor.getString(1)).setTime(cursor.getLong(2)).build());
+                        .setSenderId(cursor.getString(4)).setTitle(cursor.getString(1)).setTime(cursor.getLong(2)).build());
             }
             notifications.postValue(list);
         });

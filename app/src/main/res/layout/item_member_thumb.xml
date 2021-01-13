@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imageForUserInThumb"
         android:layout_width="60dp"
         android:layout_height="60dp"

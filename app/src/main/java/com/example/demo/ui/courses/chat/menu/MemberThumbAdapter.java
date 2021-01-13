@@ -14,6 +14,8 @@ import com.example.demo.datagram.DatagramProto;
 
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class MemberThumbAdapter extends BaseAdapter {
 
     private final Context context;
@@ -36,7 +38,7 @@ public class MemberThumbAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     @Override
@@ -61,10 +63,10 @@ public class MemberThumbAdapter extends BaseAdapter {
     }
 
 
-    class UserThumbHolder {
+    private static class UserThumbHolder {
 
         TextView usernameTextView;
-        ImageView iconImageView;
+        CircleImageView iconImageView;
 
         UserThumbHolder(View view) {
             this.usernameTextView = view.findViewById(R.id.textForUsernameInThumb);

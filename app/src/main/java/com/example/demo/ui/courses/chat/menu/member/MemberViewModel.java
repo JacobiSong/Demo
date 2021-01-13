@@ -27,8 +27,7 @@ public class MemberViewModel extends ViewModel {
             List<DatagramProto.User> list = new ArrayList<>();
             assert cursor != null;
             while(cursor.moveToNext()) {
-                list.add(DatagramProto.User.newBuilder().setId(cursor.getString(0)).setIdentityValue(identity)
-                        .setName(cursor.getString(1)).build());
+                list.add(DatagramProto.User.newBuilder().setId(cursor.getString(0)).setName(cursor.getString(1)).build());
             }
             users.postValue(list);
         });

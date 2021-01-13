@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imageViewForUser"
         android:layout_width="60dp"
         android:layout_height="60dp"
@@ -24,14 +24,14 @@
         android:layout_marginTop="8dp"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageViewForUser"
-        app:layout_constraintTop_toTopOf="@+id/imageViewForUser" />
+        app:layout_constraintStart_toEndOf="@id/imageViewForUser"
+        app:layout_constraintTop_toTopOf="@id/imageViewForUser" />
 
     <TextView
         android:id="@+id/textViewForUserType"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="@+id/textViewForUsername"
-        app:layout_constraintTop_toBottomOf="@+id/textViewForUsername" />
+        app:layout_constraintStart_toStartOf="@id/textViewForUsername"
+        app:layout_constraintTop_toBottomOf="@id/textViewForUsername" />
 </androidx.constraintlayout.widget.ConstraintLayout>

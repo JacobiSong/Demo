@@ -19,6 +19,8 @@ import com.example.demo.ui.courses.chat.UserInfoActivity;
 import java.util.List;
 import java.util.Objects;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberHolder> {
 
     private final LiveData<List<DatagramProto.User>> data;
@@ -32,7 +34,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberHold
     static class MemberHolder extends RecyclerView.ViewHolder {
         private final TextView usernameTextView;
         private final TextView typeTextView;
-        private final ImageView iconImageView;
+        private final CircleImageView iconImageView;
 
         public MemberHolder(View itemView) {
             super(itemView);
@@ -40,6 +42,11 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberHold
             this.typeTextView = itemView.findViewById(R.id.textViewForUserType);
             this.iconImageView = itemView.findViewById(R.id.imageViewForUser);
         }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 
     @NonNull
@@ -55,17 +62,13 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberHold
         DatagramProto.User user = Objects.requireNonNull(this.data.getValue()).get(position);
         holder.iconImageView.setImageResource(R.drawable.account_circle_80);
         holder.usernameTextView.setText(user.getName());
-        if (user.getIdentityValue() == 0) {
-            holder.typeTextView.setText("学生");
-        } else {
-            holder.typeTextView.setText("教师");
-        }
+        holder.typeTextView.setText(user.getId());
         holder.itemView.setOnClickListener(v -> context.startActivity(new Intent(context, UserInfoActivity.class)
                 .putExtra("id", user.getId())));
     }
 
     @Override
     public int getItemCount() {
-        return Objects.requireNonNull(this.data.getValue()).size();
+        return Objects.requireNonNull(data.getValue()).size();
     }
 }
