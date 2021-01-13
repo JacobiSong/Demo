@@ -12,32 +12,66 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             tools:src="@drawable/school_60"
             app:civ_border_width="1dp"
             app:civ_border_color="@color/white"
             app:civ_border_overlay="true" />
-        <LinearLayout
+        <TextView
+            android:layout_marginTop="15dp"
+            android:id="@+id/course_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/course_icon"
+            android:textSize="17sp"
+            android:textColor="@color/black"
+            tools:text="移动互联网技术" />
+        <TextView
+            android:id="@+id/course_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/course_name"
+            android:layout_toEndOf="@id/course_icon"
+            android:textSize="13sp"
+            android:textColor="@color/dark_gray"
+            tools:text="移动互联网技术2020" />
+        <FrameLayout
+            android:id="@+id/course_item_frame"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/course_icon"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_alignParentEnd="true">
+            <ImageView
+                android:id="@+id/red_point"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                tools:src="@drawable/red_point" />
+            <TextView
+                android:id="@+id/message_num"
+                android:textColor="@color/white"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                tools:text="9"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </FrameLayout>
+        <TextView
             android:layout_marginLeft="20dp"
-            android:orientation="vertical">
-            <TextView
-                android:id="@+id/course_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="17sp"
-                android:textColor="@color/black"
-                tools:text="移动互联网技术" />
-            <TextView
-                android:id="@+id/course_message"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="13sp"
-                android:textColor="@color/dark_gray"
-                tools:text="移动互联网技术2020" />
-        </LinearLayout>
+            android:id="@+id/course_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/course_name"
+            tools:text="简介"
+            android:layout_toRightOf="@id/course_name" />
+        <TextView
+            tools:text="12:30"
+            android:layout_marginRight="20dp"
+            android:layout_alignBaseline="@id/course_message"
+            android:layout_toLeftOf="@id/course_item_frame"
+            android:id="@+id/message_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </RelativeLayout>
 </RelativeLayout>

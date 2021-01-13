@@ -20,18 +20,17 @@ import io.reactivex.functions.Consumer;
 public class CoursesViewModel extends ViewModel {
 
     private final MutableLiveData<List<DatagramProto.Course>> courses;
-
     public CoursesViewModel() {
         courses = new MutableLiveData<>();
         courses.setValue(new ArrayList<>());
-        QueryObservable queryObservable = MyApplication.getDatabase().createQuery("course", "select id, name, time, semester from course");
+        QueryObservable queryObservable = MyApplication.getDatabase().createQuery("course", "select id, name, time, semester, last_modified from course");
         queryObservable.subscribe(query -> {
             Cursor cursor = query.run();
             List<DatagramProto.Course> list = new ArrayList<>();
             assert cursor != null;
             while(cursor.moveToNext()) {
                 list.add(DatagramProto.Course.newBuilder().setId(cursor.getString(0)).setName(cursor.getString(1))
-                        .setTime(cursor.getString(2)).setSemester(cursor.getString(3)).build());
+                        .setTime(cursor.getString(2)).setLastModified(cursor.getLong(4)).setSemester(cursor.getString(3)).build());
             }
             courses.postValue(list);
         });

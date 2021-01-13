@@ -55,8 +55,7 @@ public class NotificationAdapter extends BaseAdapter {
             notificationCourse.setText(cursor.getString(0));
         }
         notificationMessage.setText(notification.getTitle());
-        LocalDateTime localDateTime = TimeConverter.long2LocalDateTime(notification.getTime());
-        notificationTime.setText(localDateTime.toString());
+        notificationTime.setText(TimeConverter.long2LocalDateTime(notification.getTime()));
         return view;
     }
 }

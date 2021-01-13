@@ -429,6 +429,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
                         } else {
                             MyApplication.getDatabase().insert(receiver_id + "_m", SQLiteDatabase.CONFLICT_REPLACE, messageValues);
                         }
+                        MyApplication.getDatabase().executeAndTrigger("course", "drop table if exists _m");
                         SharedPreferences sp = MyApplication.getInstance().getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sp.edit();
                         editor.putLong("db_version", time);

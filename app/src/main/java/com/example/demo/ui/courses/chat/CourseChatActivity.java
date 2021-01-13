@@ -44,12 +44,8 @@ public class CourseChatActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         msgRecyclerView.setLayoutManager(linearLayoutManager);
         msgRecyclerView.setAdapter(adapter);
-        msgRecyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                msgRecyclerView.scrollToPosition(courseChatViewModel.getMessages().getValue().size() - 1);
-            }
-        });
+        msgRecyclerView.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) ->
+                msgRecyclerView.scrollToPosition(courseChatViewModel.getMessages().getValue().size() - 1));
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -99,5 +95,13 @@ public class CourseChatActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "消息不能为空", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    protected void onStop() {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("last_modified", System.currentTimeMillis());
+        MyApplication.getDatabase().update("course", SQLiteDatabase.CONFLICT_REPLACE, contentValues, "id = ?", courseId);
+        super.onStop();
     }
 }
