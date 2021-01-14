@@ -19,7 +19,7 @@ public class CourseInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setTitle("课程信息");
         setContentView(R.layout.activity_course_infomation);
-        QueryObservable queryObservable = MyApplication.getDatabase().createQuery("course", "select name, classroom, time, remarks from course where id = ?",
+        QueryObservable queryObservable = MyApplication.getDatabase().createQuery("course", "select name, classroom, time, remarks, semester from course where id = ?",
                 getIntent().getStringExtra("id"));
         queryObservable.subscribe(query -> {
             Cursor cursor = query.run();
@@ -30,6 +30,7 @@ public class CourseInfoActivity extends AppCompatActivity {
                 while (c.moveToNext()) {
                     teacher.append(c.getString(0)).append(" ");
                 }
+                ((TextView) findViewById(R.id.textSemester)).setText(cursor.getString(4));
                 ((TextView) findViewById(R.id.textCourseName)).setText(cursor.getString(0));
                 ((TextView) findViewById(R.id.textClassRoom)).setText(cursor.getString(1));
                 ((TextView) findViewById(R.id.textCourseTime)).setText(cursor.getString(2));

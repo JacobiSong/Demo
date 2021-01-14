@@ -7,6 +7,34 @@
     android:background="#60DADADA"
     tools:context=".ui.courses.chat.menu.CourseInfoActivity">
 
+    <TextView
+        android:id="@+id/text_title_userId"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:fontFamily="sans-serif-medium"
+        android:paddingLeft="24dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:text="学工号"
+        android:textSize="22dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/text_userId"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:fontFamily="sans-serif-light"
+        android:paddingTop="4dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="4dp"
+        android:text="TextView"
+        android:textSize="22dp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/text_title_userId"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/text_title_userId" />
 
     <TextView
         android:id="@+id/text_phone"
@@ -31,7 +59,7 @@
         android:paddingLeft="24dp"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
-        android:text="邮箱"
+        android:text="邮    箱"
         android:textSize="22dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_title_email" />
@@ -44,7 +72,7 @@
         android:paddingLeft="24dp"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
-        android:text="电话"
+        android:text="电    话"
         android:textSize="22dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_title_phone" />
@@ -72,7 +100,7 @@
         android:paddingLeft="24dp"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
-        android:text="身份"
+        android:text="身    份"
         android:textSize="22dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_title_gender" />
@@ -115,7 +143,7 @@
         android:paddingLeft="24dp"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
-        android:text="性别"
+        android:text="性    别"
         android:textSize="22dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_title_username" />
@@ -124,15 +152,14 @@
         android:id="@+id/text_title_username"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
         android:fontFamily="sans-serif-medium"
         android:paddingLeft="24dp"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
-        android:text="姓名"
+        android:text="姓    名"
         android:textSize="22dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/text_title_userId" />
 
     <TextView
         android:id="@+id/text_gender"
@@ -148,5 +175,89 @@
         app:layout_constraintBaseline_toBaselineOf="@+id/text_title_gender"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/text_title_gender" />
+
+    <TextView
+        android:id="@+id/text_title_department1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-medium"
+        android:paddingLeft="24dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:text="院    系"
+        android:textSize="22dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_title_department" />
+
+    <TextView
+        android:id="@+id/text_department"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:fontFamily="sans-serif-light"
+        android:paddingTop="4dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="4dp"
+        android:text="TextView"
+        android:textSize="22dp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/text_title_department1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/text_title_department1" />
+
+    <TextView
+        android:id="@+id/text_title_major"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-medium"
+        android:paddingLeft="24dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:text="专    业"
+        android:textSize="22dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_title_department1" />
+
+    <TextView
+        android:id="@+id/text_major"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:fontFamily="sans-serif-light"
+        android:paddingTop="4dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="4dp"
+        android:text="TextView"
+        android:textSize="22dp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/text_title_major"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/text_title_major" />
+
+    <TextView
+        android:id="@+id/text_title_classNo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-medium"
+        android:paddingLeft="24dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:text="班    级"
+        android:textSize="22dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_title_major" />
+
+    <TextView
+        android:id="@+id/text_classNo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:fontFamily="sans-serif-light"
+        android:paddingTop="4dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="4dp"
+        android:text="TextView"
+        android:textSize="22dp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/text_title_classNo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/text_title_classNo" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

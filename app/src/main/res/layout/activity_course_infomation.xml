@@ -97,15 +97,14 @@
         android:id="@+id/textView8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:fontFamily="sans-serif-medium"
         android:paddingLeft="24dp"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
         android:text="老    师"
         android:textSize="22dp"
-        app:layout_constraintStart_toStartOf="@+id/textView4"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+        app:layout_constraintStart_toStartOf="@+id/textView12"
+        app:layout_constraintTop_toBottomOf="@+id/textView12" />
 
     <TextView
         android:id="@+id/textCourseTime"
@@ -150,8 +149,40 @@
         android:paddingRight="24dp"
         android:paddingBottom="4dp"
         android:textSize="18dp"
+        android:inputType="textMultiLine"
+        android:maxLines="10"
+        android:ellipsize="end"
         app:layout_constraintBaseline_toBaselineOf="@+id/textView11"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView11" />
+
+    <TextView
+        android:id="@+id/textView12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="sans-serif-medium"
+        android:paddingLeft="24dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:text="学    期"
+        android:textSize="22dp"
+        app:layout_constraintStart_toStartOf="@+id/textView4"
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+    <TextView
+        android:id="@+id/textSemester"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:fontFamily="sans-serif-light"
+        android:paddingTop="4dp"
+        android:paddingRight="24dp"
+        android:paddingBottom="4dp"
+        android:textSize="18dp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textView12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView12" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

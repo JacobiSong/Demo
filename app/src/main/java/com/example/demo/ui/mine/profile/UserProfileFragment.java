@@ -136,6 +136,7 @@ public class UserProfileFragment extends Fragment {
                     getActivity().runOnUiThread(() -> {
                         gender.setText(g == 0 ? "保密" : g == 1 ? "女" : "男");
                         phone.setText(cursor.getString(1));
+                        email.setText(cursor.getString(2));
                         SharedPreferences sp = getActivity().getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE);
                         String str = sp.getString("photo", "");
                         if (str.isEmpty()) {
