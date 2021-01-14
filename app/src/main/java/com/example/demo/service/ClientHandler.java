@@ -544,7 +544,6 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
             }
             case 101: {
                 if (msg.getType() == DatagramProto.DatagramVersion1.Type.USER) {
-                    
                     DatagramProto.User user = msg.getUser();
                     SharedPreferences sp = MyApplication.getInstance().getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sp.edit();
@@ -556,29 +555,57 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
                     
                     String id = MyApplication.getUsername();
                     ContentValues userValues = new ContentValues();
+                    userValues.put("name", user.getName());
                     userValues.put("phone", user.getPhone());
                     userValues.put("email", user.getEmail());
                     userValues.put("gender", user.getGenderValue());
                     userValues.put("last_modified", user.getLastModified());
-                    MyApplication.getDatabase().update("user", SQLiteDatabase.CONFLICT_REPLACE, userValues, "id = ?", id);
-                    switch (user.getIdentityValue()) {
-                        case 0: {
-                            ContentValues studentValues = new ContentValues();
-                            studentValues.put("department", user.getStudent().getDepartment());
-                            studentValues.put("major", user.getStudent().getMajor());
-                            studentValues.put("class_no", user.getStudent().getClassNo());
-                            MyApplication.getDatabase().update("student", SQLiteDatabase.CONFLICT_REPLACE, studentValues, "id = ?", id);
-                            break;
+                    Cursor cursor = MyApplication.getDatabase().query("select count(1) from user where id = ?", id);
+                    if (cursor.moveToFirst()) {
+                        if (cursor.getInt(0) == 1) {
+                            MyApplication.getDatabase().update("user", SQLiteDatabase.CONFLICT_REPLACE, userValues, "id = ?", id);
+                            switch (user.getIdentityValue()) {
+                                case 0: {
+                                    ContentValues studentValues = new ContentValues();
+                                    studentValues.put("department", user.getStudent().getDepartment());
+                                    studentValues.put("major", user.getStudent().getMajor());
+                                    studentValues.put("class_no", user.getStudent().getClassNo());
+                                    MyApplication.getDatabase().update("student", SQLiteDatabase.CONFLICT_REPLACE, studentValues, "id = ?", id);
+                                    break;
+                                }
+                                case 1: {
+                                    ContentValues teacherValues = new ContentValues();
+                                    teacherValues.put("department", user.getTeacher().getDepartment());
+                                    MyApplication.getDatabase().update("teacher", SQLiteDatabase.CONFLICT_REPLACE, teacherValues, "id = ?", id);
+                                    break;
+                                }
+                                default:
+                                    break;
+                            }
+                        } else {
+                            userValues.put("id", id);
+                            MyApplication.getDatabase().insert("user", SQLiteDatabase.CONFLICT_REPLACE, userValues);
+                            switch (user.getIdentityValue()) {
+                                case 0: {
+                                    ContentValues studentValues = new ContentValues();
+                                    studentValues.put("department", user.getStudent().getDepartment());
+                                    studentValues.put("major", user.getStudent().getMajor());
+                                    studentValues.put("class_no", user.getStudent().getClassNo());
+                                    MyApplication.getDatabase().insert("student", SQLiteDatabase.CONFLICT_REPLACE, studentValues);
+                                    break;
+                                }
+                                case 1: {
+                                    ContentValues teacherValues = new ContentValues();
+                                    teacherValues.put("department", user.getTeacher().getDepartment());
+                                    MyApplication.getDatabase().insert("teacher", SQLiteDatabase.CONFLICT_REPLACE, teacherValues);
+                                    break;
+                                }
+                                default:
+                                    break;
+                            }
                         }
-                        case 1: {
-                            ContentValues teacherValues = new ContentValues();
-                            teacherValues.put("department", user.getTeacher().getDepartment());
-                            MyApplication.getDatabase().update("teacher", SQLiteDatabase.CONFLICT_REPLACE, teacherValues, "id = ?", id);
-                            break;
-                        }
-                        default:
-                            break;
                     }
+
                     // 发送Ack报文, 返回正确码100
                     ctx.channel().writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
                             DatagramProto.DatagramVersion1.newBuilder().setType(DatagramProto.DatagramVersion1.Type.USER)

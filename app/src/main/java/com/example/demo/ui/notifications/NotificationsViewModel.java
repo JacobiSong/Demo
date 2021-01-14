@@ -34,6 +34,15 @@ public class NotificationsViewModel extends ViewModel {
                 List<DatagramProto.Notification> list = new ArrayList<>();
                 while (cursor.moveToNext()) {
                     String courseId = cursor.getString(0);
+                    while(true) {
+                        Cursor c = MyApplication.getDatabase().query("select count(1) from sqlite_master where type = ? and name = ?", "table", courseId + "_n");
+                        if (c.moveToFirst()) {
+                            if (c.getInt(0) == 1) {
+                                break;
+                            }
+                        }
+                        Thread.sleep(500);
+                    }
                     Cursor c = MyApplication.getDatabase().query("select id, title, time from " + courseId + "_n");
                     while (c.moveToNext()) {
                         list.add(DatagramProto.Notification.newBuilder().setId(c.getLong(0)).setReceiverId(courseId)
