@@ -137,6 +137,14 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
                 switch (msg.getOk()) {
                     case 100: {
                         DatagramProto.User user = msg.getUser();
+
+                        SharedPreferences sp = MyApplication.getInstance().getSharedPreferences("user_" + user.getId(), Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sp.edit();
+                        if (user.getPhoto() != null && !user.getPhoto().isEmpty()) {
+                            editor.putString("photo", new String(Base64.encode(msg.getUser().getPhoto().toByteArray(), Base64.DEFAULT)));
+                        }
+                        editor.apply();
+
                         ContentValues userValues = new ContentValues();
                         userValues.put("phone", user.getPhone());
                         userValues.put("email", user.getEmail());
@@ -505,13 +513,6 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
                         editor.putLong("db_version", createTime);
                         editor.apply();
 
-                        sp = MyApplication.getInstance().getSharedPreferences("user_" + user.getId(), Context.MODE_PRIVATE);
-                        editor = sp.edit();
-                        if (user.getPhoto() != null && !user.getPhoto().isEmpty()) {
-                            editor.putString("photo", new String(Base64.encode(msg.getUser().getPhoto().toByteArray(), Base64.DEFAULT)));
-                        }
-                        editor.apply();
-
                         ContentValues userValues = new ContentValues();
                         userValues.put("id", user.getId());
                         switch (identity) {
@@ -543,7 +544,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
             }
             case 101: {
                 if (msg.getType() == DatagramProto.DatagramVersion1.Type.USER) {
-
+                    
                     DatagramProto.User user = msg.getUser();
                     SharedPreferences sp = MyApplication.getInstance().getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sp.edit();
@@ -552,7 +553,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
                         editor.putString("photo", new String(Base64.encode(msg.getUser().getPhoto().toByteArray(), Base64.DEFAULT)));
                     }
                     editor.apply();
-
+                    
                     String id = MyApplication.getUsername();
                     ContentValues userValues = new ContentValues();
                     userValues.put("phone", user.getPhone());
