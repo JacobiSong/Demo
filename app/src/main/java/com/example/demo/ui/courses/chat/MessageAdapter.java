@@ -2,7 +2,10 @@ package com.example.demo.ui.courses.chat;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +20,13 @@ import com.example.demo.MyApplication;
 import com.example.demo.R;
 import com.example.demo.datagram.DatagramProto;
 import com.example.demo.ui.mine.profile.UserProfileActivity;
+import com.squareup.sqlbrite3.SqlBrite;
 
 import java.util.List;
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.reactivex.functions.Consumer;
 
 public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -82,16 +87,31 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         DatagramProto.Message message = Objects.requireNonNull(data.getValue()).get(position);
         if (holder.getClass().equals(LeftViewHolder.class)) {
-            Cursor cursor = MyApplication.getDatabase().query("select name from user where id = ?", message.getSenderId());
+            String senderId = message.getSenderId();
+            Cursor cursor = MyApplication.getDatabase().query("select name from user where id = ?", senderId);
             if (cursor.moveToFirst()) {
                 ((LeftViewHolder) holder).leftName.setText(cursor.getString(0));
             }
             ((LeftViewHolder) holder).leftMsg.setText(message.getContent());
-            ((LeftViewHolder) holder).imageView.setImageResource(R.drawable.account_circle_80);
-            ((LeftViewHolder) holder).imageView.setOnClickListener(v -> context.startActivity(new Intent(context, UserInfoActivity.class).putExtra("id", message.getSenderId())));
+            SharedPreferences sp = context.getSharedPreferences("user_" + senderId, Context.MODE_PRIVATE);
+            String image = sp.getString("photo", "");
+            if (image.isEmpty()) {
+                ((LeftViewHolder) holder).imageView.setImageResource(R.drawable.account_circle_80);
+            } else {
+                byte[] bytes = Base64.decode(image.getBytes(), Base64.DEFAULT);
+                ((LeftViewHolder) holder).imageView.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+            }
+            ((LeftViewHolder) holder).imageView.setOnClickListener(v -> context.startActivity(new Intent(context, UserInfoActivity.class).putExtra("id", senderId)));
         } else if (holder.getClass().equals(RightViewHolder.class)) {
             ((RightViewHolder) holder).rightMsg.setText(message.getContent());
-            ((RightViewHolder) holder).imageView.setImageResource(R.drawable.account_circle_80);
+            SharedPreferences sp = context.getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE);
+            String image = sp.getString("photo", "");
+            if (image.isEmpty()) {
+                ((RightViewHolder) holder).imageView.setImageResource(R.drawable.account_circle_80);
+            } else {
+                byte[] bytes = Base64.decode(image.getBytes(), Base64.DEFAULT);
+                ((RightViewHolder) holder).imageView.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+            }
             ((RightViewHolder) holder).imageView.setOnClickListener(v -> context.startActivity(new Intent(context, UserProfileActivity.class)));
         }
     }

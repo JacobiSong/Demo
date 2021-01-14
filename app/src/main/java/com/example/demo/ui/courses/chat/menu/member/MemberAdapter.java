@@ -2,6 +2,9 @@ package com.example.demo.ui.courses.chat.menu.member;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,7 +63,14 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberHold
     @Override
     public void onBindViewHolder(@NonNull MemberHolder holder, int position) {
         DatagramProto.User user = Objects.requireNonNull(this.data.getValue()).get(position);
-        holder.iconImageView.setImageResource(R.drawable.account_circle_80);
+        SharedPreferences sp = context.getSharedPreferences("user_" + user.getId(), Context.MODE_PRIVATE);
+        String image = sp.getString("photo", "");
+        if (image.isEmpty()) {
+            holder.iconImageView.setImageResource(R.drawable.account_circle_80);
+        } else {
+            byte[] bytes = Base64.decode(image.getBytes(), Base64.DEFAULT);
+            holder.iconImageView.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+        }
         holder.usernameTextView.setText(user.getName());
         holder.typeTextView.setText(user.getId());
         holder.itemView.setOnClickListener(v -> context.startActivity(new Intent(context, UserInfoActivity.class)

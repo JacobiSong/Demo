@@ -1,6 +1,9 @@
 package com.example.demo.ui.courses.chat.menu;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -9,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.lifecycle.LiveData;
 
+import com.example.demo.MyApplication;
 import com.example.demo.R;
 import com.example.demo.datagram.DatagramProto;
 
@@ -55,10 +59,15 @@ public class MemberThumbAdapter extends BaseAdapter {
         } else {
             holder = (UserThumbHolder) convertView.getTag();
         }
-
-        holder.iconImageView.setImageResource(R.drawable.account_circle_80);
+        SharedPreferences sp = context.getSharedPreferences("user_" + user.getId(), Context.MODE_PRIVATE);
+        String image = sp.getString("photo", "");
+        if (image.isEmpty()) {
+            holder.iconImageView.setImageResource(R.drawable.account_circle_80);
+        } else {
+            byte[] bytes = Base64.decode(image.getBytes(), Base64.DEFAULT);
+            holder.iconImageView.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+        }
         holder.usernameTextView.setText(user.getName());
-
         return convertView;
     }
 
@@ -67,7 +76,6 @@ public class MemberThumbAdapter extends BaseAdapter {
 
         TextView usernameTextView;
         CircleImageView iconImageView;
-
         UserThumbHolder(View view) {
             this.usernameTextView = view.findViewById(R.id.textForUsernameInThumb);
             this.iconImageView = view.findViewById(R.id.imageForUserInThumb);

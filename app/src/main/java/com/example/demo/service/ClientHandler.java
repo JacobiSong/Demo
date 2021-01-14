@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Base64;
 import android.util.Log;
 
 import com.example.demo.MyApplication;
@@ -278,6 +279,20 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
                         MyApplication.getInstance().sendBroadcast(new Intent().setAction("com.example.demo.toast").putExtra("text", "修改成功"));
                         break;
                     }
+                    case 108: {
+                        SharedPreferences sp = MyApplication.getInstance().getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE);
+                        long last_modified = msg.getUser().getLastModified();
+                        long time = sp.getLong("db_version", 0);
+                        SharedPreferences.Editor editor = sp.edit();
+                        if (last_modified > time) {
+                            editor.putLong("db_version", last_modified);
+
+                        }
+                        editor.putString("photo", new String(Base64.encode(msg.getUser().getPhoto().toByteArray(),Base64.DEFAULT)));
+                        editor.apply();
+                        MyApplication.getDatabase().executeAndTrigger("user", "drop table if exists _m");
+                        break;
+                    }
                     case 200:
                         MyApplication.getInstance().sendBroadcast(new Intent().setAction("com.example.demo.toast").putExtra("text", "无此用户"));
                         break;
@@ -288,6 +303,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
                     case 205:
                     case 206:
                     case 207:
+                    case 208:
                         MyApplication.getInstance().sendBroadcast(new Intent().setAction("com.example.demo.toast").putExtra("text", "修改失败"));
                         break;
                     case 210:
@@ -423,7 +439,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
                             Cursor cursor = MyApplication.getDatabase().query("select count(1) from " + receiver_id + "_m where temporary_id = ?", temporary_id);
                             if (cursor.moveToFirst() && cursor.getInt(0) != 0) {
                                 MyApplication.getDatabase().update(receiver_id + "_m", SQLiteDatabase.CONFLICT_REPLACE, messageValues, "temporary_id = " + temporary_id);
-                            } else {
+                            } else if(cursor.getInt(0) == 0) {
                                 MyApplication.getDatabase().insert(receiver_id + "_m", SQLiteDatabase.CONFLICT_REPLACE, messageValues);
                             }
                         } else {
@@ -483,6 +499,19 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
                         DatagramProto.User user = msg.getUser();
                         long createTime = user.getCreateTime();
                         int identity = user.getIdentityValue();
+
+                        SharedPreferences sp = MyApplication.getInstance().getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sp.edit();
+                        editor.putLong("db_version", createTime);
+                        editor.apply();
+
+                        sp = MyApplication.getInstance().getSharedPreferences("user_" + user.getId(), Context.MODE_PRIVATE);
+                        editor = sp.edit();
+                        if (user.getPhoto() != null && !user.getPhoto().isEmpty()) {
+                            editor.putString("photo", new String(Base64.encode(msg.getUser().getPhoto().toByteArray(), Base64.DEFAULT)));
+                        }
+                        editor.apply();
+
                         ContentValues userValues = new ContentValues();
                         userValues.put("id", user.getId());
                         switch (identity) {
@@ -499,10 +528,6 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
                         userValues.put("identity", identity);
                         userValues.put("last_modified", createTime);
                         MyApplication.getDatabase().insert("user", SQLiteDatabase.CONFLICT_REPLACE, userValues);
-                        SharedPreferences sp = MyApplication.getInstance().getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sp.edit();
-                        editor.putLong("db_version", createTime);
-                        editor.apply();
                         // 发送Ack报文, 返回正确码100
                         ctx.channel().writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
                                 DatagramProto.DatagramVersion1.newBuilder().setType(DatagramProto.DatagramVersion1.Type.USER)
@@ -518,8 +543,17 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
             }
             case 101: {
                 if (msg.getType() == DatagramProto.DatagramVersion1.Type.USER) {
+
                     DatagramProto.User user = msg.getUser();
-                    String id = user.getId();
+                    SharedPreferences sp = MyApplication.getInstance().getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.putLong("db_version", user.getLastModified());
+                    if (user.getPhoto() != null && !user.getPhoto().isEmpty()) {
+                        editor.putString("photo", new String(Base64.encode(msg.getUser().getPhoto().toByteArray(), Base64.DEFAULT)));
+                    }
+                    editor.apply();
+
+                    String id = MyApplication.getUsername();
                     ContentValues userValues = new ContentValues();
                     userValues.put("phone", user.getPhone());
                     userValues.put("email", user.getEmail());
@@ -544,10 +578,6 @@ public class ClientHandler extends SimpleChannelInboundHandler<DatagramProto.Dat
                         default:
                             break;
                     }
-                    SharedPreferences sp = MyApplication.getInstance().getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sp.edit();
-                    editor.putLong("db_version", user.getLastModified());
-                    editor.apply();
                     // 发送Ack报文, 返回正确码100
                     ctx.channel().writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
                             DatagramProto.DatagramVersion1.newBuilder().setType(DatagramProto.DatagramVersion1.Type.USER)

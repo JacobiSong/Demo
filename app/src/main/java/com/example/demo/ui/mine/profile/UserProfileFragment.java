@@ -1,27 +1,55 @@
 package com.example.demo.ui.mine.profile;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.UiThread;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.example.demo.MyApplication;
 import com.example.demo.R;
-import com.example.demo.datagram.DatagramProto;
+import com.google.protobuf.ByteString;
+import com.yalantis.ucrop.UCrop;
+import com.yalantis.ucrop.UCropActivity;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.nio.ByteBuffer;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserProfileFragment extends Fragment {
-    private UserProfileViewModel viewModel;
+
+    private static final int CAMERA_OK = 100;
+    private static final int ALBUM_OK = 101;
+    private static final int TAKE_PHOTO = 200;
+    private static final int CHOOSE_PHOTO = 201;
+    private static final String TEMPORARY_NAME = "temporary.jpg";
+    private static final String CROP_NAME = "crop.jpg";
 
     public static UserProfileFragment newInstance() {
         return new UserProfileFragment();
@@ -30,7 +58,6 @@ public class UserProfileFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        viewModel = new UserProfileViewModel();
     }
 
     @Nullable
@@ -48,6 +75,41 @@ public class UserProfileFragment extends Fragment {
         UserProfileItem major = root.findViewById(R.id.user_major);
         UserProfileItem classNo = root.findViewById(R.id.user_class_no);
         UserProfileItem password = root.findViewById(R.id.user_password);
+        RelativeLayout relativeLayout = root.findViewById(R.id.user_photo_layout);
+        CircleImageView userPhoto = root.findViewById(R.id.user_photo);
+        relativeLayout.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    relativeLayout.setBackgroundColor(getResources().getColor(R.color.gray));
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    break;
+                case MotionEvent.ACTION_UP:
+                    relativeLayout.setBackgroundColor(getResources().getColor(R.color.white));
+                    break;
+                default:
+                    break;
+            }
+            return false;
+        });
+        relativeLayout.setOnClickListener(v -> {
+            View view = View.inflate(requireActivity(), R.layout.photo_method_choice, null);
+            final AlertDialog alertDialog = new AlertDialog.Builder(requireActivity()).setView(view).create();
+            view.findViewById(R.id.choose_from_album).setOnClickListener(view1 -> {
+                choosePhoto();
+                alertDialog.dismiss();
+            });
+            view.findViewById(R.id.take_photo).setOnClickListener(v1 -> {
+                if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.CAMERA}, CAMERA_OK);
+                } else {
+                    takePhoto();
+                }
+                alertDialog.dismiss();
+            });
+            view.findViewById(R.id.cancel).setOnClickListener(v12 -> alertDialog.dismiss());
+            alertDialog.show();
+        });
         id.setText(userId);
         Cursor c = MyApplication.getDatabase().query("select name from user where id = ?", userId);
         if (c.moveToFirst()) {
@@ -74,11 +136,19 @@ public class UserProfileFragment extends Fragment {
                     getActivity().runOnUiThread(() -> {
                         gender.setText(g == 0 ? "保密" : g == 1 ? "女" : "男");
                         phone.setText(cursor.getString(1));
-                        email.setText(cursor.getString(2));
+                        SharedPreferences sp = getActivity().getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE);
+                        String str = sp.getString("photo", "");
+                        if (str.isEmpty()) {
+                            userPhoto.setImageDrawable(getResources().getDrawable(R.drawable.account_circle_80));
+                        } else {
+                            byte[] bytes = Base64.decode(str.getBytes(), Base64.DEFAULT);
+                            userPhoto.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+                        }
                     });
                 }
             }
         });
+
         if (requireActivity().getSharedPreferences("user_" + MyApplication.getUsername(), Context.MODE_PRIVATE).getInt("identity", 0) == 1) {
             major.setVisibility(View.GONE);
             classNo.setVisibility(View.GONE);
@@ -113,12 +183,84 @@ public class UserProfileFragment extends Fragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case CAMERA_OK:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    takePhoto();
+                } else {
+                    Toast.makeText(requireActivity(),"申请权限被拒绝",Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case ALBUM_OK:
+                if (grantResults.length > 0 )
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void takePhoto() {
+        Intent intent = new Intent();
+        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(requireContext(), "com.example.demo.fileProvider", new File(requireActivity().getExternalCacheDir() + File.separator, TEMPORARY_NAME)));
+        startActivityForResult(intent, TAKE_PHOTO);
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case TAKE_PHOTO: {
+                    UCrop.Options options = new UCrop.Options();
+                    options.setAllowedGestures(UCropActivity.ALL, UCropActivity.NONE, UCropActivity.ALL);
+                    options.setToolbarTitle("头像裁剪");
+                    options.setHideBottomControls(true);
+                    options.setShowCropGrid(false);
+                    options.setCircleDimmedLayer(true);
+                    options.setShowCropFrame(false);
+                    UCrop.of(Uri.fromFile(new File(requireContext().getExternalCacheDir() + File.separator, TEMPORARY_NAME)),
+                            Uri.fromFile(new File(requireContext().getExternalCacheDir() + File.separator, CROP_NAME)))
+                            .withAspectRatio(1, 1)
+                            .withOptions(options)
+                            .start(requireContext(), this);
+                    break;
+                }
+                case CHOOSE_PHOTO: {
+                    UCrop.Options options = new UCrop.Options();
+                    options.setAllowedGestures(UCropActivity.ALL, UCropActivity.NONE, UCropActivity.ALL);
+                    options.setToolbarTitle("头像裁剪");
+                    options.setHideBottomControls(true);
+                    options.setShowCropGrid(false);
+                    options.setCircleDimmedLayer(true);
+                    options.setShowCropFrame(false);
+                    assert data != null;
+                    UCrop.of(data.getData(), Uri.fromFile(new File(requireContext().getExternalCacheDir() + File.separator, CROP_NAME)))
+                            .withAspectRatio(1, 1)
+                            .withOptions(options)
+                            .start(requireContext(), this);
+                    break;
+                }
+                case UCrop.REQUEST_CROP: {
+                    try {
+
+                        Bitmap bitmap = BitmapFactory.decodeStream(requireContext().getContentResolver().openInputStream(UCrop.getOutput(data)));
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                        byte[] bytes = baos.toByteArray();
+                        MyApplication.getServer().changeUserPhoto(bytes);
+                    } catch (FileNotFoundException ignored) {
+
+                    }
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+    }
+
+    public void choosePhoto() {
+        startActivityForResult(new Intent(Intent.ACTION_PICK).setType("image/*"), CHOOSE_PHOTO);
     }
 }

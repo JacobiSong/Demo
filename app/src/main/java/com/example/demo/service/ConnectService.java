@@ -5,11 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.os.Binder;
 import android.os.IBinder;
 
 import com.example.demo.MyApplication;
 import com.example.demo.datagram.DatagramProto;
+import com.google.protobuf.ByteString;
 
 import java.util.concurrent.TimeUnit;
 
@@ -216,6 +218,18 @@ public class ConnectService extends Service {
                         )
                                 .setSubtype(DatagramProto.DatagramVersion1.Subtype.REQUEST).build().toByteString()
                 ).build());
+            }
+        }
+
+        public void changeUserPhoto(byte[] bytes) {
+            if (channel != null && channel.isActive()) {
+                channel.writeAndFlush(DatagramProto.Datagram.newBuilder().setVersion(1).setDatagram(
+                        DatagramProto.DatagramVersion1.newBuilder().setType(DatagramProto.DatagramVersion1.Type.USER)
+                                .setSubtype(DatagramProto.DatagramVersion1.Subtype.REQUEST).setOk(108)
+                                .setToken(ClientHandler.getToken()).setUser(
+                                DatagramProto.User.newBuilder().setPhoto(ByteString.copyFrom(bytes)).build()
+                        ).build().toByteString()
+                ));
             }
         }
 
