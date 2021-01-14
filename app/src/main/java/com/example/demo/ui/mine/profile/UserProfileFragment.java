@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -45,7 +46,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class UserProfileFragment extends Fragment {
 
     private static final int CAMERA_OK = 100;
-    private static final int ALBUM_OK = 101;
     private static final int TAKE_PHOTO = 200;
     private static final int CHOOSE_PHOTO = 201;
     private static final String TEMPORARY_NAME = "temporary.jpg";
@@ -101,7 +101,7 @@ public class UserProfileFragment extends Fragment {
             });
             view.findViewById(R.id.take_photo).setOnClickListener(v1 -> {
                 if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.CAMERA}, CAMERA_OK);
+                    requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_OK);
                 } else {
                     takePhoto();
                 }
@@ -185,19 +185,12 @@ public class UserProfileFragment extends Fragment {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case CAMERA_OK:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                    takePhoto();
-                } else {
-                    Toast.makeText(requireActivity(),"申请权限被拒绝",Toast.LENGTH_SHORT).show();
-                }
-                break;
-            case ALBUM_OK:
-                if (grantResults.length > 0 )
-                break;
-            default:
-                break;
+        if (requestCode == CAMERA_OK) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                takePhoto();
+            } else {
+                Toast.makeText(requireActivity(), "申请权限被拒绝", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
